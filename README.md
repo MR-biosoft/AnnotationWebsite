@@ -1,2 +1,2 @@
-# GenomeAnnotationWebsite
+# AnnotationWebsite
 Website on genome annotation
