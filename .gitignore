@@ -1,6 +1,7 @@
 
 # tinkering html widgets stored in top-level directory
 Site/*.html
+/**/*.Rmd
 
 # vscode configuration files
 .vscode
