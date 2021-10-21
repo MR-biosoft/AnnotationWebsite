@@ -5,6 +5,6 @@ Site/*.html
 # vscode configuration files
 .vscode
 
-# build file
+# build files
 *.docx
 *.PNG
