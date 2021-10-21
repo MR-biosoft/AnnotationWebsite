@@ -1,6 +1,7 @@
 
 # tinkering html widgets stored in top-level directory
 Site/*.html
+/**/*.Rmd
 
 # vscode configuration files
 .vscode
@@ -8,3 +9,6 @@ Site/*.html
 # build files
 *.docx
 *.PNG
+
+# The project description (cahier des charges)
+ProjetPHPM2AMI2B-2021_final.pdf
