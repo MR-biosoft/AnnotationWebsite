@@ -1,0 +1,103 @@
+/* Navigation bar*/
+  /* Add a black background color to the top navigation */
+  .topnav {
+    background-color: #333;
+    overflow: hidden;
+  }
+  /* Style the links inside the navigation bar */
+  .topnav a {
+    float: right;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+  /* Change the color of links on hover */
+  .topnav a:hover {
+    background-color: #ddd;
+    color: black;
+  }
+  /* Add a color to the active/current link */
+  .topnav a.active {
+    background-color: blue;
+    color: white;
+  }
+
+/* TODO: REMOVE THIS ? */
+/* top, horizontally-spanning  image */
+  .container {
+    position: relative;
+    text-align: center;
+    color: white;
+  }
+  /* Bottom left text */
+  .bottom-left {
+    position: absolute;
+    bottom: 8px;
+    left: 16px;
+  }
+  /* Top left text */
+  .top-left {
+    position: absolute;
+    top: 8px;
+    left: 16px;
+  }
+  /* Top right text */
+  .top-right {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+  }
+  /* Bottom right text */
+  .bottom-right {
+    position: absolute;
+    bottom: 8px;
+    right: 16px;
+  }
+  /* Centered text */
+  .centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+/* Vertical split */
+  .vsplit-parent {
+    display: flex;
+    height: 100vh;
+  }
+  .child {
+    flex-grow: 1;
+  }
+  /* 3 use these for a three-split*/
+  .left-3 { 
+    width: 33%;
+  }
+  .center-3 { 
+    width: 33%;
+  }
+  .right-3 {
+    width: 33%;
+  }
+  /* 2 use these for a two-split*/
+  .left-2 { 
+    background: #ddd;
+    width: 75%;
+  }
+  .right-2 {
+    background: #999;
+    width: 25%;
+  }
+/* Image css */
+.gfg {
+    width:auto;
+    text-align:right;
+    padding:2px;
+}
+img {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+}
