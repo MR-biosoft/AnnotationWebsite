@@ -2,7 +2,10 @@
 -- CREATE DATABASE GenesAnnotation;
 
 DROP SCHEMA IF EXISTS GenesAnnotation CASCADE;
-CREATE SCHEMA IF NOT EXISTS GenesAnnotation AUTHORIZATION ubuntu;
+-- The authorization scheme is a good idea once the site
+-- will be operational and deployed.
+-- For debug and development, we will keep it commented out.
+CREATE SCHEMA IF NOT EXISTS GenesAnnotation; --AUTHORIZATION ubuntu;
 SET search_path TO GenesAnnotation;
 
 CREATE DOMAIN phone_number AS
