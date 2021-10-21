@@ -4,3 +4,7 @@ Site/*.html
 
 # vscode configuration files
 .vscode
+
+# build file
+*.docx
+*.PNG
