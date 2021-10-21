@@ -4,3 +4,6 @@ Site/*.html
 
 # vscode configuration files
 .vscode
+
+# The project description (cahier des charges)
+ProjetPHPM2AMI2B-2021_final.pdf
