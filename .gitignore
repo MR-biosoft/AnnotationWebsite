@@ -1,2 +1,6 @@
 
+# tinkering html widgets stored in top-level directory
 Site/*.html
+
+# vscode configuration files
+.vscode
