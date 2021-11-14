@@ -7,6 +7,14 @@ Site/*.html
 # vscode configuration files
 .vscode
 
+# notes
+/**/notes.md
+/**/references.md
+/**/notes.txt
+/**/references.txt
+reference_downloaded_sites
+
+
 # build files
 *.docx
 *.PNG
