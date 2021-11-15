@@ -11,16 +11,28 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from django.core.exceptions import ImproperlyConfigured
+from typing import Any
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+def get_env_value(env_variable: str) -> Any:
+    """ Get credentials, secret keys, passwords, etc.
+    From environment variables, raising a descriptive
+    error message if they are not set.
+    """
+    try:
+      	return os.environ[env_variable]
+    except KeyError:
+        error_msg = f"Set the {env_variable} environment variable"
+        raise ImproperlyConfigured(error_msg)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '(spe6^5c9u5u2pr)b=^g+t#@r!$do2)vru!s(bm4wy!x)0trnm'
+SECRET_KEY = get_env_value("DJANGO_SECRET_KEY") 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -75,8 +87,12 @@ WSGI_APPLICATION = 'prokaryote.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': get_env_value("PG_DBNAME"),
+        'USER': get_env_value("PG_USER"),
+        'PASSWORD': get_env_value("PG_PASSWORD"),
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
