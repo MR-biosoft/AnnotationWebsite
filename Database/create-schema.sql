@@ -3,8 +3,17 @@
 -- The authorization scheme is a good idea once the site
 -- will be operational and deployed.
 -- For debug and development, we will keep it commented out.
-CREATE SCHEMA IF NOT EXISTS GenesAnnotation; --AUTHORIZATION ubuntu;
-SET search_path TO GenesAnnotation;
+
+-- G: I commented out the schema creation because using PostgreSQL
+-- schemas does not work out of the box in Django. To save us 
+-- time and possible bugs that could be caused by implementing a 
+-- database router, I am modifying all scripts to use DATABASEs
+-- instead of SCHEMAs.
+
+-- CREATE SCHEMA IF NOT EXISTS GenesAnnotation; --AUTHORIZATION ubuntu;
+-- SET search_path TO GenesAnnotation;
+
+\c annotationsite;
 
 CREATE DOMAIN PHONE_NUMBER AS
     VARCHAR(16)
