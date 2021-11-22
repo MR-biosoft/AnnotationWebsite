@@ -1,3 +1,7 @@
+
+# vim swap files
+/**/.*.swp
+
 .Rhistory
 
 # tinkering html widgets stored in top-level directory
@@ -86,6 +90,17 @@ coverage.xml
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+# Django # (taken from https://djangowaves.com/tips-tricks/gitignore-for-a-django-project/)
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
+
+# Backup files #
+*.bak
+
 
 # Flask stuff:
 instance/
