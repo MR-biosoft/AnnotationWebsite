@@ -2,11 +2,9 @@
 # You'll have to do the following manually to clean this up:
 #   * Rearrange models' order
 #   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey has `on_delete` set to the desired behavior.
+#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
-from __future__ import unicode_literals
-
 from django.db import models
 
 
@@ -26,9 +24,9 @@ class Annotation(models.Model):
 
 
 class Decision(models.Model):
-    accession_number = models.ForeignKey('GeneProtein', models.DO_NOTHING, db_column='accession_number', primary_key=True)
+    accession_number = models.OneToOneField('GeneProtein', models.DO_NOTHING, db_column='accession_number', primary_key=True)
     attempt_number = models.IntegerField()
-    isapproved = models.NullBooleanField()
+    isapproved = models.BooleanField(blank=True, null=True)
     comment = models.CharField(max_length=1000, blank=True, null=True)
     timestamp = models.DateTimeField(blank=True, null=True)
 
@@ -46,7 +44,7 @@ class GeneProtein(models.Model):
     reading_frame = models.IntegerField(blank=True, null=True)
     aa_length = models.IntegerField(blank=True, null=True)
     chromosome = models.ForeignKey('Genome', models.DO_NOTHING, db_column='chromosome', blank=True, null=True)
-    isannotated = models.NullBooleanField()
+    isannotated = models.BooleanField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -54,7 +52,7 @@ class GeneProtein(models.Model):
 
 
 class GeneSeq(models.Model):
-    accession_number = models.ForeignKey(GeneProtein, models.DO_NOTHING, db_column='accession_number', primary_key=True)
+    accession_number = models.OneToOneField(GeneProtein, models.DO_NOTHING, db_column='accession_number', primary_key=True)
     sequence = models.CharField(max_length=6000)
 
     class Meta:
@@ -88,7 +86,7 @@ class Member(models.Model):
 
 
 class ProteinSeq(models.Model):
-    accession_number = models.ForeignKey(GeneProtein, models.DO_NOTHING, db_column='accession_number', primary_key=True)
+    accession_number = models.OneToOneField(GeneProtein, models.DO_NOTHING, db_column='accession_number', primary_key=True)
     sequence = models.CharField(max_length=2000)
 
     class Meta:
