@@ -46,4 +46,4 @@ jobs:
       - name: Create timetable database
         run: |
           sudo -u postgres createdb --owner=scheduler timetable
-          PGPASSWORD=somestrong psql --username=scheduler --host=localhost --list timetable
+          PGPASSWORD=example_password psql --username=scheduler --host=localhost --list timetable
