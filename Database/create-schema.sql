@@ -13,7 +13,7 @@
 -- CREATE SCHEMA IF NOT EXISTS GenesAnnotation; --AUTHORIZATION ubuntu;
 -- SET search_path TO GenesAnnotation;
 
-\c annotationsite;
+--\c djangoannot djangoannot;
 
 CREATE DOMAIN PHONE_NUMBER AS
     VARCHAR(16)
