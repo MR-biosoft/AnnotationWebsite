@@ -26,13 +26,12 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Verify GITHUB_WORKSPACE
-        id: test1
-        env:
-          ENV_VARIABLE: ${{ GITHUB_WORKSPACE }}
         run: |
           echo Test env variables
           echo $GITHUB_WORKSPACE
           echo $ENV_VARIABLE
+          cd $GITHUB_WORKSPACE
+          ls
 
       # postgresql example taken from : https://www.cybertec-postgresql.com/en/postgresql-github-actions-continuous-integration/
       - name: Start PostgreSQL on Ubuntu
