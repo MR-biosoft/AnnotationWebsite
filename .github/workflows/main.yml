@@ -67,6 +67,7 @@ jobs:
 
       - name: Create schema
         env:
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
           PG_USER: ${{ secrets.PG_USER }}
           PG_DBNAME: ${{ secrets.PG_DBNAME }}
           PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
