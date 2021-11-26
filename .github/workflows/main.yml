@@ -4,10 +4,9 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
-  push:
-    branches: [main, ci-experiments]
-  pull_request:
+  # Triggers the workflow on push or pull request events
+  push: # Push to any branches
+  pull_request: # Pull requests only to main
     branches: [main]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -75,4 +74,4 @@ jobs:
           cd $GITHUB_WORKSPACE/Python/prokaryote
           #PG_USER="$PG_USER" PG_PASSWORD="$PG_PASSWORD" PG_DBNAME="$PG_DBNAME"
           poetry run python manage.py dbexec $GITHUB_WORKSPACE/Database/create-schema.sql
-          poetry run python manage.py instpectdb
+          poetry run python manage.py inspectdb
