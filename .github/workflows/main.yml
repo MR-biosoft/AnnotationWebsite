@@ -29,7 +29,7 @@ jobs:
           cache-name: poetry-env-cache
         with:
           path: /home/runner/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-pyproj-${{ hashFiles('pyproject.toml')}}-lock-${{ hashFiles('poetry.lock')}}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-pyproj-${{ hashFiles('Python/pyproject.toml')}}-lock-${{ hashFiles('Python/poetry.lock')}}
 
       - name: Setup Poetry
         run: |
