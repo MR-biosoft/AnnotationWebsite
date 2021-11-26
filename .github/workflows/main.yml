@@ -15,21 +15,28 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  setup-postgresql-ubuntu:
-    name: Setup Database
+  setup-development-ubuntu:
+    name: Setup Django and PostgreSQL
     runs-on: ubuntu-latest
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      - uses: Gr1N/setup-poetry@v7
 
-      - name: Verify GITHUB_WORKSPACE
+      - name: Poetry virtual environment cache
+        uses: actions/cache@v2
+        env:
+          cache-name: poetry-env-cache
+        with:
+          path: /home/runner/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-pyproj-${{ hashFiles('pyproject.toml')}}-lock-${{ hashFiles('poetry.lock')}}
+
+      - name: Setup Poetry
         run: |
-          echo Test env variables
-          echo $GITHUB_WORKSPACE
-          echo $ENV_VARIABLE
-          cd $GITHUB_WORKSPACE
-          ls
+          cd $GITHUB_WORKSPACE/Python
+          poetry install
+          poetry run python -m django --version
 
       # postgresql example taken from : https://www.cybertec-postgresql.com/en/postgresql-github-actions-continuous-integration/
       - name: Start PostgreSQL
@@ -49,7 +56,7 @@ jobs:
           sudo -u postgres psql --command="ALTER ROLE $PG_USER SET timezone TO 'UTC';"
           sudo -u postgres psql --command="ALTER ROLE $PG_USER WITH CREATEDB;"
 
-      - name: Create timetable database
+      - name: Create database
         env:
           PG_USER: ${{ secrets.PG_USER }}
           PG_DBNAME: ${{ secrets.PG_DBNAME }}
@@ -57,3 +64,14 @@ jobs:
         run: |
           sudo -u postgres createdb --owner="$PG_USER" "$PG_DBNAME"
           PGPASSWORD="$PG_PASSWORD" psql --username="$PG_USER" --host=localhost --list
+
+      - name: Create schema
+        env:
+          PG_USER: ${{ secrets.PG_USER }}
+          PG_DBNAME: ${{ secrets.PG_DBNAME }}
+          PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+        run: |
+          cd $GITHUB_WORKSPACE/Python/prokaryote
+          #PG_USER="$PG_USER" PG_PASSWORD="$PG_PASSWORD" PG_DBNAME="$PG_DBNAME"
+          poetry run python manage.py dbexec $GITHUB_WORKSPACE/Database/create-schema.sql
+          poetry run python manage.py instpectdb
