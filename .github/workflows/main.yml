@@ -15,12 +15,10 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   setup-postgresql-ubuntu:
-    name: Setup PostgreSQL on Ubuntu
+    name: Setup Database
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -34,16 +32,28 @@ jobs:
           ls
 
       # postgresql example taken from : https://www.cybertec-postgresql.com/en/postgresql-github-actions-continuous-integration/
-      - name: Start PostgreSQL on Ubuntu
+      - name: Start PostgreSQL
         run: |
           sudo systemctl start postgresql.service
           pg_isready
 
-      - name: Create scheduler user
+      - name: Create django's user
+        env:
+          PG_USER: ${{ secrets.PG_USER }}
+          PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
         run: |
-          sudo -u postgres psql --command="CREATE USER scheduler PASSWORD 'example_password'" --command="\du"
+          sudo -u postgres psql --command="CREATE USER '$PG_USER';"
+          sudo -u postgres psql --command="ALTER USER '$PG_USER' WITH ENCRYPTED PASSWORD '$PG_PASSWORD';"
+          sudo -u postgres psql --command="ALTER ROLE '$PG_USER' SET client_encoding TO 'utf8';"
+          sudo -u postgres psql --command="ALTER ROLE '$PG_USER' SET default_transaction_isolation TO 'read committed';"
+          sudo -u postgres psql --command="ALTER ROLE '$PG_USER' SET timezone TO 'UTC';"
+          sudo -u postgres psql --command="ALTER ROLE '$PG_USER' WITH CREATEDB;"
 
       - name: Create timetable database
+        env:
+          PG_USER: ${{ secrets.PG_USER }}
+          PG_DBNAME: ${{ secrets.PG_DBNAME }}
+          PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
         run: |
-          sudo -u postgres createdb --owner=scheduler timetable
-          PGPASSWORD='example_password' psql --username=scheduler --host=localhost --list timetable
+          sudo -u postgres createdb --owner="$PG_USER" "$PG_DBNAME"
+          PGPASSWORD="$PG_PASSWORD" psql --username="$PG_USER" --host=localhost --list
