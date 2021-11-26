@@ -1,4 +1,7 @@
 # AnnotationWebsite
+
+[![CI](https://github.com/MR-biosoft/AnnotationWebsite/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/MR-biosoft/AnnotationWebsite/actions/workflows/main.yml)
+
 Website on genome annotation
 
 To execute sql scripts use the command `dbexec`
