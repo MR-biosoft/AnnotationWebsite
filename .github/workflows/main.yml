@@ -42,12 +42,12 @@ jobs:
           PG_USER: ${{ secrets.PG_USER }}
           PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
         run: |
-          sudo -u postgres psql --command="CREATE USER '$PG_USER';"
-          sudo -u postgres psql --command="ALTER USER '$PG_USER' WITH ENCRYPTED PASSWORD '$PG_PASSWORD';"
-          sudo -u postgres psql --command="ALTER ROLE '$PG_USER' SET client_encoding TO 'utf8';"
-          sudo -u postgres psql --command="ALTER ROLE '$PG_USER' SET default_transaction_isolation TO 'read committed';"
-          sudo -u postgres psql --command="ALTER ROLE '$PG_USER' SET timezone TO 'UTC';"
-          sudo -u postgres psql --command="ALTER ROLE '$PG_USER' WITH CREATEDB;"
+          sudo -u postgres psql --command="CREATE USER $PG_USER;"
+          sudo -u postgres psql --command="ALTER USER $PG_USER WITH ENCRYPTED PASSWORD '$PG_PASSWORD';"
+          sudo -u postgres psql --command="ALTER ROLE $PG_USER SET client_encoding TO 'utf8';"
+          sudo -u postgres psql --command="ALTER ROLE $PG_USER SET default_transaction_isolation TO 'read committed';"
+          sudo -u postgres psql --command="ALTER ROLE $PG_USER SET timezone TO 'UTC';"
+          sudo -u postgres psql --command="ALTER ROLE $PG_USER WITH CREATEDB;"
 
       - name: Create timetable database
         env:
