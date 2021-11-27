@@ -1,4 +1,9 @@
 
+# Data directory
+Data
+**/*.fa
+**/*.fasta
+
 # vim swap files
 /**/.*.swp
 
