@@ -72,14 +72,13 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/Python/prokaryote
           poetry run python manage.py dbexec $GITHUB_WORKSPACE/Database/create-schema.sql
-          cd $GITHUB_WORKSPACE/../
-          sudo -u postgres pg_dumpall > prokaryote_db.psql
+          sudo -u postgres pg_dumpall > $GITHUB_WORKSPACE/prokaryote_db.psql
 
       - name: Save PostgreSQL cluster artifact
         id: psql-cache
         uses: actions/upload-artifact@v2
         with:
-          path: $GITHUB_WORKSPACE/../prokaryote_db.psql
+          path: $GITHUB_WORKSPACE/prokaryote_db.psql
           name: prokaryotedb
 
       - name: Trigger database workflow
