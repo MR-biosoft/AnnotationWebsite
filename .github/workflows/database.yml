@@ -25,7 +25,6 @@ jobs:
         with:
           workflow: main.yml
           name: prokaryotedb
-          path: $GITHUB_WORKSPACE/Database
 
       # Cache poetry's virtual environment to avoid re-installing dependencies each time
       - name: Poetry virtual environment cache
@@ -43,10 +42,6 @@ jobs:
         run: |
           sudo systemctl start postgresql.service
           pg_isready
-          cd $GITHUB_WORKSPACE/
-          ls
-          cd Database
-          ls
           sudo -u postgres psql -f prokaryote_db.psql postgres
           PGPASSWORD="$PG_PASSWORD" psql --username="$PG_USER" --host=localhost --list
           cd $GITHUB_WORKSPACE/Python/prokaryote
