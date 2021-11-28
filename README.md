@@ -1,6 +1,7 @@
 # AnnotationWebsite
 
 [![CI](https://github.com/MR-biosoft/AnnotationWebsite/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/MR-biosoft/AnnotationWebsite/actions/workflows/main.yml)
+[![asd](https://github.com/MR-biosoft/AnnotationWebsite/actions/workflows/database.yml/badge.svg?branch=main)](https://github.com/MR-biosoft/AnnotationWebsite/actions/workflows/database.yml)
 
 Website on genome annotation
 

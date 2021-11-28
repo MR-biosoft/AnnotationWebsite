@@ -1,0 +1,50 @@
+# This is a basic workflow to help you get started with Actions
+
+name: DB
+
+# Controls when the workflow will run
+on:
+  repository_dispatch:
+    types: [successful-build-1]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  import-fasta-to-db:
+    name: Import fasta to db
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: Gr1N/setup-poetry@v7
+      - uses: actions/setup-go@v2
+
+      - name: Download database
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: main.yml
+          name: prokaryotedb
+
+      # Cache poetry's virtual environment to avoid re-installing dependencies each time
+      - name: Poetry virtual environment cache
+        uses: actions/cache@v2
+        env:
+          cache-name: poetry-env-cache
+        with:
+          path: /home/runner/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-pyproj-${{ hashFiles('Python/pyproject.toml')}}-lock-${{ hashFiles('Python/poetry.lock')}}
+
+      - name: Start PostgreSQL
+        env:
+          PG_USER: ${{ secrets.PG_USER }}
+          PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+          PG_DBNAME: ${{ secrets.PG_DBNAME }}
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+        run: |
+          sudo systemctl start postgresql.service
+          pg_isready
+          sudo -u postgres psql -f prokaryote_db.psql postgres > /dev/null
+          PGPASSWORD="$PG_PASSWORD" psql --username="$PG_USER" --host=localhost --list
+          cd $GITHUB_WORKSPACE/Python/prokaryote
+          poetry run python manage.py inspectdb
