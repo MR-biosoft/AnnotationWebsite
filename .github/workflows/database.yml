@@ -21,15 +21,15 @@ jobs:
       #- uses: actions/setup-go@v2
 
       - name: Download database
-        uses: actions/download-artifact@v2
+        uses: dawidd6/action-download-artifact@v2
         with:
+          workflow: main.yml
           name: prokaryotedb
           path: $GITHUB_WORKSPACE/Data
 
-      - uses: geekyeggo/delete-artifact@v1
+      - uses: joutvhu/delete-artifact@v1
         with:
           name: prokaryotedb
-          failOnError: true
 
       - name: Start PostgreSQL
         run: |
