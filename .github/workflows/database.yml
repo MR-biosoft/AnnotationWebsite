@@ -47,7 +47,7 @@ jobs:
           ls
           cd Database
           ls
-          psql -f prokaryote_db.psql postgres
+          sudo -u postgres psql -f prokaryote_db.psql postgres
           PGPASSWORD="$PG_PASSWORD" psql --username="$PG_USER" --host=localhost --list
           cd $GITHUB_WORKSPACE/Python/prokaryote
           poetry run python manage.py inspectdb
