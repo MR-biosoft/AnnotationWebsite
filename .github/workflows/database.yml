@@ -39,10 +39,12 @@ jobs:
         env:
           PG_USER: ${{ secrets.PG_USER }}
           PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+          PG_DBNAME: ${{ secrets.PG_DBNAME }}
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         run: |
           sudo systemctl start postgresql.service
           pg_isready
-          sudo -u postgres psql -f prokaryote_db.psql postgres
+          sudo -u postgres psql -f prokaryote_db.psql postgres > /dev/null
           PGPASSWORD="$PG_PASSWORD" psql --username="$PG_USER" --host=localhost --list
           cd $GITHUB_WORKSPACE/Python/prokaryote
           poetry run python manage.py inspectdb
