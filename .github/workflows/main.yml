@@ -63,7 +63,7 @@ jobs:
           sudo -u postgres createdb --owner="$PG_USER" "$PG_DBNAME"
           PGPASSWORD="$PG_PASSWORD" psql --username="$PG_USER" --host=localhost --list
 
-      - name: Create schema and dump postgres' database cluster
+      - name: Create schema
         env:
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
           PG_USER: ${{ secrets.PG_USER }}
@@ -72,21 +72,25 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/Python/prokaryote
           poetry run python manage.py dbexec $GITHUB_WORKSPACE/Database/create-schema.sql
-          sudo -u postgres pg_dumpall > $GITHUB_WORKSPACE/prokaryote_db.psql
-          ls $GITHUB_WORKSPACE/
 
-      #- name: Save PostgreSQL cluster artifact
-      #  id: psql-cache
-      #  uses: actions/upload-artifact@v2
-      #  with:
-      #    path: $GITHUB_WORKSPACE/prokaryote_db.psql
-      #    name: prokaryotedb
+      - name: Dump PostgreSQL's database cluster
+        run: |
+          ls
+          sudo -u postgres pg_dumpall > prokaryote_db.psql
+          ls
 
-      #- name: Trigger database workflow
-      #  if: success()
-      #  uses: peter-evans/repository-dispatch@v1
-      #  with:
-      #    token: ${{ secrets.ANNOTATIONSITE_GHA_PAT }}
-      #    repository: ${{ github.repository }}
-      #    event-type: successful-build-1
-      #    client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+      - name: Save PostgreSQL cluster artifact
+        id: psql-cache
+        uses: actions/upload-artifact@v2
+        with:
+          path: prokaryote_db.psql
+          name: prokaryotedb
+
+      - name: Trigger database workflow
+        if: success()
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.ANNOTATIONSITE_GHA_PAT }}
+          repository: ${{ github.repository }}
+          event-type: successful-build-1
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
