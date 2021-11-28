@@ -17,34 +17,37 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      #- uses: Gr1N/setup-poetry@v7
-      #- uses: actions/setup-go@v2
+      - uses: Gr1N/setup-poetry@v7
+      - uses: actions/setup-go@v2
 
       - name: Download database
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: main.yml
           name: prokaryotedb
-          path: $GITHUB_WORKSPACE/Data
+          path: $GITHUB_WORKSPACE/Database
 
-      - uses: joutvhu/delete-artifact@v1
+      # Cache poetry's virtual environment to avoid re-installing dependencies each time
+      - name: Poetry virtual environment cache
+        uses: actions/cache@v2
+        env:
+          cache-name: poetry-env-cache
         with:
-          name: prokaryotedb
+          path: /home/runner/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-pyproj-${{ hashFiles('Python/pyproject.toml')}}-lock-${{ hashFiles('Python/poetry.lock')}}
 
       - name: Start PostgreSQL
+        env:
+          PG_USER: ${{ secrets.PG_USER }}
+          PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
         run: |
           sudo systemctl start postgresql.service
           pg_isready
           cd $GITHUB_WORKSPACE/
           ls
-          cd Data
+          cd Database
           ls
-
-      # Cache poetry's virtual environment to avoid re-installing dependencies each time
-      #- name: Poetry virtual environment cache
-      #  uses: actions/cache@v2
-      #  env:
-      #    cache-name: poetry-env-cache
-      #  with:
-      #    path: /home/runner/.cache/pypoetry/virtualenvs
-      #    key: ${{ runner.os }}-build-${{ env.cache-name }}-pyproj-${{ hashFiles('Python/pyproject.toml')}}-lock-${{ hashFiles('Python/poetry.lock')}}
+          sudo -u psql -f prokaryote_db.psql postgres
+          PGPASSWORD="$PG_PASSWORD" psql --username="$PG_USER" --host=localhost --list
+          cd $GITHUB_WORKSPACE/Python/prokaryote
+          poetry run python manage.py inspectdb
