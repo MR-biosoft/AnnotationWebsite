@@ -73,19 +73,20 @@ jobs:
           cd $GITHUB_WORKSPACE/Python/prokaryote
           poetry run python manage.py dbexec $GITHUB_WORKSPACE/Database/create-schema.sql
           sudo -u postgres pg_dumpall > $GITHUB_WORKSPACE/prokaryote_db.psql
+          ls $GITHUB_WORKSPACE/
 
-      - name: Save PostgreSQL cluster artifact
-        id: psql-cache
-        uses: actions/upload-artifact@v2
-        with:
-          path: $GITHUB_WORKSPACE/prokaryote_db.psql
-          name: prokaryotedb
+      #- name: Save PostgreSQL cluster artifact
+      #  id: psql-cache
+      #  uses: actions/upload-artifact@v2
+      #  with:
+      #    path: $GITHUB_WORKSPACE/prokaryote_db.psql
+      #    name: prokaryotedb
 
-      - name: Trigger database workflow
-        if: success()
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          token: ${{ secrets.ANNOTATIONSITE_GHA_PAT }}
-          repository: ${{ github.repository }}
-          event-type: successful-build-1
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+      #- name: Trigger database workflow
+      #  if: success()
+      #  uses: peter-evans/repository-dispatch@v1
+      #  with:
+      #    token: ${{ secrets.ANNOTATIONSITE_GHA_PAT }}
+      #    repository: ${{ github.repository }}
+      #    event-type: successful-build-1
+      #    client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
