@@ -1,4 +1,14 @@
 
+# Development files
+**/*.py
+exploration
+
+
+# Data directory
+Data
+**/*.fa
+**/*.fasta
+
 # vim swap files
 /**/.*.swp
 
@@ -13,6 +23,7 @@ Site/*.html
 
 # notes
 /**/notes.md
+/**/bitacora.md
 /**/references.md
 /**/notes.txt
 /**/references.txt
