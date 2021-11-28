@@ -1,4 +1,9 @@
 
+# Development files
+**/*.py
+exploration
+
+
 # Data directory
 Data
 **/*.fa
@@ -18,6 +23,7 @@ Site/*.html
 
 # notes
 /**/notes.md
+/**/bitacora.md
 /**/references.md
 /**/notes.txt
 /**/references.txt
