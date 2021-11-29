@@ -615,7 +615,7 @@ python-versions = "*"
 name = "regex"
 version = "2021.11.10"
 description = "Alternative regular expression module, to replace re."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -778,7 +778,7 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "740c2e069a0e722fd134cadebaadf580939cc2c944a54628cdca0900983716da"
+content-hash = "eeada591f068e3563b8ad539d1b3d4ceb2028db3867dd72f652974f73486468c"
 
 [metadata.files]
 appnope = [
