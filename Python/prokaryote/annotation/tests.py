@@ -29,7 +29,14 @@ class FASTAparserTest(TestCase):
         cls.prot = next(SeqIO.parse(cls._protein_files[0], "fasta"))
         cls.genome = next(SeqIO.parse(cls._genome_files[0], "fasta"))
 
-    def test_gene_parsing(self):
+    def test_gene_parsing_return_type(self):
         gene_parser = FASTAParser(DEFAULT_CDS)
         parsed_dict = gene_parser(self.gene)
         self.assertIsInstance(parsed_dict, dict)
+
+    def test_gene_parsing_regex_matches(self):
+        gene_parser = FASTAParser(DEFAULT_CDS)
+        parsed_dict = gene_parser(self.gene)
+        _expected = DEFAULT_CDS.keys()
+        _observed = parsed_dict.keys()
+        self.assertEquals(set(_observed), set(_expected))

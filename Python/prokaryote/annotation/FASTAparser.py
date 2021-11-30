@@ -35,6 +35,9 @@ class FASTAParser:
         return f"FASTAParser({', '.join(self._re_dict.keys())})"
 
     def __call__(self, record: Bio.SeqRecord.SeqRecord):
-        return regex.search(
-            r"(?P<my_group>(?<=chromosome:)[\d|\D]*(?=:Chromosome))", record.description
-        ).groupdict()
+        hits = {}
+        for _regex in self._re_dict.values():
+            _match = regex.search(_regex, record.description)
+            if _match:
+                hits.update(_match.groupdict())
+        return hits
