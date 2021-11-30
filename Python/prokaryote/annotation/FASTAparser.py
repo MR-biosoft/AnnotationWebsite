@@ -10,17 +10,25 @@
 from typing import Dict
 import regex
 import Bio
-from Bio import Seq, SeqIO  # , SeqRecord, SeqUtils
 
-# regex.search(
-#    r"(?P<my_group>(?<=chromosome:)[\d|\D]*(?=:Chromosome))", gene.description
-# ).groupdict()
+# from Bio import SeqIO  # Seq, SeqRecord, SeqUtils
 
 
 class FASTAParser:
     """FASTA parser to retrieve relevant fields
     from a Bio.SeqRecord.SeqRecord object (BioPython)
-    once built with a dictionary mapping relevant field.
+    once built with a dictionary of regex.
+
+    Once initialised with the regex dictionary,
+    the resulting object is a callable (function)
+    which can be used to retrieve fields of interest
+    from the description within a Bio.Seq.description.
+
+    The regex dictionary must contain named groups.
+    A named group is :
+        (?P<identifier>regex)
+
+    For more information see : https://docs.python.org/3.8/library/re.html
 
     An example of this dictionary is :
     {

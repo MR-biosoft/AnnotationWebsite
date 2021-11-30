@@ -3,7 +3,7 @@
     used to parse FASTA annotations.
 """
 
-
+# Regex dictionnary for information contained in cds files (individual genes)
 DEFAULT_CDS = {
     "chromosome": r"(?P<chromosome>(?<=chromosome:)[\d|\D]*(?=:Chromosome))",
     "start_end": r"(?P<start_end>(?<=Chromosome:)\d+:\d+(?=:[1|\-1]))",
