@@ -32,4 +32,4 @@ class FASTAparserTest(TestCase):
     def test_gene_parsing(self):
         gene_parser = FASTAParser(DEFAULT_CDS)
         parsed_dict = gene_parser(self.gene)
-        self.assertIsInstance(parsed_dict, None)
+        self.assertIsInstance(parsed_dict, dict)
