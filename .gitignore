@@ -3,10 +3,14 @@
 /*.py
 exploration
 
+# Manual notes
+/*.txt
+/*.md
 
 # Data directory
 Data
 **/*.fa
+**/*.gb
 **/*.fasta
 
 # vim swap files
