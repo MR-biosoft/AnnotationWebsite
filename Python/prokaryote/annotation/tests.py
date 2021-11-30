@@ -6,8 +6,8 @@ from django.test import TestCase
 from Bio import SeqIO, Seq
 
 # Imports from our module
-from annotation.FASTAparser import FASTAParser
-from annotation.FASTAregex import DEFAULT_CDS
+from annotation.parsing import FASTAParser
+from annotation.bioregex import DEFAULT_CDS
 from annotation.devutils import get_env_value
 
 
@@ -18,6 +18,10 @@ class FASTAparserTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Setup all data"""
+        # The env variable GITHUB_WORKSPACE was set in order to facilitate CI
+        # via github actions. When running the tests on a local machine,
+        # export the variable to be the project's root as follows:
+        # $ GITHUB_WORKSPACE='/path/to/project/root' python manage.py test
         cls._data_dir = Path(get_env_value("GITHUB_WORKSPACE")).joinpath("Data")
         cls._cds_files = list(cls._data_dir.glob("*cds.fa"))
         cls._protein_files = list(cls._data_dir.glob("*pep.fa"))
@@ -34,7 +38,7 @@ class FASTAparserTest(TestCase):
         parsed_dict = gene_parser(self.gene)
         self.assertIsInstance(parsed_dict, dict)
 
-    def test_gene_parsing_regex_matches(self):
+    def test_gene_parsing_regex_matches_one(self):
         gene_parser = FASTAParser(DEFAULT_CDS)
         parsed_dict = gene_parser(self.gene)
         _expected = DEFAULT_CDS.keys()
