@@ -18,18 +18,6 @@ class Command(BaseCommand):
             help="Path to the PSQL script to be parsed and executed.",
         )
 
-    ## old handle, fragile approach
-    # @no_translations
-    # def handle(self, *args, **options):
-    #    with open(options["psql_script"][0], "r", encoding="utf-8") as f:
-    #        with connection.cursor() as cursor:
-    #            for line in f.readlines():
-    #                _query = line.strip()
-    #                if len(_query) > 0 and not _query.startswith("--"):
-    #                    cursor.execute(line.strip())
-    #            # for line in cursor.fetchall():
-    #            #    self.stdout.write(type(line))
-
     @no_translations
     def handle(self, *args, **options):
         with connection.cursor() as cursor:
