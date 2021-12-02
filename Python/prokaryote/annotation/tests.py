@@ -3,11 +3,11 @@ from pathlib import Path
 from django.test import TestCase
 
 # BioPython Utils
-from Bio import SeqIO, Seq
+from Bio import SeqIO
 
 # Imports from our module
 from annotation.parsing import FASTAParser
-from annotation.bioregex import DEFAULT_CDS
+from annotation.bioregex import DEFAULT_CDS, DEFAULT_PROTEIN, DEFAULT_GENOME
 from annotation.devutils import get_env_value
 
 
@@ -30,7 +30,7 @@ class FASTAparserTest(TestCase):
             _genomes.remove(i)
         cls._genome_files = _genomes
         cls.gene = next(SeqIO.parse(cls._cds_files[0], "fasta"))
-        cls.prot = next(SeqIO.parse(cls._protein_files[0], "fasta"))
+        cls.protein = next(SeqIO.parse(cls._protein_files[0], "fasta"))
         cls.genome = next(SeqIO.parse(cls._genome_files[0], "fasta"))
 
     def test_gene_parsing_return_type(self):
@@ -43,4 +43,11 @@ class FASTAparserTest(TestCase):
         parsed_dict = gene_parser(self.gene)
         _expected = DEFAULT_CDS.keys()
         _observed = parsed_dict.keys()
-        self.assertEquals(set(_observed), set(_expected))
+        self.assertSequenceEqual(_observed, _expected)
+
+    # def test_protein_parsing_regex_matches_one(self):
+    #    gene_parser = FASTAParser(DEFAULT_PROTEIN)
+    #    parsed_dict = gene_parser(self.protein)
+    #    _expected = DEFAULT_PROTEIN.keys()
+    #    _observed = parsed_dict.keys()
+    #    self.assertEquals(set(_observed), set(_expected))
