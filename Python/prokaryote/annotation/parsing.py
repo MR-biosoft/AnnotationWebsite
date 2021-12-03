@@ -9,9 +9,12 @@
 
 from typing import Dict
 import regex
-import Bio
+from Bio import Seq
 
-# from Bio import SeqIO  # Seq, SeqRecord, SeqUtils
+
+# Imports from our module
+from annotation.models import Genome
+from annotation import bioregex
 
 
 class FASTAParser:
@@ -42,10 +45,26 @@ class FASTAParser:
     def __repr__(self):
         return f"FASTAParser({', '.join(self._re_dict.keys())})"
 
-    def __call__(self, record: Bio.SeqRecord.SeqRecord):
+    def __call__(self, record: Seq.Seq):
         hits = {}
         for _regex in self._re_dict.values():
             _match = regex.search(_regex, record.description)
             if _match:
                 hits.update(_match.groupdict())
         return hits
+
+
+def save_genome(record: Seq.Seq, specie: str, strain: str):
+    """ """
+    parse = FASTAParser(bioregex.DEFAULT_GENOME)
+    fields = parse(record)
+    start_str, stop_str = fields["start_end"].split(":")
+    _start, stop = int(start_str), int(stop_str)
+    genome = Genome(
+        chromosome=fields["chromosome"],
+        specie=specie,
+        strain=strain,
+        sequence=str(record.seq),
+        length=stop,
+    )
+    genome.save(force_insert=True)

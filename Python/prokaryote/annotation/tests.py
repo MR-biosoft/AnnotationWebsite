@@ -2,11 +2,13 @@ from pathlib import Path
 
 from django.test import TestCase
 
+# from django.db import connection
+
 # BioPython Utils
 from Bio import SeqIO
 
 # Imports from our module
-from annotation.parsing import FASTAParser
+from annotation.parsing import FASTAParser, save_genome
 from annotation.bioregex import DEFAULT_CDS, DEFAULT_PROTEIN, DEFAULT_GENOME
 from annotation.devutils import get_env_value
 
@@ -14,6 +16,22 @@ from annotation.devutils import get_env_value
 class FASTAparserTest(TestCase):
     """Class defined to verify the robustness and
     integrity of the implemented FASTA parser."""
+
+    # def setUp(self):
+    #    with connection.cursor() as cursor:
+    #        cursor.execute(
+    #            Path(get_env_value("GITHUB_WORKSPACE"))
+    #            .joinpath("Database/create-schema.sql")
+    #            .read_text(encoding="utf-8")
+    #        )
+
+    # def tearDown(self):
+    #    with connection.cursor() as cursor:
+    #        cursor.execute(
+    #            Path(get_env_value("GITHUB_WORKSPACE"))
+    #            .joinpath("Database/drop-schema.sql")
+    #            .read_text(encoding="utf-8")
+    #        )
 
     @classmethod
     def setUpTestData(cls):
@@ -65,4 +83,10 @@ class FASTAparserTest(TestCase):
         _observed = parsed_dict.keys()
         self.assertSequenceEqual(_observed, _expected)
 
-    # def test_genome_description(self)
+    # def test_save_genome(self):
+    #    """ """
+    #    save_genome(self.genome, specie="E. coli o157 h7", strain="edl933")
+
+    # def test_save_protein(self):
+    #    """ """
+    #    pass
