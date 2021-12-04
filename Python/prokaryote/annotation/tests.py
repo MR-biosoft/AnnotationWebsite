@@ -1,3 +1,6 @@
+"""
+    Docstring
+"""
 from pathlib import Path
 
 from django.test import TestCase, TransactionTestCase
@@ -8,6 +11,7 @@ from django.test import TestCase, TransactionTestCase
 from Bio import SeqIO
 
 # Imports from our module
+from annotation import models
 from annotation.parsing import FASTAParser, save_genome
 from annotation.bioregex import DEFAULT_CDS, DEFAULT_PROTEIN, DEFAULT_GENOME
 from annotation.devutils import get_env_value
@@ -45,6 +49,13 @@ class AnnotationTest(TestCase):
         cls.annotated_genomes = [
             path for path in cls._genome_files if not "new" in path.name
         ]
+        cls.annotated_cds = [path for path in cls._cds_files if not "new" in path.name]
+        cls.annotated_proteins = [
+            path for path in cls._protein_files if not "new" in path.name
+        ]
+        cls.new_genomes = [path for path in cls._genome_files if "new" in path.name]
+        cls.new_cds = [path for path in cls._cds_files if "new" in path.name]
+        cls.new_proteins = [path for path in cls._protein_files if "new" in path.name]
 
         # Create single test sequences (first objects)
         cls.gene = next(SeqIO.parse(cls._cds_files[0], "fasta"))
@@ -56,6 +67,17 @@ class FASTAParserTest(AnnotationTest):
     """Class defined to verify the robustness and
     integrity of the implemented FASTA parser."""
 
+    ## utility methods
+
+    def regex_matching_verifier(self, parsed_dict, bioregex_dict):
+        """Utility method used to reduce boilerplate in
+        test_*_parsing_matches_* methods"""
+        _expected = bioregex_dict.keys()
+        _observed = parsed_dict.keys()
+        self.assertSequenceEqual(_observed, _expected)
+
+    ##
+
     def test_gene_parsing_return_type(self):
         """Test that the parser effectively returns a dictionary"""
         parsed_dict = self.gene_parser(self.gene)
@@ -64,23 +86,26 @@ class FASTAParserTest(AnnotationTest):
     def test_gene_parsing_regex_matches_one(self):
         """Test gene regex matches all desired fields"""
         parsed_dict = self.gene_parser(self.gene)
-        _expected = DEFAULT_CDS.keys()
-        _observed = parsed_dict.keys()
-        self.assertSequenceEqual(_observed, _expected)
+        self.regex_matching_verifier(parsed_dict, DEFAULT_CDS)
 
     def test_protein_parsing_regex_matches_one(self):
         """Test protein regex matches all desired fields"""
         parsed_dict = self.protein_parser(self.protein)
-        _expected = DEFAULT_PROTEIN.keys()
-        _observed = parsed_dict.keys()
-        self.assertSequenceEqual(_observed, _expected)
+        self.regex_matching_verifier(parsed_dict, DEFAULT_PROTEIN)
 
     def test_genome_parsing_regex_matches_one(self):
         """Test genome regex matches all desired fields"""
         parsed_dict = self.genome_parser(self.genome)
-        _expected = DEFAULT_GENOME.keys()
-        _observed = parsed_dict.keys()
-        self.assertSequenceEqual(_observed, _expected)
+        self.regex_matching_verifier(parsed_dict, DEFAULT_GENOME)
+
+    def test_genome_parsing_regex_matches_all_annotated(self):
+        """Test genome regex matches all desired fields,
+        on all files which we know beforehand are properly annotated."""
+        for genome_file in self.annotated_genomes:
+            with open(genome_file, "r", encoding="utf-8") as _genome_file:
+                for genome in SeqIO.parse(_genome_file, "fasta"):
+                    _parsed = self.genome_parser(genome)
+                    self.regex_matching_verifier(_parsed, DEFAULT_GENOME)
 
 
 class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
