@@ -1,66 +1,123 @@
 <!DOCTYPE html>
 <html>
+
     <head>
+
+        <link rel="stylesheet" href="../css/custom_styles.css"/>
+
         <style>
-            .login {
-              color: #007b53;
+
+            /* header login */
+
+            .header-authentification {
+                display: flex;
+                flex-direction: column;
             }
 
-            .imgcontainer {
-              height: 200px;
-              position: relative;
-              border: 3px solid green;
+            .header-authentification-1 {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 0;
             }
 
-            .vertical-center {
-              margin: 0;
-              position: absolute;
-              top: 50%;
-              -ms-transform: translateY(-50%);
-              transform: translateY(-50%);
+            .header-authentification-2 {
+                width: 100%;
+                text-align: center;
             }
-            .horizontal-center {
-                text-align:center;
-                left: 40%;
-                width: 300px;
+
+            /* body login */
+
+            .login-body {
+                display: flex;
+                flex-direction: column;
+                width: 340px;
                 margin: 0 auto;
-                border-style:solid;
+                text-align: center;
             }
+
+            .login-form-body {
+                border: 2.5px solid #dddddd;
+                border-radius: 6px;
+                background-color: rgb(241, 247, 244);
+                text-align: left;
+                padding: 15px 30px;
+            }
+
+            input {
+                border: 2.5px solid #dddddd;
+                border-radius: 6px;
+                width: 100%;
+                margin: 10px 0;
+                height: 30px;
+            }
+
+            input:focus {
+                outline: 2px solid rgb(68, 183, 139);
+            }
+
+            input[type="submit"]{
+                height: 40px;
+                color: #ffffff;
+                background-color: #4CAF50;
+                cursor: pointer;
+                font-size:0.45cm;
+            }
+
+            .no-account-form-body{
+                border: 2.5px solid #dddddd;
+                border-radius: 6px;
+                text-align: left;
+                margin-top: 20px;
+                padding: 15px 30px;
+            }
+
         </style>
 
     </head>
-    <body>
-        <div class="vertical-center horizontal-center">
-        <!--
-        <div class="horizontal-center vertical-center">
-        <div style="text-align:center;width: 300px;margin: 0 auto;border-style:solid;">
-          <div class="imgcontainer">
-            <img src="img_avatar2.png" alt="Login" class="avatar">
-          </div>
-        -->
-        <h1 class = "login">
-          Login
-        </h1>
-      
-        <form action="mainpage.html" method="post">
-          <div class="container">
-            <label for="email"><b>Email</b></label>
-            <input type="text" placeholder="Enter email" name="email" required>
-            <p style="margin-bottom:1%;"></p>
-        
-            <label for="psw"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="psw" required>
-        
-            <p style="margin-bottom:5%;"></p>
-            <button type="submit">Login</button>
-            <p style="margin-bottom:5%;"></p>
-          </div>
-      
-          <div class="container" style="background-color:#f1f1f1">
-            Or fill the <a href="signup.html">registration form</a> to request an account. 
-          </div>
-        </form> 
 
-        </div>
+    <body>
+
+        <header class="header-authentification">
+            <h1 class="header-authentification-1">Certified Authentification</h1>
+            <div class="header-authentification-2">
+                <img src="../images/mr-biosoft-green.png"/>
+            </div>
+        </header>
+
+        <section class="login-body">
+
+            <h2>Sign in to Biosoft</h2>
+
+            <div class="login-form-body">
+
+                <form method="post" action="fictive-page.php">
+
+                    <p>
+                        <label for="login">Email address</label>
+                        <input type="email" name="username" id="login" required/>
+                    </p>
+
+                    <p>
+                        <label for="password">Password</label>
+                        <input type="password" name="password" id="password" required/>
+                    </p>
+
+                    <input type="submit" value="Sign in"/>
+
+                </form>
+
+            </div>
+
+            <div class="no-account-form-body">
+
+                New to Biosoft?
+                <a href="signup.html">Sign up</a>
+
+            </div>
+
+        </section>
+
+    
     </body>
+
 </html>

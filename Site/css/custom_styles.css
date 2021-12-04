@@ -37,8 +37,6 @@ nav a:hover {
     color: rgb(153, 3, 3);
 }
 
-/*     color: rgb(110, 3, 3); */
-
 /* Header */
 
 header{
@@ -57,10 +55,43 @@ h2 {
     font-size:0.7cm;
 }
 
-/*.text-heading {
-    font-size:0.9cm;
+/* Main Page */
+
+
+.body-main-title {
+    margin-top: 10px;
+    margin-bottom: 0px;
+    width: 100%;
+    text-align: left;
 }
 
-.description-title {
-    font-size:0.7cm;
-}*/
+.database-annotation {
+    display: flex;
+    flex-direction: row;
+}
+
+.database-annotation-column {
+    margin-right: 10%;
+    width: 50%;
+}
+
+.column-main-title {
+    color: rgb(68, 183, 139);
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+a {
+   color: rgb(175, 87, 87);
+   width: 88px;
+   text-align: center;
+   text-decoration: none;
+}
+
+hr {
+    margin-top: 5px;
+    background-color: #efefef;
+    color: #efefef;
+    height: 2.5px;
+    border: none;
+}
