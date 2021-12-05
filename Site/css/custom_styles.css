@@ -30,6 +30,10 @@ input:focus {
     outline: 2px solid rgb(68, 183, 139);
 }
 
+textarea:focus {
+    outline: 2px solid rgb(68, 183, 139);
+}
+
 input[type="submit"]{
     height: 40px;
     color: #ffffff;
@@ -65,11 +69,16 @@ header{
 /* Body */
 
 h1 {
-    font-size:0.9cm;
+    font-size: 0.9cm;
 }
 
 h2 {
-    font-size:0.7cm;
+    font-size: 0.7cm;
+}
+
+h3 {
+    font-size: 0.5cm;
+    color: rgb(175, 87, 87);
 }
 
 /* Main Page */
