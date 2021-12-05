@@ -55,7 +55,11 @@ class FASTAParser:
 
 
 def save_genome(record: Seq.Seq, specie: str, strain: str):
-    """ """
+    """Save a FASTA record (Bio.Seq.Seq) representing a Genome
+    to the database. Specie and Strain are optional arguments
+    as these might be unknown when saving a novel genome which
+    has not been annotated.
+    """
     parse = FASTAParser(bioregex.DEFAULT_GENOME)
     fields = parse(record)
     start_str, stop_str = fields["start_end"].split(":")

@@ -1,5 +1,25 @@
 """
-    Docstring
+    Test django application "annotation"
+
+    The main classes here defined are:
+        * AnnotationTest(TestCase)
+            Used to setup all necessary data
+            
+        * FASTAParserTest(AnnotationTest)
+            Used to test parsing functions
+
+        * DatabaseIntegrationTest(AnnotationTest, TransactionTestCase)
+            Used to test saving objects to the database
+
+    Outputs from these tests will be stored according to
+    the following variable:
+
+        _LOGGING_DIR_NAME: str = "TestingLogs"
+    
+    It is supposed to be a subdirectory of the environment variable
+    $GITHUB_WORKSPACE. If it does not exist, the test suite will 
+    try to create it.
+
 """
 
 import json
@@ -180,7 +200,7 @@ class FASTAParserTest(AnnotationTest):
         parsed_dict = self.genome_parser(self.genome)
         self.regex_matching_verifier(parsed_dict, DEFAULT_GENOME)
 
-    @tag("bulk", "parsing", "genome")
+    @tag("bulk", "parsing", "genome", "annotated")
     def test_genome_parsing_regex_matches_all_annotated(self):
         """Test genome regex matches all desired fields,
         on all files which we know beforehand are properly annotated."""
@@ -188,7 +208,7 @@ class FASTAParserTest(AnnotationTest):
             self.annotated_genomes, self.genome_parser, DEFAULT_GENOME
         )
 
-    @tag("bulk", "parsing", "protein")
+    @tag("bulk", "parsing", "protein", "annotated")
     def test_protein_parsing_regex_matches_all_annotated(self):
         """Test protein regex matches all desired fields,
         on all files which we know beforehand are properly annotated."""
@@ -196,7 +216,7 @@ class FASTAParserTest(AnnotationTest):
             self.annotated_proteins, self.protein_parser, DEFAULT_PROTEIN
         )
 
-    @tag("bulk", "parsing", "gene")
+    @tag("bulk", "parsing", "gene", "annotated")
     def test_gene_parsing_regex_matches_all_annotated(self):
         """Test gene regex matches all desired fields,
         on all files which we know beforehand are properly annotated."""
@@ -211,7 +231,10 @@ class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
 
     @tag("devel", "bulk", "genome", "db")
     def test_save_genomes_to_db(self):
-        """ """
+        """Iterate over all genomes, annotated and novel.
+        Test that they can be saved to the 'genome' table of the '
+        default' database, via the annotation.models.Genome class.
+        """
         for genome in self._genome_files:
             with open(genome, "r", encoding="utf-8") as _genome_handle:
                 _genome_entries = list(SeqIO.parse(_genome_handle, "fasta"))
