@@ -7,7 +7,7 @@
     and sequences.
 """
 
-from typing import Dict
+from typing import Dict, Optional
 import regex
 from Bio import Seq
 
@@ -54,7 +54,9 @@ class FASTAParser:
         return hits
 
 
-def save_genome(record: Seq.Seq, specie: str, strain: str):
+def save_genome(
+    record: Seq.Seq, specie: Optional[str] = None, strain: Optional[str] = None
+):
     """Save a FASTA record (Bio.Seq.Seq) representing a Genome
     to the database. Specie and Strain are optional arguments
     as these might be unknown when saving a novel genome which

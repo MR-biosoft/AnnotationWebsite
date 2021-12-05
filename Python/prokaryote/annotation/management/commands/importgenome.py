@@ -4,7 +4,13 @@
 from pathlib import Path
 
 from django.core.management.base import BaseCommand, CommandError, no_translations
-from django.db import connection
+from django.db.utils import IntegrityError
+
+# BioPython IO
+from Bio import SeqIO
+
+# Imports from our site
+from annotation.parsing import save_genome
 
 
 class Command(BaseCommand):
@@ -13,24 +19,42 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         # Named arguments
         parser.add_argument(
-            "psql_script",
-            nargs=1,
-            help="Path to the PSQL script to be parsed and executed.",
+            "FASTA_file",
+            help="Path to the FASTA file to be parsed and imported to the database",
         )
 
-    ## old handle, fragile approach
-    # @no_translations
-    # def handle(self, *args, **options):
-    #    with open(options["psql_script"][0], "r", encoding="utf-8") as f:
-    #        with connection.cursor() as cursor:
-    #            for line in f.readlines():
-    #                _query = line.strip()
-    #                if len(_query) > 0 and not _query.startswith("--"):
-    #                    cursor.execute(line.strip())
-    #            # for line in cursor.fetchall():
-    #            #    self.stdout.write(type(line))
+        parser.add_argument(
+            "--specie",
+            help="(optional) name of the specie",
+        )
+        parser.add_argument(
+            "--strain",
+            help="(optional) name of the strain",
+        )
 
     @no_translations
     def handle(self, *args, **options):
-        with connection.cursor() as cursor:
-            cursor.execute(Path(options["psql_script"][0]).read_text(encoding="utf-8"))
+        in_file = options["FASTA_file"]
+        # read file
+        with open(in_file, "r", encoding="utf-8") as _file_handle:
+            _fasta_entries = list(SeqIO.parse(_file_handle, "fasta"))
+        # integrity check
+        if len(_fasta_entries) != 1:
+            _err_lines = [
+                "Genome files must contain at most one FASTA entry",
+                f"file {in_file} \ncontains {len(_fasta_entries)}",
+                "Aborting.",
+            ]
+            raise CommandError("\n".join(_err_lines))
+        # parse optional specie and strain
+        _call_kw = {}
+        _expected_kw = ["specie", "strain"]
+        for option in options:
+            if option in _expected_kw:
+                _call_kw.update({option: options[option]})
+        # print(f"save_genome({_fasta_entries[0]}, {_call_kw})")
+        try:
+            save_genome(*_fasta_entries, **_call_kw)
+        except IntegrityError as _i_e:
+            _err_lines = ["Database Integrity Error:", f"{str(_i_e)}"]
+            raise CommandError("\n".join(_err_lines)) from None
