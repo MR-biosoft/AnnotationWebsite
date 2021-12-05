@@ -1,0 +1,115 @@
+body {
+    max-width: 1260px;
+    color: #525252;
+    font-family: Roboto, sans-serif;
+    margin: 0 auto;
+}
+
+a {
+    color: rgb(175, 87, 87);
+    width: 88px;
+    text-align: center;
+    text-decoration: none;
+ }
+ 
+ a:hover {
+     cursor:pointer;
+     text-decoration: underline;
+     color: rgb(153, 3, 3);
+ }
+
+input {
+    border: 2.5px solid #dddddd;
+    border-radius: 6px;
+    width: 100%;
+    margin: 10px 0;
+    height: 30px;
+}
+
+input:focus {
+    outline: 2px solid rgb(68, 183, 139);
+}
+
+textarea:focus {
+    outline: 2px solid rgb(68, 183, 139);
+}
+
+input[type="submit"]{
+    height: 40px;
+    color: #ffffff;
+    background-color: #4CAF50;
+    cursor: pointer;
+    font-size:0.45cm;
+}
+
+/* Navigation */
+nav {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content:flex-end;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2.5px solid #dddddd;
+}
+
+.documentation {
+    width: 160px;
+}
+
+/* Header */
+
+header{
+    display: flex;
+    flex-wrap: wrap-reverse;
+    justify-content: space-between;
+}
+
+/* Body */
+
+h1 {
+    font-size: 0.9cm;
+}
+
+h2 {
+    font-size: 0.7cm;
+}
+
+h3 {
+    font-size: 0.5cm;
+    color: rgb(175, 87, 87);
+}
+
+/* Main Page */
+
+.body-main-title {
+    margin-top: 10px;
+    margin-bottom: 0px;
+    width: 100%;
+    text-align: left;
+}
+
+.database-annotation {
+    display: flex;
+    flex-direction: row;
+}
+
+.database-annotation-column {
+    margin-right: 10%;
+    width: 50%;
+}
+
+.column-main-title {
+    color: rgb(68, 183, 139);
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+hr {
+    margin-top: 5px;
+    background-color: #efefef;
+    color: #efefef;
+    height: 2.5px;
+    border: none;
+}

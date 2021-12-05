@@ -16,7 +16,7 @@ from django.core.exceptions import ImproperlyConfigured
 from typing import Any
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR: Path = Path(__file__).resolve().parent.parent
 
 
 def get_env_value(env_variable: str) -> Any:
@@ -140,7 +140,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = "/static/"
-
+STATICFILES_DIRS = (BASE_DIR.resolve() / "static",)
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
