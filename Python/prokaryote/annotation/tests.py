@@ -156,27 +156,31 @@ class FASTAParserTest(AnnotationTest):
             print("Done")
 
     ##
-
+    @tag("typecheck", "single", "parsing")
     def test_gene_parsing_return_type(self):
         """Test that the parser effectively returns a dictionary"""
         parsed_dict = self.gene_parser(self.gene)
         self.assertIsInstance(parsed_dict, dict)
 
+    @tag("single", "parsing", "gene")
     def test_gene_parsing_regex_matches_one(self):
         """Test gene regex matches all desired fields"""
         parsed_dict = self.gene_parser(self.gene)
         self.regex_matching_verifier(parsed_dict, DEFAULT_CDS)
 
+    @tag("single", "parsing", "protein")
     def test_protein_parsing_regex_matches_one(self):
         """Test protein regex matches all desired fields"""
         parsed_dict = self.protein_parser(self.protein)
         self.regex_matching_verifier(parsed_dict, DEFAULT_PROTEIN)
 
+    @tag("single", "parsing", "genome")
     def test_genome_parsing_regex_matches_one(self):
         """Test genome regex matches all desired fields"""
         parsed_dict = self.genome_parser(self.genome)
         self.regex_matching_verifier(parsed_dict, DEFAULT_GENOME)
 
+    @tag("bulk", "parsing", "genome")
     def test_genome_parsing_regex_matches_all_annotated(self):
         """Test genome regex matches all desired fields,
         on all files which we know beforehand are properly annotated."""
@@ -184,6 +188,7 @@ class FASTAParserTest(AnnotationTest):
             self.annotated_genomes, self.genome_parser, DEFAULT_GENOME
         )
 
+    @tag("bulk", "parsing", "protein")
     def test_protein_parsing_regex_matches_all_annotated(self):
         """Test protein regex matches all desired fields,
         on all files which we know beforehand are properly annotated."""
@@ -191,6 +196,7 @@ class FASTAParserTest(AnnotationTest):
             self.annotated_proteins, self.protein_parser, DEFAULT_PROTEIN
         )
 
+    @tag("bulk", "parsing", "gene")
     def test_gene_parsing_regex_matches_all_annotated(self):
         """Test gene regex matches all desired fields,
         on all files which we know beforehand are properly annotated."""
@@ -203,7 +209,7 @@ class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
     """Class defined to verify that parsed data can be imported
     into the site's database"""
 
-    @tag("devel", "db")
+    @tag("devel", "bulk", "genome", "db")
     def test_save_genomes_to_db(self):
         """ """
         for genome in self._genome_files:
