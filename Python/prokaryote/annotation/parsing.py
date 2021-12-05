@@ -7,11 +7,14 @@
     and sequences.
 """
 
-from typing import Dict
+from typing import Dict, Optional
 import regex
-import Bio
+from Bio import Seq
 
-# from Bio import SeqIO  # Seq, SeqRecord, SeqUtils
+
+# Imports from our module
+from annotation.models import Genome
+from annotation import bioregex
 
 
 class FASTAParser:
@@ -42,10 +45,47 @@ class FASTAParser:
     def __repr__(self):
         return f"FASTAParser({', '.join(self._re_dict.keys())})"
 
-    def __call__(self, record: Bio.SeqRecord.SeqRecord):
+    def __call__(self, record: Seq.Seq):
         hits = {}
         for _regex in self._re_dict.values():
             _match = regex.search(_regex, record.description)
             if _match:
                 hits.update(_match.groupdict())
         return hits
+
+
+def save_genome(
+    record: Seq.Seq, specie: Optional[str] = None, strain: Optional[str] = None
+):
+    """Save a FASTA record (Bio.Seq.Seq) representing a Genome
+    to the database. Specie and Strain are optional arguments
+    as these might be unknown when saving a novel genome which
+    has not been annotated.
+    """
+    parse = FASTAParser(bioregex.DEFAULT_GENOME)
+    fields = parse(record)
+    start_str, stop_str = fields["start_end"].split(":")
+    _start, stop = int(start_str), int(stop_str)
+    genome = Genome(
+        chromosome=fields["chromosome"],
+        specie=specie,
+        strain=strain,
+        sequence=str(record.seq),
+        length=stop,
+    )
+    genome.save(force_insert=True)
+
+
+def save_gene(record: Seq.Seq, only_if_chromosome_present: bool = True):
+    """
+    Save gene into the following tables (in order):
+
+    """
+    # parse the objects
+    parse = FASTAParser(bioregex.DEFAULT_CDS)
+    parsed_fields = parse(record)
+    # create empty dicts for different tables
+    gene_protein_fields = {}
+    if "start_end" in parsed_fields:
+        start_str, stop_str = parsed_fields["start_end"].split(":")
+        start, stop = int(start_str), int(stop_str)
