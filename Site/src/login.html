@@ -27,10 +27,15 @@
 
             /* body login */
 
+            .login-title {
+                text-align: center;
+            }
+
             .login-body {
                 display: flex;
                 flex-direction: column;
-                width: 340px;
+                width: 100%;
+                max-width: 340px;
                 margin: 0 auto;
                 text-align: center;
             }
@@ -41,26 +46,6 @@
                 background-color: rgb(241, 247, 244);
                 text-align: left;
                 padding: 15px 30px;
-            }
-
-            input {
-                border: 2.5px solid #dddddd;
-                border-radius: 6px;
-                width: 100%;
-                margin: 10px 0;
-                height: 30px;
-            }
-
-            input:focus {
-                outline: 2px solid rgb(68, 183, 139);
-            }
-
-            input[type="submit"]{
-                height: 40px;
-                color: #ffffff;
-                background-color: #4CAF50;
-                cursor: pointer;
-                font-size:0.45cm;
             }
 
             .no-account-form-body{
@@ -84,9 +69,9 @@
             </div>
         </header>
 
-        <section class="login-body">
+        <h2 class="login-title">Sign in to Biosoft</h2>
 
-            <h2>Sign in to Biosoft</h2>
+        <section class="login-body">
 
             <div class="login-form-body">
 

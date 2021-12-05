@@ -5,9 +5,37 @@ body {
     margin: 0 auto;
 }
 
-a:hover {
-    cursor:pointer;
-    text-decoration: underline;
+a {
+    color: rgb(175, 87, 87);
+    width: 88px;
+    text-align: center;
+    text-decoration: none;
+ }
+ 
+ a:hover {
+     cursor:pointer;
+     text-decoration: underline;
+     color: rgb(153, 3, 3);
+ }
+
+input {
+    border: 2.5px solid #dddddd;
+    border-radius: 6px;
+    width: 100%;
+    margin: 10px 0;
+    height: 30px;
+}
+
+input:focus {
+    outline: 2px solid rgb(68, 183, 139);
+}
+
+input[type="submit"]{
+    height: 40px;
+    color: #ffffff;
+    background-color: #4CAF50;
+    cursor: pointer;
+    font-size:0.45cm;
 }
 
 /* Navigation */
@@ -22,19 +50,8 @@ nav {
     border-bottom: 2.5px solid #dddddd;
 }
 
-nav a {
-    color: rgb(175, 87, 87);
-    width: 88px;
-    text-align:center;
-    text-decoration: none;
-}
-
 .documentation {
     width: 160px;
-}
-
-nav a:hover {
-    color: rgb(153, 3, 3);
 }
 
 /* Header */
@@ -57,7 +74,6 @@ h2 {
 
 /* Main Page */
 
-
 .body-main-title {
     margin-top: 10px;
     margin-bottom: 0px;
@@ -79,13 +95,6 @@ h2 {
     color: rgb(68, 183, 139);
     padding-bottom: 0;
     margin-bottom: 0;
-}
-
-a {
-   color: rgb(175, 87, 87);
-   width: 88px;
-   text-align: center;
-   text-decoration: none;
 }
 
 hr {
