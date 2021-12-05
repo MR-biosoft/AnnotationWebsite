@@ -11,7 +11,7 @@ DEFAULT_CDS = {
     "gene_name": r"(?P<gene_name>(?<=gene:)[\d|\D]*(?=\s+gene_biotype))",
     "gene_biotype": r"(?P<gene_biotype>(?<=gene\_biotype:)\w+)",
     "transcript_biotype": r"(?P<transcript_biotype>(?<=transcript\_biotype:)\w+)",
-    "gene_symbol": r"(?P<gene_symbol>(?<=gene\_symbol:)\w+)",
+    "gene_symbol": r"(?P<gene_symbol>(?<=gene\_symbol:).+(?=\s))",
     "function": r"(?P<function>(?<=description:).+)",
 }
 
