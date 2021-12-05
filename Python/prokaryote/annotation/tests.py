@@ -246,7 +246,7 @@ class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
                     strain=self.genome_data_dict[genome.name]["strain"],
                 )
 
-    @tag("devel", "ci-skip")
-    def test_save_a_protein(self):
-        """ """
-        pass
+    # @tag("devel", "bulk", "gene", "db", "ci-skip")
+    # def test_save_gene_to_db(self):
+    #    """ """
+    #    s

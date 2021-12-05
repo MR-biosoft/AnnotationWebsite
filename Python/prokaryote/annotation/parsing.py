@@ -72,3 +72,18 @@ def save_genome(record: Seq.Seq, specie: str, strain: str):
         length=stop,
     )
     genome.save(force_insert=True)
+
+
+def save_gene(record: Seq.Seq, only_if_chromosome_present: bool = True):
+    """
+    Save gene into the following tables (in order):
+
+    """
+    # parse the objects
+    parse = FASTAParser(bioregex.DEFAULT_CDS)
+    parsed_fields = parse(record)
+    # create empty dicts for different tables
+    gene_protein_fields = {}
+    if "start_end" in parsed_fields:
+        start_str, stop_str = fields["start_end"].split(":")
+        start, stop = int(start_str), int(stop_str)
