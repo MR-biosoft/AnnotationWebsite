@@ -92,8 +92,11 @@
         </div>
     </header>
 
-    <form method="post" action="fictive-page.php" class="genome-form-body">
-
+    <form method="post" action="genome" class="genome-form-body">
+        <!--
+        <form method="post" action="annotation/genome" class="genome-form-body">
+    -->
+        {% csrf_token %}
         <fieldset>
 
             <legend>Specific genome search</legend>
