@@ -85,5 +85,5 @@ def save_gene(record: Seq.Seq, only_if_chromosome_present: bool = True):
     # create empty dicts for different tables
     gene_protein_fields = {}
     if "start_end" in parsed_fields:
-        start_str, stop_str = fields["start_end"].split(":")
+        start_str, stop_str = parsed_fields["start_end"].split(":")
         start, stop = int(start_str), int(stop_str)
