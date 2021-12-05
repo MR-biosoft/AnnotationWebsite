@@ -68,6 +68,25 @@ class AnnotationTest(TestCase):
         cls.new_cds = [path for path in cls._cds_files if "new" in path.name]
         cls.new_proteins = [path for path in cls._protein_files if "new" in path.name]
 
+        cls.genome_data_dict = {
+            "Escherichia_coli_cft073.fa": {
+                "specie": "Escherichia coli",
+                "strain": "cft073",
+            },
+            "Escherichia_coli_o157_h7_str_edl933.fa": {
+                "specie": "Escherichia coli",
+                "strain": "edl933",
+            },
+            "Escherichia_coli_str_k_12_substr_mg1655.fa": {
+                "specie": "Escherichia coli",
+                "strain": "k12",
+            },
+            "new_coli.fa": {
+                "specie": None,
+                "strain": None,
+            },
+        }
+
         # Create single test sequences (first objects)
         cls.gene = next(SeqIO.parse(cls._cds_files[0], "fasta"))
         cls.protein = next(SeqIO.parse(cls._protein_files[0], "fasta"))
@@ -184,12 +203,21 @@ class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
     """Class defined to verify that parsed data can be imported
     into the site's database"""
 
-    @tag("devel")
-    def test_save_a_genome(self):
+    @tag("devel", "db")
+    def test_save_genomes_to_db(self):
         """ """
-        save_genome(self.genome, specie="E. coli o157 h7", strain="edl933")
+        for genome in self._genome_files:
+            with open(genome, "r", encoding="utf-8") as _genome_handle:
+                _genome_entries = list(SeqIO.parse(_genome_handle, "fasta"))
+                # Each genome file should contain at most one FASTA entry
+                self.assertTrue(len(_genome_entries) == 1)
+                save_genome(
+                    _genome_entries[0],
+                    specie=self.genome_data_dict[genome.name]["specie"],
+                    strain=self.genome_data_dict[genome.name]["strain"],
+                )
 
-    @tag("devel")
+    @tag("devel", "ci-skip")
     def test_save_a_protein(self):
         """ """
         pass
