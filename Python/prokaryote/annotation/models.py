@@ -81,7 +81,9 @@ class ProteinSeq(models.Model):
 
 
 class Annotation(models.Model):
-    accession_number = models.CharField(primary_key=True, max_length=8)
+    accession_number = models.OneToOneField(
+        "GeneProtein", models.DO_NOTHING, db_column="accession_number", primary_key=True
+    )
     gene_name = models.CharField(max_length=5, blank=True, null=True)
     gene_symbol = models.CharField(max_length=10, blank=True, null=True)
     gene_biotype = models.CharField(max_length=30, blank=True, null=True)
