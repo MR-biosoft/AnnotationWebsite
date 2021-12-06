@@ -31,6 +31,9 @@ To run the Unit tests an additional environment variable should be set:
 export GITHUB_WORKSPACE="/the/path/to/the/repo's/root/on/your/machine"
 ``` 
 
+You can add the previous variable exports to your `~/.bashrc`, so
+that the variables are automatically loaded each time you open a new terminal.
+
 ### PostgreSQL
 
 ```bash
@@ -44,9 +47,48 @@ sudo -u postgres createdb --owner="$PG_USER" "$PG_DBNAME"
 PGPASSWORD="$PG_PASSWORD" psql --username="$PG_USER" --host=localhost --list
 ```
 
-To execute sql scripts use the command `dbexec`
-For example to create all the necessary tables, use : 
+## Usage
+
+Running the server and performing administrative tasks such as 
+importing new genomes, go into the project's `BASE_DIR`. 
+This is the directory created when executing 
+`django-admin startproject {{projectname}}`. In our case, that 
+is the `Python/prokaryote` directory.
+
 ```bash
 cd Python/prokaryote
-python manage.py dbexec ../../Database/create-schema.sql  
+```
+
+There you will find an executable file named `manage.py`. 
+That is django's swiss-army knife. All commands related to testing,
+debugging, data import, and database management should be run via
+`manage.py`.
+
+`manage.y` can be run in either of the following ways (the `-h` option displays a list of available subcommands):
+```bash
+./manage.py -h      # way 1: direct invocation
+python manage.py -h # way 2: via Python (poetry's virtual env should be activated)
+poetry run python manage.py -h # way 3: no need to activate the venv
+```
+
+### Create the database (via `dbexec`)
+To execute sql scripts use the command `dbexec`
+For example to create all the necessary tables, use : 
+
+```bash
+python manage.py dbexec $GITHUB_WORKSPACE/Database/create-schema.sql  
+```
+
+### Import data
+In order to annotate genomes, we should have some genomes available, right? FASTA files can easily be imported via the command line.
+
+#### Genomes (via `importgenome`)
+ATTENTION: This subcommand is configured to import one genome at a time. If your file contains more than one FASTA entry 
+(i.e. lines starting with `>`), the command will fail with an informative error message.
+
+```bash
+./manage.py importgenome $GITHUB_WORKSPACE/Data/Escherichia_coli_str_k_12_substr_mg1655.fa --specie "Escherichia coli" --strain k12
+./manage.py importgenome $GITHUB_WORKSPACE/Data/Escherichia_coli_o157_h7_str_edl933.fa --specie "Escherichia coli" --strain edl933
+./manage.py importgenome $GITHUB_WORKSPACE/Data/Escherichia_coli_cft073.fa --specie "Escherichia coli" --strain cft073
+./manage.py importgenome $GITHUB_WORKSPACE/Data/new_coli.fa
 ```
