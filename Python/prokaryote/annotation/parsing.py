@@ -7,14 +7,28 @@
     and sequences.
 """
 
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple, Callable, NoReturn
 import regex
 from Bio import Seq
 
+from django.core.exceptions import ObjectDoesNotExist
 
 # Imports from our module
-from annotation.models import Genome
+from annotation.models import Genome, GeneProtein, GeneSeq, ProteinSeq, Annotation
 from annotation import bioregex
+
+
+class MissingChromosomeField(ValueError):
+    """Custom exception to represent a parsing error."""
+
+
+def _get_start_end_positions(start_end_match: str) -> Tuple[int, int]:
+    """Helper function, not to be called directly."""
+    start_str, stop_str = start_end_match.split(":")
+    return (int(start_str), int(stop_str))
+
+
+DEFAULT_CDS_HELPERS: Dict[str, Callable] = {"start_end": _get_start_end_positions}
 
 
 class FASTAParser:
@@ -56,7 +70,7 @@ class FASTAParser:
 
 def save_genome(
     record: Seq.Seq, specie: Optional[str] = None, strain: Optional[str] = None
-):
+) -> NoReturn:
     """Save a FASTA record (Bio.Seq.Seq) representing a Genome
     to the database. Specie and Strain are optional arguments
     as these might be unknown when saving a novel genome which
@@ -64,8 +78,7 @@ def save_genome(
     """
     parse = FASTAParser(bioregex.DEFAULT_GENOME)
     fields = parse(record)
-    start_str, stop_str = fields["start_end"].split(":")
-    _start, stop = int(start_str), int(stop_str)
+    _start, stop = _get_start_end_positions(fields["start_end"])
     genome = Genome(
         chromosome=fields["chromosome"],
         specie=specie,
@@ -76,16 +89,53 @@ def save_genome(
     genome.save(force_insert=True)
 
 
-def save_gene(record: Seq.Seq, only_if_chromosome_present: bool = True):
+def save_gene(record: Seq.Seq):
     """
     Save gene into the following tables (in order):
 
     """
-    # parse the objects
+    # parse the FASTA record
     parse = FASTAParser(bioregex.DEFAULT_CDS)
     parsed_fields = parse(record)
-    # create empty dicts for different tables
-    gene_protein_fields = {}
+    # This exception will be used to skip plasmids
+    if "chromosome" not in parsed_fields:
+        raise MissingChromosomeField(
+            f"Missing annotation in FASTA record with id {record.id}"
+        )
+
+    # Conditionally prepare values before object instantiation
+    reading_frame = (
+        int(parsed_fields["reading_frame"])
+        if "reading_frame" in parsed_fields
+        else None
+    )
     if "start_end" in parsed_fields:
-        start_str, stop_str = parsed_fields["start_end"].split(":")
-        start, stop = int(start_str), int(stop_str)
+        start, end = _get_start_end_positions(parsed_fields["start_end"])
+    else:
+        start, end = None, None
+
+    # create Dicts for different tables
+    ## [field.name for field in GeneProtein._meta.fields]
+    try:
+        chromosome = Genome.objects.only("chromosome").get(
+            chromosome=parsed_fields["chromosome"]
+        )
+        gene_protein_fields = {
+            "accession_number": record.id,
+            "dna_length": len(record.seq),
+            "start_position": start,
+            "end_position": end,
+            "reading_frame": reading_frame,
+            "aa_length": None,
+            "chromosome": chromosome,
+            "isannotated": False,  # Temporarily set it to false
+        }
+        gene_protein = GeneProtein.objects.create(**gene_protein_fields)
+    except ObjectDoesNotExist as _nil_obj:
+        print(f"There is no Genome with chromosome id {parsed_fields['chromosome']}")
+    # gene_protein.save()
+
+    # gene_protein_fields = {}
+    # if "start_end" in parsed_fields:
+    #    start_str, stop_str = parsed_fields["start_end"].split(":")
+    #    start, stop = int(start_str), int(stop_str)

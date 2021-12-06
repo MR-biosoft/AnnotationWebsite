@@ -30,15 +30,17 @@ from datetime import datetime
 # Django imports
 from django.test import TestCase, TransactionTestCase, tag
 from django.core import management
+from django.core.exceptions import ObjectDoesNotExist
 
 # BioPython Utils
 from Bio import SeqIO, Seq
 
 # Imports from our module
 # from annotation import models
-from annotation.parsing import FASTAParser, save_genome
+from annotation.parsing import MissingChromosomeField, FASTAParser, save_genome, save_gene
 from annotation.bioregex import DEFAULT_CDS, DEFAULT_PROTEIN, DEFAULT_GENOME
 from annotation.devutils import get_env_value
+from annotation.models import Genome, GeneProtein
 
 _LOGGING_DIR_NAME: str = "TestingLogs"
 _DATABASE_DIR: str = "Database"
@@ -212,19 +214,19 @@ class FASTAParserTest(AnnotationTest):
     ## Tests
     @tag("typecheck", "single", "parsing")
     def test_gene_parsing_return_type(self):
-        """Test that the parser effectively returns a dictionary"""
+        """the parser effectively returns a dictionary ?"""
         parsed_dict = self.gene_parser(self.gene)
         self.assertIsInstance(parsed_dict, dict)
 
     @tag("single", "parsing", "gene")
     def test_gene_parsing_regex_matches_one(self):
-        """Test gene regex matches all desired fields"""
+        """the GENE regex matches all desired fields (on a SINGLE entry)?"""
         parsed_dict = self.gene_parser(self.gene)
         self.regex_matching_verifier(parsed_dict, DEFAULT_CDS)
 
     @tag("single", "parsing", "protein")
     def test_protein_parsing_regex_matches_one(self):
-        """Test protein regex matches all desired fields"""
+        """the PROTEIN regex match all desired fields ?"""
         parsed_dict = self.protein_parser(self.protein)
         self.regex_matching_verifier(parsed_dict, DEFAULT_PROTEIN)
 
@@ -307,4 +309,25 @@ class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
     @tag("devel", "bulk", "gene", "db", "ci-skip")
     def test_save_gene_to_db(self):
         """ """
-        self.assertTrue(False)
+        # Unfortunately, django properly isolates each test within a transaction
+        # which means that the genomes that we created in the previous test do
+        # not exist anymore and we have to create them again.
+        for genome in self._genome_files:
+            management.call_command(
+                'importgenome', genome, 
+                specie=self.genome_data_dict[genome.name]["specie"],
+                strain=self.genome_data_dict[genome.name]["strain"],
+            )
+
+        #a = Genome.objects.all()
+        
+        #for genome in a:
+        #    print(genome)
+        for cds in self._cds_files:
+            with open(cds, "r", encoding="utf-8") as _cds_handle:
+                for gene in SeqIO.parse(_cds_handle, "fasta"):
+                    try:
+                        save_gene(gene)
+                    except MissingChromosomeField as _miss_chrom_ex:
+                        is_plasmid = "plasmid" in gene.description
+                        print(f"{_miss_chrom_ex}, is_plasmid = {is_plasmid}")
