@@ -22,11 +22,14 @@
 
 """
 
+# Python stdlib imports
 import json
 from pathlib import Path
 from datetime import datetime
 
+# Django imports
 from django.test import TestCase, TransactionTestCase, tag
+from django.core import management
 
 # BioPython Utils
 from Bio import SeqIO, Seq
@@ -38,6 +41,8 @@ from annotation.bioregex import DEFAULT_CDS, DEFAULT_PROTEIN, DEFAULT_GENOME
 from annotation.devutils import get_env_value
 
 _LOGGING_DIR_NAME: str = "TestingLogs"
+_DATABASE_DIR: str = "Database"
+_DB_CREATION_FILE: str = "create-schema.sql"
 
 
 class AnnotationTest(TestCase):
@@ -55,7 +60,11 @@ class AnnotationTest(TestCase):
         # $ GITHUB_WORKSPACE='/path/to/project/root' python manage.py test
 
         # Specify project root
-        cls._root_dir = Path(get_env_value("GITHUB_WORKSPACE"))
+        cls._root_dir = Path(get_env_value("GITHUB_WORKSPACE")).resolve()
+
+        # Setup the test database
+        cls._create_db_script = cls._root_dir / _DATABASE_DIR / _DB_CREATION_FILE
+        management.call_command("dbexec", cls._create_db_script)
 
         # Set logging location (and create it if necessary)
         cls.logging_dir = cls._root_dir.joinpath(_LOGGING_DIR_NAME)
@@ -143,6 +152,7 @@ class FASTAParserTest(AnnotationTest):
             error_log = {
                 "UTCdatetime": str(datetime.utcnow()),
                 "FASTAHeader": fasta_entry.description,
+                "ID": fasta_entry.id,
                 "MismatchLength": mismatch_len,
                 "ExpectedKeys": list(_expected),
                 "ObservedKeys": list(_observed),
@@ -175,7 +185,7 @@ class FASTAParserTest(AnnotationTest):
                     )
             print("Done")
 
-    ##
+    ## Tests
     @tag("typecheck", "single", "parsing")
     def test_gene_parsing_return_type(self):
         """Test that the parser effectively returns a dictionary"""

@@ -98,7 +98,6 @@ DATABASES = {
         "PASSWORD": get_env_value("PG_PASSWORD"),
         "HOST": "localhost",
         "PORT": "",
-        "TEST": {"MIRROR": "default"},
     },
 }
 
