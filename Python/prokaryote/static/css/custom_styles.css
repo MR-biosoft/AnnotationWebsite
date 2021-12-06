@@ -8,15 +8,15 @@ body {
 nav a {
     width: 88px;
     text-align: center;
-    text-decoration: none;
- }
+}
 
 a {
     color: rgb(175, 87, 87);
+    text-decoration: none;
 }
 
 a:hover {
-    cursor:pointer;
+    cursor: pointer;
     text-decoration: underline;
     color: rgb(153, 3, 3);
 }
@@ -86,11 +86,14 @@ h3 {
 
 /* Sortable table */
 
-.sortable th {
+.sortable thead {
+    height: 40px;
     color: rgb(175, 87, 87);
+    font-size: 0.43cm;
 }
 
 .sortable th:hover {
+    cursor: pointer;
     color: rgb(153, 3, 3);
 }
 

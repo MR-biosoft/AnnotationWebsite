@@ -5,14 +5,16 @@
 <head>
 
     <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
-    <script src="{% static 'js//sortable.js' %}"></script>
+    <script src="{% static 'js/sortable.js' %}"></script>
 
     <style>
 
+
         .results-title {
-            color: rgb(68, 183, 139);
-            padding-bottom: 0;
-            margin-bottom: 0;
+            margin-top: 10px;
+            margin-bottom: 0px;
+            width: 100%;
+            text-align: left;
         }
 
         table {
@@ -20,15 +22,37 @@
             table-layout: fixed;
         }
 
-        tr:nth-child(1) {
-            height: 30px;
+        .sortable tbody tr:nth-child(odd){
+            background-color: rgb(241, 247, 244);
+        }
+
+
+        .sortable tbody tr:nth-child(odd){
+            background-color: rgb(241, 247, 244);
+        }
+
+        th {
+            text-align: center;
+            padding-left: 15px;
         }
 
         tr {
-            height: 50px;
+            height: 40px;
         }
 
+        td a {
+            color: rgb(68, 183, 139);
+            text-decoration: none;
+        }
 
+        td a:hover{
+            text-decoration: underline;
+            color: rgb(17, 83, 54);
+        }
+
+        td {
+            padding-left: 10px;
+        }
 
 /*
 .sortable th.dir-d {
@@ -39,7 +63,6 @@
   color: #000;
 }
 */
-
 
     </style>
 
@@ -65,11 +88,7 @@
         </div>
     </header>
 
-    <h2 class="results-title">Results</h2>
-
-    <!--div>
-        <h3><a href="#">{{ specie }}</a></h3>
-    </div-->
+    <h1 class="results-title">Results</h1>
 
     <table class="sortable">
         <thead>
@@ -82,7 +101,7 @@
         </thead>
         <tbody>
             <tr>
-                <td>{{ chromosome }}</td>
+                <td><a href="#">{{ chromosome }}</a></td>
                 <td>{{ specie }}</td>
                 <td>{{ strain }}</td>
                 <td>{{ length }}</td>

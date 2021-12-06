@@ -62,7 +62,7 @@ document.addEventListener('click', function (e) {
     try {
       var tr = element.parentNode
       // var table = element.offsetParent; // Fails with positioned table elements
-      // this is the only way to make really, really sure. A few more bytes though... 😡
+      // this is the only way to make really, really sure. A few more bytes though...
       var table = tr.parentNode.parentNode
       if (regex_table.test(table.className)) {
         var column_index

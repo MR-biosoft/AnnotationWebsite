@@ -17,7 +17,7 @@ class GenomeView(View):
     """Manage logic to the genome view"""
 
     GET_template = "genome_form.html"
-    POST_template = "basic.html"
+    POST_template = "genome_query.html"
 
     def get(self, request):
         """Method used to process GET requests"""
