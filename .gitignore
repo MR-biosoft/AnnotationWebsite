@@ -1,5 +1,7 @@
-# fish scripts
+# shell scripts
 /**/*.fish
+/**/*.bash
+/**/*.sh
 
 # Testing Logs
 TestingLogs
