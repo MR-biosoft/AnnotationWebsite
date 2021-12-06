@@ -29,6 +29,42 @@ input {
     height: 30px;
 }
 
+legend {
+    font-size: 0.5cm;
+    font-weight: bold;
+    color: rgb(175, 87, 87);
+    color: rgb(68, 183, 139);
+}
+
+fieldset {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border: 2.5px solid #dddddd;
+    border-radius: 6px;
+    background-color: rgb(241, 247, 244);
+    padding: 15px 30px;
+}
+
+textarea {
+    border: 2.5px solid #dddddd;
+    border-radius: 6px;
+    width: 100%;
+    margin: 10px 0;
+    height: 30px;
+}
+
+select {
+    width: 100%;
+    border: 2.5px solid #dddddd;
+    border-radius: 6px;
+    background-color: white;
+    margin: 10px 0;
+    height: 30px;
+    text-align: center;
+}
+
 input:focus {
     outline: 2px solid rgb(68, 183, 139);
 }
@@ -46,6 +82,7 @@ input[type="submit"]{
 }
 
 /* Navigation */
+
 nav {
     background-color: #ffffff;
     display: flex;
@@ -156,4 +193,18 @@ hr {
     color: #efefef;
     height: 2.5px;
     border: none;
+}
+
+/* Form */
+
+.form-title {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.form-genome-field {
+    width: 45%;
+    margin-bottom: 15px;
+    margin-right: 10px;
 }
