@@ -30,9 +30,13 @@ class GenomeView(View):
         """Method used to process POST requests"""
         # form = GenomeForm(request.POST)
         # if form.is_valid():
-        genome = get_object_or_404(
-            Genome, chromosome=request.POST.get("chromosome", "")
-        )
-        context = {"specie": genome.specie, "strain": genome.strain}
+        print(request.POST.keys())
+        if "chromosome" in request.POST:
+            genome = get_object_or_404(
+                Genome, chromosome=request.POST.get("chromosome", "")
+            )
+            context = {"chromosome": genome.chromosome, "specie": genome.specie, "strain": genome.strain, "length": genome.length}
+        elif "specie" in request.POST:
+            context = {"specie" : "Theo", "strain" : "Gus"}
 
         return render(request, self.POST_template, context)

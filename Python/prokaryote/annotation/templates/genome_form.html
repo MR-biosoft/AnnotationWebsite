@@ -7,6 +7,7 @@
     <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
 
     <style>
+        
         .specific-genome-form {
             display: flex;
             flex-direction: column;
@@ -109,12 +110,19 @@
             <input type="submit" value="Launch Request" />
 
         </fieldset>
+    
+    </form>
 
-        <br />
-
+    <br/>
+    
+    <form method="post" action="genome" class="genome-form-body">
+        <!--
+            <form method="post" action="annotation/genome" class="genome-form-body">
+        -->
+        {% csrf_token %}
         <fieldset>
 
-            <legend>Set genome search</legend>
+            <legend>Genome set search</legend>
 
             <h3 class="form-title">Taxonomy</h3>
 

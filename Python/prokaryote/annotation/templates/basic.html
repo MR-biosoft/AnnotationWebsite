@@ -1,2 +1,97 @@
-<h1> {{ specie }} </h1>
-<h2> {{ strain }} </h2>
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
+    <script src="{% static 'js//sortable.js' %}"></script>
+
+    <style>
+
+        .results-title {
+            color: rgb(68, 183, 139);
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        table {
+            width: 60%;
+            table-layout: fixed;
+        }
+
+        tr:nth-child(1) {
+            height: 30px;
+        }
+
+        tr {
+            height: 50px;
+        }
+
+
+
+/*
+.sortable th.dir-d {
+  color: #000;
+}
+
+.sortable th.dir-u {
+  color: #000;
+}
+*/
+
+
+    </style>
+
+</head>
+
+<body>
+
+    <nav>
+        <a href="#" class="documentation">Documentation</a>
+        <a href="mailto:mrbiosoft@gmail.com" target="_blank">Support</a>
+        <a href="#" class=>Logout</a>
+        <a href="home.html">Home</a>
+    </nav>
+
+    <header>
+        <div class="header-1">
+            <h1 class="text-heading">Bacterial genome search</h1>
+            <h2 class="description-title">The browser for bacterial genome annotation</h2>
+            Expanding platform that encompasses annotations and functional analysis of bacterial genomes
+        </div>
+        <div class="header-2">
+            <img src="{% static 'images/mr-biosoft-green.png' %}" />
+        </div>
+    </header>
+
+    <h2 class="results-title">Results</h2>
+
+    <!--div>
+        <h3><a href="#">{{ specie }}</a></h3>
+    </div-->
+
+    <table class="sortable">
+        <thead>
+            <tr>
+                <th>Chromosome</th>
+                <th>Specie</th>
+                <th>Strain</th>
+                <th>Length (bp)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ chromosome }}</td>
+                <td>{{ specie }}</td>
+                <td>{{ strain }}</td>
+                <td>{{ length }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+</body>
+
+</html>
+

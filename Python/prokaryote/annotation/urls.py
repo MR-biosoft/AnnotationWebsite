@@ -9,6 +9,4 @@ urlpatterns = [
     path("genome", views.GenomeView.as_view()),
     # if we have a function-based view, we simply provide the name
     path("profile", views.something),
-    # path("profile", views.Something),
-    # path("profile", views.Something),
 ]
