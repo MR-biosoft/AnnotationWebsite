@@ -142,7 +142,13 @@ class FASTAParserTest(AnnotationTest):
         self, parsed_dict, bioregex_dict, fasta_file: Path, fasta_entry: Seq.Seq
     ):
         """Utility method used to detect anomalies in parsed FASTA
-        files."""
+        files.
+
+        ATTENTION:
+            Tests calling this helper method will ALWAYS PASS.
+            This method was designed to save data  to
+            `self.logging_dir` in order to analyse parsing failures.
+        """
         _expected = bioregex_dict.keys()
         _observed = parsed_dict.keys()
         try:
@@ -173,17 +179,35 @@ class FASTAParserTest(AnnotationTest):
         """Utility method used to iterate over all files of
         a collection (like self.annotated_genomes), and nested
         iterating along all the fasta entries contained
-        in each one of the files."""
+        in each one of the files.
+
+        Basically a wrapper for calling `self.regex_matching_verifier`
+        on the elements of `iterable_file_set`
+        """
         for _seq_file in iterable_file_set:
-            print(f"\nParsing file {_seq_file.name}", end="...\t")
             with open(_seq_file, "r", encoding="utf-8") as _seq_handle:
                 for fasta_entry in SeqIO.parse(_seq_handle, "fasta"):
                     _parsed = annotation_parser(fasta_entry)
                     self.regex_matching_verifier(_parsed, reference_regex_dict)
+
+    def full_iteration_strict_regex_matcher(
+        self, iterable_file_set, annotation_parser, reference_regex_dict
+    ):
+        """Utility method used to iterate over all files of
+        a collection (like self.annotated_genomes), and nested
+        iterating along all the fasta entries contained
+        in each one of the files.
+
+        Basically a wrapper for calling `self.regex_strict_matching_verifier`
+        on the elements of `iterable_file_set`
+        """
+        for _seq_file in iterable_file_set:
+            with open(_seq_file, "r", encoding="utf-8") as _seq_handle:
+                for fasta_entry in SeqIO.parse(_seq_handle, "fasta"):
+                    _parsed = annotation_parser(fasta_entry)
                     self.regex_strict_matching_verifier(
                         _parsed, reference_regex_dict, _seq_file, fasta_entry
                     )
-            print("Done")
 
     ## Tests
     @tag("typecheck", "single", "parsing")
@@ -234,6 +258,30 @@ class FASTAParserTest(AnnotationTest):
             self.annotated_cds, self.gene_parser, DEFAULT_CDS
         )
 
+    @tag("bulk", "parsing", "genome", "annotated", "strict")
+    def test_genome_parsing_strict_regex_matches_all_annotated(self):
+        """Test genome regex matches all desired fields,
+        on all files which we know beforehand are properly annotated."""
+        self.full_iteration_strict_regex_matcher(
+            self.annotated_genomes, self.genome_parser, DEFAULT_GENOME
+        )
+
+    @tag("bulk", "parsing", "protein", "annotated", "strict")
+    def test_protein_parsing_strict_regex_matches_all_annotated(self):
+        """Test protein regex matches all desired fields,
+        on all files which we know beforehand are properly annotated."""
+        self.full_iteration_strict_regex_matcher(
+            self.annotated_proteins, self.protein_parser, DEFAULT_PROTEIN
+        )
+
+    @tag("bulk", "parsing", "gene", "annotated", "strict")
+    def test_gene_parsing_strict_regex_matches_all_annotated(self):
+        """Test gene regex matches all desired fields,
+        on all files which we know beforehand are properly annotated."""
+        self.full_iteration_strict_regex_matcher(
+            self.annotated_cds, self.gene_parser, DEFAULT_CDS
+        )
+
 
 class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
     """Class defined to verify that parsed data can be imported
@@ -256,7 +304,7 @@ class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
                     strain=self.genome_data_dict[genome.name]["strain"],
                 )
 
-    # @tag("devel", "bulk", "gene", "db", "ci-skip")
-    # def test_save_gene_to_db(self):
-    #    """ """
-    #    s
+    @tag("devel", "bulk", "gene", "db", "ci-skip")
+    def test_save_gene_to_db(self):
+        """ """
+        self.assertTrue(False)
