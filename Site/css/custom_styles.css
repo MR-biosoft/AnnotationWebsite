@@ -5,18 +5,21 @@ body {
     margin: 0 auto;
 }
 
-a {
-    color: rgb(175, 87, 87);
+nav a {
     width: 88px;
     text-align: center;
+}
+
+a {
+    color: rgb(175, 87, 87);
     text-decoration: none;
- }
- 
- a:hover {
-     cursor:pointer;
-     text-decoration: underline;
-     color: rgb(153, 3, 3);
- }
+}
+
+a:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    color: rgb(153, 3, 3);
+}
 
 input {
     border: 2.5px solid #dddddd;
@@ -24,6 +27,42 @@ input {
     width: 100%;
     margin: 10px 0;
     height: 30px;
+}
+
+legend {
+    font-size: 0.5cm;
+    font-weight: bold;
+    color: rgb(175, 87, 87);
+    color: rgb(68, 183, 139);
+}
+
+fieldset {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border: 2.5px solid #dddddd;
+    border-radius: 6px;
+    background-color: rgb(241, 247, 244);
+    padding: 15px 30px;
+}
+
+textarea {
+    border: 2.5px solid #dddddd;
+    border-radius: 6px;
+    width: 100%;
+    margin: 10px 0;
+    height: 30px;
+}
+
+select {
+    width: 100%;
+    border: 2.5px solid #dddddd;
+    border-radius: 6px;
+    background-color: white;
+    margin: 10px 0;
+    height: 30px;
+    text-align: center;
 }
 
 input:focus {
@@ -43,6 +82,7 @@ input[type="submit"]{
 }
 
 /* Navigation */
+
 nav {
     background-color: #ffffff;
     display: flex;
@@ -81,6 +121,47 @@ h3 {
     color: rgb(175, 87, 87);
 }
 
+/* Sortable table */
+
+.sortable thead {
+    height: 40px;
+    color: rgb(175, 87, 87);
+    font-size: 0.43cm;
+}
+
+.sortable th:hover {
+    cursor: pointer;
+    color: rgb(153, 3, 3);
+}
+
+.sortable th::after {
+    font-size: 1.2em;
+    color: transparent;
+    content: ' \025B8';
+}
+
+.sortable th:hover::after {
+    color: inherit;
+    font-size: 1.2em;
+    content: ' \025B8';
+}
+
+.sortable th::after {
+    font-size: 1.2em;
+    color: transparent;
+    content: ' \025B8';
+}
+
+.sortable th.dir-d::after {
+    color: inherit;
+    content: ' \025BE';
+}
+
+.sortable th.dir-u::after {
+    color: inherit;
+    content: ' \025B4';
+}
+
 /* Main Page */
 
 .body-main-title {
@@ -112,4 +193,18 @@ hr {
     color: #efefef;
     height: 2.5px;
     border: none;
+}
+
+/* Form */
+
+.form-title {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.form-genome-field {
+    width: 45%;
+    margin-bottom: 15px;
+    margin-right: 10px;
 }

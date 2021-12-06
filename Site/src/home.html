@@ -4,6 +4,41 @@
     <head>
 
         <link rel="stylesheet" href="../css/custom_styles.css"/>
+        <script src="../js/sortable.js"></script>
+
+        <style>
+            /* ==================== Sortable */
+            .sortable th:hover::after {
+                color: inherit;
+                font-size: 1.2em;
+                content: '\00a0\025B8';
+            }
+    
+            .sortable th::after {
+                font-size: 1.2em;
+                color: transparent;
+                content: '\00a0\025B8';
+            }
+    
+            .sortable th.dir-d::after {
+                color: inherit;
+                content: '\00a0\025BE';
+            }
+    
+            .sortable th.dir-u::after {
+                color: inherit;
+                content: '\00a0\025B4';
+            }
+    
+            th.no-sort {
+                pointer-events: none;
+            }
+    
+            th.no-sort::after {
+                content: none;
+            }
+            </style>
+
 
     </head>
 
@@ -20,7 +55,7 @@
             <div class="header-1">
                 <h1 class="text-heading">Home</h1>
                 <h2 class="description-title">The browser for bacterial genome annotation</h2>
-                Expanding plateform that encompasses annotations and functional analysis of bacterial genomes
+                Expanding platform that encompasses annotations and functional analysis of bacterial genomes
             </div>
             <div class="header-2">
                 <img src="../images/mr-biosoft-green.png"/>
@@ -68,6 +103,29 @@
             </section>
         
         </section>
+
+        <table class="sortable">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                    <tr>
+                        <td>username1</td>
+                        <td>usercreated1</td>
+                    </tr>
+                    <tr>
+                        <td>username2</td>
+                        <td>usercreated2</td>
+                    </tr>
+                    <tr>
+                        <td>usernama</td>
+                        <td>usercreaa</td>
+                    </tr>
+            </tbody>
+        </table>
 
     </body>
 
