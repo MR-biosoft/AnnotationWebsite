@@ -71,6 +71,14 @@ python manage.py -h # way 2: via Python (poetry's virtual env should be activate
 poetry run python manage.py -h # way 3: no need to activate the venv
 ```
 
+### Run tests (unit and integration)
+
+```bash
+# CAVEATS: This is still in development, do not execute
+# --exclude-tag changes whilst in development
+./manage.py test -v 2 --no-input --reverse # --exclude-tag strict 
+```
+
 ### Create the database (via `dbexec`)
 To execute sql scripts use the command `dbexec`
 For example to create all the necessary tables, use : 
