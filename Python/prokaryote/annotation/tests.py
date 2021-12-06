@@ -35,7 +35,7 @@ from django.core import management
 from Bio import SeqIO, Seq
 
 # Imports from our module
-from annotation import models
+# from annotation import models
 from annotation.parsing import FASTAParser, save_genome
 from annotation.bioregex import DEFAULT_CDS, DEFAULT_PROTEIN, DEFAULT_GENOME
 from annotation.devutils import get_env_value
@@ -86,16 +86,16 @@ class AnnotationTest(TestCase):
         cls._genome_files = _genomes
 
         # Create semantically consistent groups
-        cls.annotated_genomes = [
-            path for path in cls._genome_files if not "new" in path.name
-        ]
-        cls.annotated_cds = [path for path in cls._cds_files if not "new" in path.name]
-        cls.annotated_proteins = [
-            path for path in cls._protein_files if not "new" in path.name
-        ]
-        cls.new_genomes = [path for path in cls._genome_files if "new" in path.name]
-        cls.new_cds = [path for path in cls._cds_files if "new" in path.name]
-        cls.new_proteins = [path for path in cls._protein_files if "new" in path.name]
+        annotation_filter = lambda x: [path for path in x if not "new" in path.name]
+        novelty_filter = lambda x: [path for path in x if "new" in path.name]
+
+        cls.annotated_genomes = annotation_filter(cls._genome_files)
+        cls.annotated_cds = annotation_filter(cls._cds_files)
+        cls.annotated_proteins = annotation_filter(cls._protein_files)
+
+        cls.new_genomes = novelty_filter(cls._genome_files)
+        cls.new_cds = novelty_filter(cls._cds_files)
+        cls.new_proteins = novelty_filter(cls._protein_files)
 
         cls.genome_data_dict = {
             "Escherichia_coli_cft073.fa": {
