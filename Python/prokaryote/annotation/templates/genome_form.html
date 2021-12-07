@@ -20,7 +20,7 @@
         <a href="#" class="documentation">Documentation</a>
         <a href="mailto:mrbiosoft@gmail.com" target="_blank">Support</a>
         <a href="#" class=>Logout</a>
-        <a href="{% url 'annotation:genome' %}">Home</a>
+        <a href="{% url 'home:menu' %}">Home</a>
     </nav>
 
     <header>
@@ -45,10 +45,10 @@
 
             <div class="form-genome-field">
                 <label for="chromosome">Chromosome</label>
-                <input type="text" name="chromosome" id="chromosome" />
+                <input type="text" name="chromosome" id="chromosome" required />
             </div>
 
-            <input type="submit" value="Launch Request" />
+            <input type="submit" value="Launch Query" />
 
         </fieldset>
 
@@ -96,7 +96,7 @@
                 <textarea rows="3" name="motif" id="motif"></textarea>
             </div>
 
-            <input type="submit" value="Launch Request" />
+            <input type="submit" value="Launch Query" />
 
         </fieldset>
 

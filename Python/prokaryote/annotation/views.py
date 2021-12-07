@@ -1,15 +1,10 @@
 """
-Docstring
+Views for main site
 """
 from django.views import View
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 
-from annotation.models import Genome
-from annotation.forms import GenomeForm
-
-
-def something(request):
-    pass
+from .models import Genome
 
 
 # Create your views here.
@@ -64,3 +59,12 @@ class GenomeView(View):
             context = {"hits": hits}
 
         return render(request, self.POST_template, context)
+
+class GeneView(GenomeView):
+    """ View logic for Genes """
+
+    # redefine these two :
+    GET_template = "gene_form.html"
+    #POST_template = "gene_query.html"
+
+    # get method is fine

@@ -1,9 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 
     <head>
 
-        <link rel="stylesheet" href="../css/custom_styles.css"/>
+        <link rel="stylesheet" href="{% static 'css/custom_styles.css' %}"/>
 
     </head>
 
@@ -11,9 +12,9 @@
 
         <nav>
             <a href="#" class="documentation">Documentation</a>
-            <a href="mailto:support@biosoft.com" target="_blank">Support</a>
+            <a href="mailto:mrbiosoft@gmail.com" target="_blank">Support</a>
             <a href="#" class=>Logout</a>
-            <a href="home.html">Home</a>
+            <a href="#">Home</a>
         </nav>
 
         <header>
@@ -23,7 +24,7 @@
                 Expanding plateform that encompasses annotations and functional analysis of bacterial genomes
             </div>
             <div class="header-2">
-                <img src="../images/mr-biosoft-green.png"/>
+                <img src="{% static 'images/mr-biosoft-green.png' %}"/>
             </div>
         </header>
 
@@ -37,11 +38,11 @@
 
                 <hr style="margin-top:0"/>
 
-                <h3><a href="genome_form.html">Genome</a></h3>
+                <h3><a href="{% url 'browse:genome' %}">Genome</a></h3>
                 Browser for retrieving bacterial genomes
                 <hr/>
 
-                <h3><a href="#">Gene</a></h3>
+                <h3><a href="{% url 'browse:gene' %}">Gene</a></h3>
                 Browser for gene sequences and functional annotations
                 <hr/>
 
