@@ -324,6 +324,7 @@ class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
         #for genome in a:
         #    print(genome)
         for cds in self._cds_files:
+            print(f"\nProcessing {cds.absolute().as_posix()}...", end="\t")
             with open(cds, "r", encoding="utf-8") as _cds_handle:
                 for gene in SeqIO.parse(_cds_handle, "fasta"):
                     try:
@@ -331,3 +332,5 @@ class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
                     except MissingChromosomeField as _miss_chrom_ex:
                         is_plasmid = "plasmid" in gene.description
                         print(f"{_miss_chrom_ex}, is_plasmid = {is_plasmid}")
+            print("Done")
+

@@ -7,6 +7,8 @@
     and sequences.
 """
 
+import json
+from datetime import datetime
 from typing import Dict, Optional, Tuple, Callable, NoReturn
 import regex
 from Bio import Seq
@@ -89,7 +91,7 @@ def save_genome(
     genome.save(force_insert=True)
 
 
-def save_gene(record: Seq.Seq):
+def save_gene(record: Seq.Seq, update: bool = False):
     """
     Save gene into the following tables (in order):
 
@@ -114,6 +116,10 @@ def save_gene(record: Seq.Seq):
     else:
         start, end = None, None
 
+    _ptm = {"Accession": record.id}
+    _ptm.update(parsed_fields)
+    with open("ptm.jsonl", "a", encoding="utf-8") as f:
+        f.write(f"{json.dumps(_ptm)}\n")
     # create Dicts for different tables
     ## [field.name for field in GeneProtein._meta.fields]
     try:
@@ -130,9 +136,19 @@ def save_gene(record: Seq.Seq):
             "chromosome": chromosome,
             "isannotated": False,  # Temporarily set it to false
         }
-        gene_protein = GeneProtein.objects.create(**gene_protein_fields)
+        if not update:
+            gene_protein = GeneProtein.objects.create(**gene_protein_fields)
     except ObjectDoesNotExist as _nil_obj:
-        print(f"There is no Genome with chromosome id {parsed_fields['chromosome']}")
+        print(f"Error importing gene with accession {record.id}")
+        print("Inspect the file `gene_importation_error_log.jsonl` for further details")
+        with open(
+            "gene_importation_error_log.jsonl", "a", encoding="utf-8"
+        ) as err_log_file:
+            _err_dump = {
+                "datetimeUTC": "",
+            }
+            err_log_file.write(f"{json.dumps(_err_dump)}\n")
+
     # gene_protein.save()
 
     # gene_protein_fields = {}
