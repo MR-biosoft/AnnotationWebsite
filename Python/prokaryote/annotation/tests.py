@@ -22,22 +22,29 @@
 
 """
 
+# Python stdlib imports
 import json
 from pathlib import Path
 from datetime import datetime
 
+# Django imports
 from django.test import TestCase, TransactionTestCase, tag
+from django.core import management
+from django.core.exceptions import ObjectDoesNotExist
 
 # BioPython Utils
 from Bio import SeqIO, Seq
 
 # Imports from our module
-from annotation import models
-from annotation.parsing import FASTAParser, save_genome
+# from annotation import models
+from annotation.parsing import MissingChromosomeField, FASTAParser, save_genome, save_gene
 from annotation.bioregex import DEFAULT_CDS, DEFAULT_PROTEIN, DEFAULT_GENOME
 from annotation.devutils import get_env_value
+from annotation.models import Genome, GeneProtein
 
 _LOGGING_DIR_NAME: str = "TestingLogs"
+_DATABASE_DIR: str = "Database"
+_DB_CREATION_FILE: str = "create-schema.sql"
 
 
 class AnnotationTest(TestCase):
@@ -55,7 +62,11 @@ class AnnotationTest(TestCase):
         # $ GITHUB_WORKSPACE='/path/to/project/root' python manage.py test
 
         # Specify project root
-        cls._root_dir = Path(get_env_value("GITHUB_WORKSPACE"))
+        cls._root_dir = Path(get_env_value("GITHUB_WORKSPACE")).resolve()
+
+        # Setup the test database
+        cls._create_db_script = cls._root_dir / _DATABASE_DIR / _DB_CREATION_FILE
+        management.call_command("dbexec", cls._create_db_script)
 
         # Set logging location (and create it if necessary)
         cls.logging_dir = cls._root_dir.joinpath(_LOGGING_DIR_NAME)
@@ -77,16 +88,16 @@ class AnnotationTest(TestCase):
         cls._genome_files = _genomes
 
         # Create semantically consistent groups
-        cls.annotated_genomes = [
-            path for path in cls._genome_files if not "new" in path.name
-        ]
-        cls.annotated_cds = [path for path in cls._cds_files if not "new" in path.name]
-        cls.annotated_proteins = [
-            path for path in cls._protein_files if not "new" in path.name
-        ]
-        cls.new_genomes = [path for path in cls._genome_files if "new" in path.name]
-        cls.new_cds = [path for path in cls._cds_files if "new" in path.name]
-        cls.new_proteins = [path for path in cls._protein_files if "new" in path.name]
+        annotation_filter = lambda x: [path for path in x if not "new" in path.name]
+        novelty_filter = lambda x: [path for path in x if "new" in path.name]
+
+        cls.annotated_genomes = annotation_filter(cls._genome_files)
+        cls.annotated_cds = annotation_filter(cls._cds_files)
+        cls.annotated_proteins = annotation_filter(cls._protein_files)
+
+        cls.new_genomes = novelty_filter(cls._genome_files)
+        cls.new_cds = novelty_filter(cls._cds_files)
+        cls.new_proteins = novelty_filter(cls._protein_files)
 
         cls.genome_data_dict = {
             "Escherichia_coli_cft073.fa": {
@@ -133,7 +144,13 @@ class FASTAParserTest(AnnotationTest):
         self, parsed_dict, bioregex_dict, fasta_file: Path, fasta_entry: Seq.Seq
     ):
         """Utility method used to detect anomalies in parsed FASTA
-        files."""
+        files.
+
+        ATTENTION:
+            Tests calling this helper method will ALWAYS PASS.
+            This method was designed to save data  to
+            `self.logging_dir` in order to analyse parsing failures.
+        """
         _expected = bioregex_dict.keys()
         _observed = parsed_dict.keys()
         try:
@@ -143,6 +160,7 @@ class FASTAParserTest(AnnotationTest):
             error_log = {
                 "UTCdatetime": str(datetime.utcnow()),
                 "FASTAHeader": fasta_entry.description,
+                "ID": fasta_entry.id,
                 "MismatchLength": mismatch_len,
                 "ExpectedKeys": list(_expected),
                 "ObservedKeys": list(_observed),
@@ -163,34 +181,52 @@ class FASTAParserTest(AnnotationTest):
         """Utility method used to iterate over all files of
         a collection (like self.annotated_genomes), and nested
         iterating along all the fasta entries contained
-        in each one of the files."""
+        in each one of the files.
+
+        Basically a wrapper for calling `self.regex_matching_verifier`
+        on the elements of `iterable_file_set`
+        """
         for _seq_file in iterable_file_set:
-            print(f"\nParsing file {_seq_file.name}", end="...\t")
             with open(_seq_file, "r", encoding="utf-8") as _seq_handle:
                 for fasta_entry in SeqIO.parse(_seq_handle, "fasta"):
                     _parsed = annotation_parser(fasta_entry)
                     self.regex_matching_verifier(_parsed, reference_regex_dict)
+
+    def full_iteration_strict_regex_matcher(
+        self, iterable_file_set, annotation_parser, reference_regex_dict
+    ):
+        """Utility method used to iterate over all files of
+        a collection (like self.annotated_genomes), and nested
+        iterating along all the fasta entries contained
+        in each one of the files.
+
+        Basically a wrapper for calling `self.regex_strict_matching_verifier`
+        on the elements of `iterable_file_set`
+        """
+        for _seq_file in iterable_file_set:
+            with open(_seq_file, "r", encoding="utf-8") as _seq_handle:
+                for fasta_entry in SeqIO.parse(_seq_handle, "fasta"):
+                    _parsed = annotation_parser(fasta_entry)
                     self.regex_strict_matching_verifier(
                         _parsed, reference_regex_dict, _seq_file, fasta_entry
                     )
-            print("Done")
 
-    ##
+    ## Tests
     @tag("typecheck", "single", "parsing")
     def test_gene_parsing_return_type(self):
-        """Test that the parser effectively returns a dictionary"""
+        """the parser effectively returns a dictionary ?"""
         parsed_dict = self.gene_parser(self.gene)
         self.assertIsInstance(parsed_dict, dict)
 
     @tag("single", "parsing", "gene")
     def test_gene_parsing_regex_matches_one(self):
-        """Test gene regex matches all desired fields"""
+        """the GENE regex matches all desired fields (on a SINGLE entry)?"""
         parsed_dict = self.gene_parser(self.gene)
         self.regex_matching_verifier(parsed_dict, DEFAULT_CDS)
 
     @tag("single", "parsing", "protein")
     def test_protein_parsing_regex_matches_one(self):
-        """Test protein regex matches all desired fields"""
+        """the PROTEIN regex match all desired fields ?"""
         parsed_dict = self.protein_parser(self.protein)
         self.regex_matching_verifier(parsed_dict, DEFAULT_PROTEIN)
 
@@ -224,6 +260,30 @@ class FASTAParserTest(AnnotationTest):
             self.annotated_cds, self.gene_parser, DEFAULT_CDS
         )
 
+    @tag("bulk", "parsing", "genome", "annotated", "strict")
+    def test_genome_parsing_strict_regex_matches_all_annotated(self):
+        """Test genome regex matches all desired fields,
+        on all files which we know beforehand are properly annotated."""
+        self.full_iteration_strict_regex_matcher(
+            self.annotated_genomes, self.genome_parser, DEFAULT_GENOME
+        )
+
+    @tag("bulk", "parsing", "protein", "annotated", "strict")
+    def test_protein_parsing_strict_regex_matches_all_annotated(self):
+        """Test protein regex matches all desired fields,
+        on all files which we know beforehand are properly annotated."""
+        self.full_iteration_strict_regex_matcher(
+            self.annotated_proteins, self.protein_parser, DEFAULT_PROTEIN
+        )
+
+    @tag("bulk", "parsing", "gene", "annotated", "strict")
+    def test_gene_parsing_strict_regex_matches_all_annotated(self):
+        """Test gene regex matches all desired fields,
+        on all files which we know beforehand are properly annotated."""
+        self.full_iteration_strict_regex_matcher(
+            self.annotated_cds, self.gene_parser, DEFAULT_CDS
+        )
+
 
 class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
     """Class defined to verify that parsed data can be imported
@@ -246,7 +306,31 @@ class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
                     strain=self.genome_data_dict[genome.name]["strain"],
                 )
 
-    # @tag("devel", "bulk", "gene", "db", "ci-skip")
-    # def test_save_gene_to_db(self):
-    #    """ """
-    #    s
+    @tag("devel", "bulk", "gene", "db", "ci-skip")
+    def test_save_gene_to_db(self):
+        """ """
+        # Unfortunately, django properly isolates each test within a transaction
+        # which means that the genomes that we created in the previous test do
+        # not exist anymore and we have to create them again.
+        for genome in self._genome_files:
+            management.call_command(
+                'importgenome', genome, 
+                specie=self.genome_data_dict[genome.name]["specie"],
+                strain=self.genome_data_dict[genome.name]["strain"],
+            )
+
+        #a = Genome.objects.all()
+        
+        #for genome in a:
+        #    print(genome)
+        for cds in self._cds_files:
+            print(f"\nProcessing {cds.absolute().as_posix()}...", end="\t")
+            with open(cds, "r", encoding="utf-8") as _cds_handle:
+                for gene in SeqIO.parse(_cds_handle, "fasta"):
+                    try:
+                        save_gene(gene)
+                    except MissingChromosomeField as _miss_chrom_ex:
+                        is_plasmid = "plasmid" in gene.description
+                        print(f"{_miss_chrom_ex}, is_plasmid = {is_plasmid}")
+            print("Done")
+
