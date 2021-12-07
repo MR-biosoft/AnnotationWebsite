@@ -7,11 +7,9 @@
     <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
 
     <style>
-
         input {
             height: 25px;
         }
-
     </style>
 
 </head>
@@ -22,7 +20,7 @@
         <a href="#" class="documentation">Documentation</a>
         <a href="mailto:mrbiosoft@gmail.com" target="_blank">Support</a>
         <a href="#" class=>Logout</a>
-        <a href="home.html">Home</a>
+        <a href="{% url 'annotation:genome' %}">Home</a>
     </nav>
 
     <header>
@@ -53,11 +51,11 @@
             <input type="submit" value="Launch Request" />
 
         </fieldset>
-    
+
     </form>
 
-    <br/>
-    
+    <br />
+
     <form method="post" action="genome" class="genome-form-body">
         <!--
             <form method="post" action="annotation/genome" class="genome-form-body">
