@@ -175,8 +175,8 @@ def save_gene(
         gene_protein_fields = {
             "accession_number": record.id,
             "dna_length": len(record.seq),
-            "start_position": start,
-            "end_position": end,
+            "start_position": int(start) if start else start,
+            "end_position": int(end) if end else end,
             "reading_frame": reading_frame,
             "aa_length": None,
             "chromosome": chromosome,
@@ -216,10 +216,8 @@ def save_gene(
             with transaction.atomic():
                 annotation = Annotation(**annotation_fields)
                 annotation.save(**save_kw)
-                annotated_gene_protein = GeneProtein(
-                    accession_number=record.id, isannotated=True
-                )
-                annotated_gene_protein.save(force_update=True)
+                gene_protein.isannotated = True
+                gene_protein.save(force_update=True)
 
     # Probably shoudln't catch the IntegrityError, see:
     # https://docs.djangoproject.com/en/3.2/topics/db/transactions/
