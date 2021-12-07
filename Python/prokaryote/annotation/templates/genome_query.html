@@ -71,7 +71,7 @@
         <a href="#" class="documentation">Documentation</a>
         <a href="mailto:mrbiosoft@gmail.com" target="_blank">Support</a>
         <a href="#" class=>Logout</a>
-        <a href="{% url 'annotation:genome' %}">Home</a>
+        <a href="#">Home</a>
     </nav>
 
     <header>
@@ -97,12 +97,14 @@
             </tr>
         </thead>
         <tbody>
+            {% for hit in hits %}
             <tr>
-                <td><a href="#">{{ chromosome }}</a></td>
-                <td>{{ specie }}</td>
-                <td>{{ strain }}</td>
-                <td>{{ length }}</td>
+                <td><a href="#">{{ hit.chromosome }}</a></td>
+                <td>{{ hit.specie }}</td>
+                <td>{{ hit.strain }}</td>
+                <td>{{ hit.length }}</td>
             </tr>
+            {% endfor %}
         </tbody>
     </table>
 

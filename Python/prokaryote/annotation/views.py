@@ -2,7 +2,7 @@
 Docstring
 """
 from django.views import View
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 
 from annotation.models import Genome
 from annotation.forms import GenomeForm
@@ -30,13 +30,37 @@ class GenomeView(View):
         """Method used to process POST requests"""
         # form = GenomeForm(request.POST)
         # if form.is_valid():
+        print("-------------------Test---------------------")
         print(request.POST.keys())
+        print(request.POST)
+        #print(get_object_or_404(Genome, specie=request.POST.get("specie", "")))
+        print("get_list_or_404")
+        # print(get_list_or_404(Genome, specie=request.POST.get("specie", "")))
         if "chromosome" in request.POST:
-            genome = get_object_or_404(
-                Genome, chromosome=request.POST.get("chromosome", "")
-            )
-            context = {"chromosome": genome.chromosome, "specie": genome.specie, "strain": genome.strain, "length": genome.length}
+            chromosome = request.POST.get("chromosome", "")
+            hits = get_list_or_404(Genome, chromosome__iexact = chromosome)
+            context = {"hits": hits}
         elif "specie" in request.POST:
-            context = {"specie" : "Theo", "strain" : "Gus"}
+            # specie, strain, minsize, maxsize, motif = request.POST.get("specie", "strain", "minsize", "maxsize", "motif", "")
+            specie = request.POST.get("specie", "")
+            strain = request.POST.get("strain", "")
+            motif = request.POST.get("motif", "")
+            minsize = request.POST.get("minsize", "")
+            maxsize = request.POST.get("maxsize", "")
+            minsize = int(minsize) if minsize else minsize
+            maxsize = int(maxsize) if maxsize else maxsize
+            print(maxsize)
+            print(type(maxsize))
+            hits = Genome.objects
+            # hits = get_list_or_404(Genome)
+            # print("hits1 = ", hits)
+            # hits = Genome.objects.filter(specie = specie) if specie else hits
+            # hits = Genome.objects.filter(specie__icontains = specie) if specie else hits
+            hits = hits.filter(specie__icontains = specie) if specie else hits
+            hits = hits.filter(strain__iexact = strain) if strain else hits
+            hits = hits.filter(sequence__icontains = motif) if motif else hits
+            hits = hits.filter(length__gte = minsize) if minsize else hits
+            hits = hits.filter(length__lte = maxsize) if maxsize else hits
+            context = {"hits": hits}
 
         return render(request, self.POST_template, context)
