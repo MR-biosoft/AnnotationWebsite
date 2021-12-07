@@ -14,7 +14,11 @@ CREATE DOMAIN GENOME_SEQUENCE AS
 
 CREATE DOMAIN GENE_SEQUENCE AS
     TEXT NOT NULL
-    CONSTRAINT check_nucleotide_sequence CHECK (VALUE ~ '(ATG|GTG|TTG)((A|T|C|G){3})*(TAA|TAG|TGA)');
+    CONSTRAINT check_nucleotide_sequence CHECK (VALUE ~ '((A|T|C|G){3})*(TAA|TAG|TGA)');
+    -- Hypothetical proteins and some bacteria might have an alternative starting codon so
+    -- the following constraint might be too strict. 
+    -- To be discussed with the client.
+    --CONSTRAINT check_nucleotide_sequence CHECK (VALUE ~ '(ATG|GTG|TTG)((A|T|C|G){3})*(TAA|TAG|TGA)');
 
 CREATE DOMAIN PROTEIN_SEQUENCE AS
     TEXT NOT NULL
