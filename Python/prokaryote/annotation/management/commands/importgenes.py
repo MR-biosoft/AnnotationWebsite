@@ -14,7 +14,7 @@ from annotation.parsing import save_genome
 
 
 class Command(BaseCommand):
-    help = "Read a genome in FASTA format and saves it to the database"
+    help = "Reads a file and executes it within the site's DB connection."
 
     def add_arguments(self, parser):
         # Named arguments

@@ -14,6 +14,9 @@ import regex
 from Bio import Seq
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction, IntegrityError, DataError
+
+# from django.db.utils import IntegrityError
 
 # Imports from our module
 from annotation.models import Genome, GeneProtein, GeneSeq, ProteinSeq, Annotation
@@ -70,6 +73,9 @@ class FASTAParser:
         return hits
 
 
+# TODO :
+# Add transaction decorator ?
+# @transaction.atomic
 def save_genome(
     record: Seq.Seq, specie: Optional[str] = None, strain: Optional[str] = None
 ) -> NoReturn:
@@ -91,19 +97,61 @@ def save_genome(
     genome.save(force_insert=True)
 
 
-def save_gene(record: Seq.Seq, update: bool = False):
+# TODO :
+# Add transaction decorator ?
+# @transaction.atomic
+def save_gene(
+    record: Seq.Seq,
+    update: bool = False,
+    log_errors: bool = True,
+    catch_errors: bool = True,
+):
     """
     Save gene into the following tables (in order):
 
+    params:
+    ------
+
+    update : boolean. Update instead of inserting ?
+                      We override django's "make it work every time"
+                      default behaviour because it seems dangerous.
+                      If we try to "update" which means overwrite (partially in
+                      the best case scenario) an entry in our database,
+                      we prefer our function not doing it and raising the
+                      database integrity. If you are sure that you want to
+                      "update" (overwrite) the entry, set update=True.
     """
+    # print(record.id)
     # parse the FASTA record
     parse = FASTAParser(bioregex.DEFAULT_CDS)
     parsed_fields = parse(record)
+
+    # Set saving behaviour :
+    # By default force insert, so the user can be warned about
+    # if "updating" (overwritting) an entry.
+    save_kw = dict(force_insert=(not update), force_update=update)
+
     # This exception will be used to skip plasmids
     if "chromosome" not in parsed_fields:
-        raise MissingChromosomeField(
+        _err = MissingChromosomeField(
             f"Missing annotation in FASTA record with id {record.id}"
         )
+        if log_errors:
+            print(f"Error importing gene with accession {record.id}")
+            print("Inspect `gene_importation_error_log.jsonl` for further details")
+            with open(
+                "gene_importation_error_log.jsonl", "a", encoding="utf-8"
+            ) as err_log_file:
+                _err_dump = {
+                    "datetimeUTC": str(datetime.utcnow()),
+                    "geneAccession": record.id,
+                    "FASTAHeader": record.description,
+                    "parsedFields": parsed_fields,
+                    "exceptionType": str(type(_err)),
+                    "exceptionDetail": str(_err),
+                }
+                err_log_file.write(f"{json.dumps(_err_dump)}\n")
+        raise _err
 
     # Conditionally prepare values before object instantiation
     reading_frame = (
@@ -116,10 +164,6 @@ def save_gene(record: Seq.Seq, update: bool = False):
     else:
         start, end = None, None
 
-    _ptm = {"Accession": record.id}
-    _ptm.update(parsed_fields)
-    with open("ptm.jsonl", "a", encoding="utf-8") as f:
-        f.write(f"{json.dumps(_ptm)}\n")
     # create Dicts for different tables
     ## [field.name for field in GeneProtein._meta.fields]
     try:
@@ -136,18 +180,65 @@ def save_gene(record: Seq.Seq, update: bool = False):
             "chromosome": chromosome,
             "isannotated": False,  # Temporarily set it to false
         }
-        if not update:
-            gene_protein = GeneProtein.objects.create(**gene_protein_fields)
-    except ObjectDoesNotExist as _nil_obj:
-        print(f"Error importing gene with accession {record.id}")
-        print("Inspect the file `gene_importation_error_log.jsonl` for further details")
-        with open(
-            "gene_importation_error_log.jsonl", "a", encoding="utf-8"
-        ) as err_log_file:
-            _err_dump = {
-                "datetimeUTC": "",
+        gene_protein = GeneProtein(**gene_protein_fields)
+        with transaction.atomic():
+            gene_protein.save(**save_kw)
+
+            gene_seq_fields = {
+                "accession_number": gene_protein,
+                "sequence": str(record.seq),
             }
-            err_log_file.write(f"{json.dumps(_err_dump)}\n")
+            gene_seq = GeneSeq(**gene_seq_fields)
+            with transaction.atomic():
+                gene_seq.save(**save_kw)
+
+            _annotation_keys_ls = [
+                "gene_name",
+                "gene_symbol",
+                "gene_biotype",
+                "transcript_biotype",
+                "function",
+            ]
+            _annotations = {key: parsed_fields.get(key) for key in _annotation_keys_ls}
+            annotation_fields = {
+                "accession_number": gene_protein,
+                "status": None,
+                "email": None,
+            }
+            n_annotations = sum(
+                1 for annot in _annotations.values() if annot is not None
+            )
+            if n_annotations > 1:
+                annotation_fields["status"] = "approved"
+                annotation_fields.update(_annotations)
+            with transaction.atomic():
+                annotation = Annotation(**annotation_fields)
+                annotation.save(**save_kw)
+                annotated_gene_protein = GeneProtein(
+                    accession_number=record.id, isannotated=True
+                )
+                annotated_gene_protein.save(force_update=True)
+
+    # Probably shoudln't catch the IntegrityError, see:
+    # https://docs.djangoproject.com/en/3.2/topics/db/transactions/
+    except (ObjectDoesNotExist, IntegrityError, DataError) as _db_error:
+        if log_errors:
+            print(f"Error importing gene with accession {record.id}")
+            print("Inspect `gene_importation_error_log.jsonl` for further details")
+            with open(
+                "gene_importation_error_log.jsonl", "a", encoding="utf-8"
+            ) as err_log_file:
+                _err_dump = {
+                    "datetimeUTC": str(datetime.utcnow()),
+                    "geneAccession": record.id,
+                    "FASTAHeader": record.description,
+                    "parsedFields": parsed_fields,
+                    "exceptionType": str(type(_db_error)),
+                    "exceptionDetail": str(_db_error),
+                }
+                err_log_file.write(f"{json.dumps(_err_dump)}\n")
+        if not catch_errors:
+            raise _db_error
 
     # gene_protein.save()
 

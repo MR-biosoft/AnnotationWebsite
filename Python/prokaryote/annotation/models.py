@@ -62,7 +62,7 @@ class GeneSeq(models.Model):
     accession_number = models.OneToOneField(
         GeneProtein, models.DO_NOTHING, db_column="accession_number", primary_key=True
     )
-    sequence = models.CharField(max_length=6000)
+    sequence = models.TextField()
 
     class Meta:
         managed = False
@@ -73,7 +73,7 @@ class ProteinSeq(models.Model):
     accession_number = models.OneToOneField(
         GeneProtein, models.DO_NOTHING, db_column="accession_number", primary_key=True
     )
-    sequence = models.CharField(max_length=2000)
+    sequence = models.TextField()
 
     class Meta:
         managed = False

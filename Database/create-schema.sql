@@ -13,11 +13,11 @@ CREATE DOMAIN GENOME_SEQUENCE AS
     CONSTRAINT check_genome_sequence CHECK (VALUE ~ '(A|T|C|G|N)*');
 
 CREATE DOMAIN GENE_SEQUENCE AS
-    VARCHAR(6000) NOT NULL
+    TEXT NOT NULL
     CONSTRAINT check_nucleotide_sequence CHECK (VALUE ~ '(ATG|GTG|TTG)((A|T|C|G){3})*(TAA|TAG|TGA)');
 
 CREATE DOMAIN PROTEIN_SEQUENCE AS
-    VARCHAR(2000) NOT NULL
+    TEXT NOT NULL
     CONSTRAINT check_protein_sequence CHECK (VALUE ~ 'M(A|R|N|D|C|Q|E|G|H|I|L|K|M|F|P|S|T|W|Y|V)*');
 -- END DOMAIN DEFINITION
 
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS annotation(
     gene_symbol VARCHAR(10),
     gene_biotype VARCHAR(30),
     transcript_biotype VARCHAR(30),
-    function VARCHAR(50),
+    function VARCHAR(200),
     status VARCHAR(10),
     email VARCHAR(50),
     PRIMARY KEY (accession_number),
