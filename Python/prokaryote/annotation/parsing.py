@@ -105,6 +105,7 @@ def save_gene(
     update: bool = False,
     log_errors: bool = True,
     catch_errors: bool = True,
+    verbose: bool = True,
 ):
     """
     Save gene into the following tables (in order):
@@ -134,11 +135,12 @@ def save_gene(
     # This exception will be used to skip plasmids
     if "chromosome" not in parsed_fields:
         _err = MissingChromosomeField(
-            f"Missing annotation in FASTA record with id {record.id}"
+            f"Missing `chromosome` annotation in FASTA record with id {record.id}",
         )
-        if log_errors:
+        if verbose:
             print(f"Error importing gene with accession {record.id}")
             print("Inspect `gene_importation_error_log.jsonl` for further details")
+        if log_errors:
             with open(
                 "gene_importation_error_log.jsonl", "a", encoding="utf-8"
             ) as err_log_file:
@@ -222,9 +224,10 @@ def save_gene(
     # Probably shoudln't catch the IntegrityError, see:
     # https://docs.djangoproject.com/en/3.2/topics/db/transactions/
     except (ObjectDoesNotExist, IntegrityError, DataError) as _db_error:
-        if log_errors:
+        if verbose:
             print(f"Error importing gene with accession {record.id}")
             print("Inspect `gene_importation_error_log.jsonl` for further details")
+        if log_errors:
             with open(
                 "gene_importation_error_log.jsonl", "a", encoding="utf-8"
             ) as err_log_file:
