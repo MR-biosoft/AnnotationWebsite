@@ -35,21 +35,32 @@ class GenomeView(View):
         print(request.POST)
         #print(get_object_or_404(Genome, specie=request.POST.get("specie", "")))
         print("get_list_or_404")
-        print(get_list_or_404(Genome, specie=request.POST.get("specie", "")))
+        # print(get_list_or_404(Genome, specie=request.POST.get("specie", "")))
         if "chromosome" in request.POST:
             chromosome = request.POST.get("chromosome", "")
-            hits = get_list_or_404(Genome, chromosome = chromosome)
+            hits = get_list_or_404(Genome, chromosome__iexact = chromosome)
             context = {"hits": hits}
-            """genome = get_list_or_404(
-                Genome, chromosome=request.POST.get("chromosome", "")
-            )
-            context = {"chromosome": genome.chromosome, "specie": genome.specie, "strain": genome.strain, "length": genome.length}"""
         elif "specie" in request.POST:
-            """hits = get_list_or_404(Genome, chromosome = 'ASM584v2')
-            context = {"hits": hits}"""
+            # specie, strain, minsize, maxsize, motif = request.POST.get("specie", "strain", "minsize", "maxsize", "motif", "")
             specie = request.POST.get("specie", "")
-            hits = get_list_or_404(Genome, specie = specie)
+            strain = request.POST.get("strain", "")
+            motif = request.POST.get("motif", "")
+            minsize = request.POST.get("minsize", "")
+            maxsize = request.POST.get("maxsize", "")
+            minsize = int(minsize) if minsize else minsize
+            maxsize = int(maxsize) if maxsize else maxsize
+            print(maxsize)
+            print(type(maxsize))
+            hits = Genome.objects
+            # hits = get_list_or_404(Genome)
+            # print("hits1 = ", hits)
+            # hits = Genome.objects.filter(specie = specie) if specie else hits
+            # hits = Genome.objects.filter(specie__icontains = specie) if specie else hits
+            hits = hits.filter(specie__icontains = specie) if specie else hits
+            hits = hits.filter(strain__iexact = strain) if strain else hits
+            hits = hits.filter(sequence__icontains = motif) if motif else hits
+            hits = hits.filter(length__gte = minsize) if minsize else hits
+            hits = hits.filter(length__lte = maxsize) if maxsize else hits
             context = {"hits": hits}
-            # context = {"specie" : "Theo", "strain" : "Gus"}
 
         return render(request, self.POST_template, context)
