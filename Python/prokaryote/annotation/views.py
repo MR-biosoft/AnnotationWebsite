@@ -2,7 +2,7 @@
 Docstring
 """
 from django.views import View
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 
 from annotation.models import Genome
 from annotation.forms import GenomeForm
@@ -30,13 +30,26 @@ class GenomeView(View):
         """Method used to process POST requests"""
         # form = GenomeForm(request.POST)
         # if form.is_valid():
+        print("-------------------Test---------------------")
         print(request.POST.keys())
+        print(request.POST)
+        #print(get_object_or_404(Genome, specie=request.POST.get("specie", "")))
+        print("get_list_or_404")
+        print(get_list_or_404(Genome, specie=request.POST.get("specie", "")))
         if "chromosome" in request.POST:
-            genome = get_object_or_404(
+            chromosome = request.POST.get("chromosome", "")
+            hits = get_list_or_404(Genome, chromosome = chromosome)
+            context = {"hits": hits}
+            """genome = get_list_or_404(
                 Genome, chromosome=request.POST.get("chromosome", "")
             )
-            context = {"chromosome": genome.chromosome, "specie": genome.specie, "strain": genome.strain, "length": genome.length}
+            context = {"chromosome": genome.chromosome, "specie": genome.specie, "strain": genome.strain, "length": genome.length}"""
         elif "specie" in request.POST:
-            context = {"specie" : "Theo", "strain" : "Gus"}
+            """hits = get_list_or_404(Genome, chromosome = 'ASM584v2')
+            context = {"hits": hits}"""
+            specie = request.POST.get("specie", "")
+            hits = get_list_or_404(Genome, specie = specie)
+            context = {"hits": hits}
+            # context = {"specie" : "Theo", "strain" : "Gus"}
 
         return render(request, self.POST_template, context)
