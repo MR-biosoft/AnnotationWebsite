@@ -100,3 +100,12 @@ ATTENTION: This subcommand is configured to import one genome at a time. If your
 ./manage.py importgenome $GITHUB_WORKSPACE/Data/Escherichia_coli_cft073.fa --specie "Escherichia coli" --strain cft073
 ./manage.py importgenome $GITHUB_WORKSPACE/Data/new_coli.fa
 ```
+
+#### Genes (via `importgenomes`)
+```bash
+./manage.py importgenes $GITHUB_WORKSPACE/Data/Escherichia_coli_str_k_12_substr_mg1655_cds.fa
+./manage.py importgenes $GITHUB_WORKSPACE/Data/Escherichia_coli_o157_h7_str_edl933_cds.fa
+./manage.py importgenes $GITHUB_WORKSPACE/Data/Escherichia_coli_cft073_cds.fa
+./manage.py importgenes $GITHUB_WORKSPACE/Data/new_coli_cds.fa
+
+```
