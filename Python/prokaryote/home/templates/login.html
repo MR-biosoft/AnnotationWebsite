@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <link rel="stylesheet" href="../css/custom_styles.css"/>
+
+        <style>
+
+            /* header login */
+
+            .header-authentification {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .header-authentification-1 {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 0;
+            }
+
+            .header-authentification-2 {
+                width: 100%;
+                text-align: center;
+            }
+
+            /* body login */
+
+            .login-title {
+                text-align: center;
+            }
+
+            .login-body {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                max-width: 340px;
+                margin: 0 auto;
+                text-align: center;
+            }
+
+            .login-form-body {
+                border: 2.5px solid #dddddd;
+                border-radius: 6px;
+                background-color: rgb(241, 247, 244);
+                text-align: left;
+                padding: 15px 30px;
+            }
+
+            .no-account-form-body{
+                border: 2.5px solid #dddddd;
+                border-radius: 6px;
+                text-align: left;
+                margin-top: 20px;
+                padding: 15px 30px;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <header class="header-authentification">
+            <h1 class="header-authentification-1">Certified Authentification</h1>
+            <div class="header-authentification-2">
+                <img src="../images/mr-biosoft-green.png"/>
+            </div>
+        </header>
+
+        <h2 class="login-title">Sign in to Biosoft</h2>
+
+        <section class="login-body">
+
+            <div class="login-form-body">
+
+                <form method="post" action="fictive-page.php">
+
+                    <p>
+                        <label for="login">Email address</label>
+                        <input type="email" name="username" id="login" maxlength="50" required/>
+                    </p>
+
+                    <p>
+                        <label for="password">Password</label>
+                        <input type="password" name="password" id="password" maxlength="50" required/>
+                    </p>
+
+                    <input type="submit" value="Sign in"/>
+
+                </form>
+
+            </div>
+
+            <div class="no-account-form-body">
+
+                New to Biosoft?
+                <a href="signup.html">Sign up</a>
+
+            </div>
+
+        </section>
+
+    
+    </body>
+
+</html>
