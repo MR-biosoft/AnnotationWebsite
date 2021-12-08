@@ -96,6 +96,9 @@ def save_genome(
     )
     genome.save(force_insert=True)
 
+def save_protein(record: Seq.Seq):
+    """ """
+    pass
 
 # TODO :
 # Add transaction decorator ?
@@ -109,6 +112,9 @@ def save_gene(
 ):
     """
     Save gene into the following tables (in order):
+        * GeneProtein (gene_protein)
+        * GeneSeq (gene_seq)
+        * Annotation (annotation)
 
     params:
     ------
