@@ -2,7 +2,7 @@
 Views for main site
 """
 from django.views import View
-from django.shortcuts import render, get_list_or_404
+from django.shortcuts import render, get_list_or_404, get_object_or_404
 
 from .models import Genome, GeneProtein
 
@@ -13,13 +13,19 @@ class GenomeView(View):
 
     GET_template = "genome_form.html"
     POST_template = "genome_query.html"
+    ENTRY_template = "single_genome_entry.html"
 
     def get(self, request):
         """Method used to process GET requests"""
-        # The dict's keys should be valid Python identifiers :
-        # a combination of numbers, letters, and underscores, starting with a letter
-        context = {"name": "value", "x": 5, "y": 17}
-        return render(request, self.GET_template, context)
+        if 'chromosome' in request.GET:
+            chromosome = request.GET["chromosome"]
+            genome = get_object_or_404(Genome, chromosome=chromosome)
+            context = dict(genome)
+            # if we want to get rid of the sequence:
+            _ = context.pop("sequence")
+            return render(request, self.ENTRY_template, context)
+        else:
+            return render(request, self.GET_template, {})
 
     def post(self, request):
         """Method used to process POST requests"""
@@ -49,13 +55,18 @@ class GeneView(View):
 
     GET_template = "gene_form.html"
     POST_template = "gene_query.html"
+    ENTRY_template = "single_gene_entry.html"
 
     def get(self, request):
         """Method used to process GET requests"""
-        # The dict's keys should be valid Python identifiers :
-        # a combination of numbers, letters, and underscores, starting with a letter
-        context = {"name": "value", "x": 5, "y": 17}
-        return render(request, self.GET_template, context) 
+        if 'gene' in request.GET:
+            accession_number = request.GET["gene"]
+            gene = get_object_or_404(GeneProtein, accession_number=accession_number)
+            context = dict(gene)
+            return render(request, self.ENTRY_template, context)
+        else:
+            return render(request, self.GET_template, {})
+
 
     def post(self, request):
         """Method used to process POST requests"""

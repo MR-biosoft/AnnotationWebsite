@@ -69,8 +69,8 @@
         <tbody>
             {% for hit in hits %}
             <tr>
-                <td><a href="#">{{ hit.accession_number }}</a></td>
-                <td><a href="#">{{ hit.chromosome.chromosome }}</a></td>
+                <td><a href="{% url 'browse:gene' %}?gene={{hit.accession_number}}">{{ hit.accession_number }}</a></td>
+                <td><a href="{% url 'browse:genome' %}?chromosome={{hit.chromosome.chromosome}}">{{ hit.chromosome.chromosome }}</a></td>
                 <td>{{ hit.chromosome.specie }}</td>
                 <td class="shrink">{{ hit.chromosome.strain }}</td>
                 <td>{{ hit.dna_length }}</td>
