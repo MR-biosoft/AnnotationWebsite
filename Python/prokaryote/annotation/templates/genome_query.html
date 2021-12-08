@@ -43,7 +43,7 @@
         <tbody>
             {% for hit in hits %}
             <tr>
-                <td><a href="{% url 'browse:single_genome' hit.chromosome %}">{{ hit.chromosome }}</a></td>
+                <td><a href="{% url 'browse:genome' %}?chromosome={{hit.chromosome}}">{{ hit.chromosome }}</a></td>
                 <td>{{ hit.specie }}</td>
                 <td>{{ hit.strain }}</td>
                 <td>{{ hit.length }}</td>

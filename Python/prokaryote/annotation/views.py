@@ -13,13 +13,19 @@ class GenomeView(View):
 
     GET_template = "genome_form.html"
     POST_template = "genome_query.html"
+    ENTRY_template = "single_genome_entry.html"
 
     def get(self, request):
         """Method used to process GET requests"""
-        # The dict's keys should be valid Python identifiers :
-        # a combination of numbers, letters, and underscores, starting with a letter
-        context = {"name": "value", "x": 5, "y": 17}
-        return render(request, self.GET_template, context)
+        if 'chromosome' in request.GET:
+            chromosome = request.GET["chromosome"]
+            genome = get_object_or_404(Genome, chromosome=chromosome)
+            context = dict(genome)
+            # if we want to get rid of the sequence:
+            _ = context.pop("sequence")
+            return render(request, self.ENTRY_template, context)
+        else:
+            return render(request, self.GET_template, {})
 
     def post(self, request):
         """Method used to process POST requests"""
@@ -64,13 +70,18 @@ class GeneView(View):
     # redefine these two :
     GET_template = "gene_form.html"
     POST_template = "gene_query.html"
+    ENTRY_template = "single_gene_entry.html"
 
     def get(self, request):
         """Method used to process GET requests"""
-        # The dict's keys should be valid Python identifiers :
-        # a combination of numbers, letters, and underscores, starting with a letter
-        context = {"name": "value", "x": 5, "y": 17}
-        return render(request, self.GET_template, context) 
+        if 'gene' in request.GET:
+            accession_number = request.GET["gene"]
+            gene = get_object_or_404(GeneProtein, accession_number=accession_number)
+            context = dict(gene)
+            return render(request, self.ENTRY_template, context)
+        else:
+            return render(request, self.GET_template, {})
+
 
     def post(self, request):
         """Method used to process POST requests"""
@@ -89,39 +100,3 @@ class GeneView(View):
             print("hits.values :", hits.values("accession_number", "dna_length", "chromosome")[0])
             context = {"hits": hits} if hits.count() < 30 else {"hits": hits[:30]}
         return render(request, self.POST_template, context)
-
-class PutainDeMerde(ValueError):
-    pass
-
-class SingleGenomeView(View):
-    """ View logic for a Genome entry """
-
-    GET_template = "single_genome_entry.html"
-
-    def get(self, request, **kwargs):
-        #if kwargs:
-        #    for key, value in kwargs.items():
-        #        print(f"{key} = {value}")
-        #else:
-        #    raise PutainDeMerde(":(")
-        if 'chromosome' in kwargs:
-            for key, value in kwargs.items():
-                print(f"{key} = {value}")
-            chromosome = kwargs['chromosome']
-            #print(chromosome)
-            genome = get_object_or_404(Genome, chromosome="ASM666v1")
-            return render(request, self.GET_template, dict(genome))
-        else:
-            print(request.POST.keys())
-            print(request.GET.keys())
-            genome = {}#get_object_or_404(Genome, chromosome)
-        return render(request, self.GET_template, dict(genome))
-
-class SingleGeneView(View):
-    """ View logic for a Gene entry """
-
-    GET_template = "single_gene_entry.html"
-
-    def get(self, request, accession_number):
-        pass
-
