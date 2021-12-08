@@ -98,10 +98,11 @@ def save_genome(
 
 def save_protein(record: Seq.Seq):
     """ """
-    try:
-        gene_prot = GeneProtein.objects.get(accession_number=seq.id)
-    except Exception as e:
-        pass
+    gene_prot = GeneProtein.objects.get(accession_number=seq.id)
+    
+
+
+
 
 # TODO :
 # Add transaction decorator ?
