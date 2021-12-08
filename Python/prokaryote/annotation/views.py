@@ -90,6 +90,38 @@ class GeneView(View):
             context = {"hits": hits} if hits.count() < 30 else {"hits": hits[:30]}
         return render(request, self.POST_template, context)
 
+class PutainDeMerde(ValueError):
+    pass
 
+class SingleGenomeView(View):
+    """ View logic for a Genome entry """
 
+    GET_template = "single_genome_entry.html"
+
+    def get(self, request, **kwargs):
+        #if kwargs:
+        #    for key, value in kwargs.items():
+        #        print(f"{key} = {value}")
+        #else:
+        #    raise PutainDeMerde(":(")
+        if 'chromosome' in kwargs:
+            for key, value in kwargs.items():
+                print(f"{key} = {value}")
+            chromosome = kwargs['chromosome']
+            #print(chromosome)
+            genome = get_object_or_404(Genome, chromosome="ASM666v1")
+            return render(request, self.GET_template, dict(genome))
+        else:
+            print(request.POST.keys())
+            print(request.GET.keys())
+            genome = {}#get_object_or_404(Genome, chromosome)
+        return render(request, self.GET_template, dict(genome))
+
+class SingleGeneView(View):
+    """ View logic for a Gene entry """
+
+    GET_template = "single_gene_entry.html"
+
+    def get(self, request, accession_number):
+        pass
 

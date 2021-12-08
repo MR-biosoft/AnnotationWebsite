@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 
 urlpatterns = [
-    re_path(r"^/*", include(("home.urls", "home"), namespace="home")),
+    path("", include(("home.urls", "home"), namespace="home")),
     path("admin/", admin.site.urls),
     path(
         "browse/",
