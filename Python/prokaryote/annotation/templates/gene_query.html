@@ -46,6 +46,7 @@
                 <th>Specie</th>
                 <th>Strain</th>
                 <th>Length (bp)</th>
+                <th>Symbol</th>
             </tr>
         </thead>
         <tbody>
@@ -56,6 +57,7 @@
                 <td>{{ hit.chromosome.specie }}</td>
                 <td>{{ hit.chromosome.strain }}</td>
                 <td>{{ hit.dna_length }}</td>
+                <td>{{ hit.annotation.gene_symbol }}</td>
 
             </tr>
             {% endfor %}
