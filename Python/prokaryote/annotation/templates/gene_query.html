@@ -7,6 +7,29 @@
     <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
     <script src="{% static 'js/sortable.js' %}"></script>
 
+    <style>
+
+        table {
+            width: 100%;
+            table-layout: auto;
+        }
+
+        td {
+            width: 12.5%;
+        }
+
+        .shrink {
+            width: 10%;
+        }
+
+        .expand {
+            width: 28%;
+        }
+
+
+
+    </style>
+
 </head>
 
 <body>
@@ -34,23 +57,33 @@
     <table class="sortable">
         <thead>
             <tr>
+                <th>AC</th>
                 <th>Chromosome</th>
                 <th>Specie</th>
                 <th>Strain</th>
                 <th>Length (bp)</th>
+                <th>Symbol</th>
+                <th>Function</th>
             </tr>
         </thead>
         <tbody>
             {% for hit in hits %}
             <tr>
-                <td><a href="#">{{ hit.chromosome }}</a></td>
-                <td>{{ hit.specie }}</td>
-                <td>{{ hit.strain }}</td>
-                <td>{{ hit.length }}</td>
+                <td><a href="#">{{ hit.accession_number }}</a></td>
+                <td><a href="#">{{ hit.chromosome.chromosome }}</a></td>
+                <td>{{ hit.chromosome.specie }}</td>
+                <td class="shrink">{{ hit.chromosome.strain }}</td>
+                <td>{{ hit.dna_length }}</td>
+                <td class="shrink">{{ hit.annotation.gene_symbol }}</td>
+                <td class="expand">{{ hit.annotation.function}}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <br/>
+
+
 
 
 </body>

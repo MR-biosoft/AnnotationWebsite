@@ -46,8 +46,9 @@
         </div>
     </header>
 
-    <form method="post" action="genome">
+    <form method="post" action="gene">
 
+        {% csrf_token %}
         <fieldset>
 
             <legend>Specific gene search</legend>
@@ -65,8 +66,9 @@
 
     <br/>
     
-    <form method="post" action="genome">
+    <form method="post" action="gene">
 
+        {% csrf_token %}
         <fieldset>
 
             <legend>Gene set search</legend>
@@ -92,12 +94,12 @@
 
             <div class="form-gene-field">
                 <label for="minsize">Minimum (in bp)</label>
-                <input type="number" step="100" name="minsize" id="minsize" />
+                <input type="number" min="0" step="10" name="minsize" id="minsize" />
             </div>
 
             <div class="form-gene-field">
                 <label for="maxsize">Maximum (in bp)</label>
-                <input type="number" step="100" name="maxsize" id="maxsize" />
+                <input type="number" min="0" step="10" name="maxsize" id="maxsize" />
             </div>
 
             <div class="form-gene-field"></div>
