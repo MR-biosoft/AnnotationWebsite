@@ -23,14 +23,8 @@ class GenomeView(View):
 
     def post(self, request):
         """Method used to process POST requests"""
-        # form = GenomeForm(request.POST)
-        # if form.is_valid():
-        print("-------------------Test---------------------")
-        print(request.POST.keys())
-        print(request.POST)
-        #print(get_object_or_404(Genome, specie=request.POST.get("specie", "")))
-        print("get_list_or_404")
-        # print(get_list_or_404(Genome, specie=request.POST.get("specie", "")))
+        # print(request.POST.keys())
+        # print(request.POST)
         if "chromosome" in request.POST:
             chromosome = request.POST.get("chromosome", "")
             hits = get_list_or_404(Genome, chromosome__istartswith = chromosome)
@@ -38,18 +32,12 @@ class GenomeView(View):
         elif "specie" in request.POST:
             specie = request.POST.get("specie", "")
             strain = request.POST.get("strain", "")
-            motif = request.POST.get("motif", "")
             minsize = request.POST.get("minsize", "")
             maxsize = request.POST.get("maxsize", "")
             minsize = int(minsize) if minsize else minsize
             maxsize = int(maxsize) if maxsize else maxsize
-            print(maxsize)
-            print(type(maxsize))
+            motif = request.POST.get("motif", "")
             hits = Genome.objects
-            # hits = get_list_or_404(Genome)
-            # print("hits1 = ", hits)
-            # hits = Genome.objects.filter(specie = specie) if specie else hits
-            # hits = Genome.objects.filter(specie__icontains = specie) if specie else hits
             hits = hits.filter(specie__icontains = specie) if specie else hits
             hits = hits.filter(strain__iexact = strain) if strain else hits
             hits = hits.filter(sequence__icontains = motif) if motif else hits
@@ -77,17 +65,34 @@ class GeneView(View):
         if "ac" in request.POST:
             accession_number = request.POST.get("ac", "")
             hits = GeneProtein.objects
-            # hits = hits.filter(accession_number = accession_number)
             hits = hits.filter(accession_number__istartswith = accession_number)
-            # hits = get_list_or_404(GeneProtein, accession_number = accession_number)
-            # hits = hits.select_related('geneseq')
             # hits = hits.select_related('chromosome').filter(chromosome__chromosome="ASM666v1")
-            hits = hits.select_related('chromosome')
-            hits = hits.select_related('annotation')
-            print("hits.several_attributes =", hits[0]._state.__dict__)
-            print("hits.several_attributes =", hits[0]._state.fields_cache['chromosome'].specie)
-            print("hits.values :", hits.values("accession_number", "dna_length", "chromosome")[0])
-            context = {"hits": hits} if hits.count() < 30 else {"hits": hits[:30]}
+            hits = hits.select_related("chromosome").select_related("annotation")
+            # print("hits.several_attributes =", hits[0]._state.__dict__)
+            # print("hits.several_attributes =", hits[0]._state.fields_cache['chromosome'].specie)
+            # print("hits.values :", hits.values("accession_number", "dna_length", "chromosome")[0])
+            context = {"hits": hits} if hits.count() < 100 else {"hits": hits[:100]}
+        elif "chromosome" in request.POST:
+            chromosome = request.POST.get("chromosome", "")
+            specie = request.POST.get("specie", "")
+            strain = request.POST.get("strain", "")
+            minsize = request.POST.get("minsize", "")
+            maxsize = request.POST.get("maxsize", "")
+            gene_name = request.POST.get("gene_name", "")
+            gene_symbol = request.POST.get("gene_symbol", "")
+            gene_biotype = request.POST.get("gene_biotype", "")
+            motif = request.POST.get("motif", "")
+            # reading_frame
+            hits = GeneProtein.objects
+            hits = hits.select_related("chromosome").select_related("annotation")
+            hits = hits.filter(chromosome__chromosome__istartswith = chromosome) if chromosome else hits
+            hits = hits.filter(chromosome__specie__icontains = specie) if specie else hits
+
+
+
+            context = {"hits": hits} if hits.count() < 100 else {"hits": hits[:100]}
+
+
         return render(request, self.POST_template, context)
 
 
