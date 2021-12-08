@@ -4,7 +4,7 @@ Views for main site
 from django.views import View
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 
-from .models import Genome
+from .models import Genome, GeneProtein
 
 
 # Create your views here.
@@ -36,7 +36,6 @@ class GenomeView(View):
             hits = get_list_or_404(Genome, chromosome__iexact = chromosome)
             context = {"hits": hits}
         elif "specie" in request.POST:
-            # specie, strain, minsize, maxsize, motif = request.POST.get("specie", "strain", "minsize", "maxsize", "motif", "")
             specie = request.POST.get("specie", "")
             strain = request.POST.get("strain", "")
             motif = request.POST.get("motif", "")
@@ -57,14 +56,38 @@ class GenomeView(View):
             hits = hits.filter(length__gte = minsize) if minsize else hits
             hits = hits.filter(length__lte = maxsize) if maxsize else hits
             context = {"hits": hits}
-
         return render(request, self.POST_template, context)
 
-class GeneView(GenomeView):
+class GeneView(View):
     """ View logic for Genes """
 
     # redefine these two :
     GET_template = "gene_form.html"
-    #POST_template = "gene_query.html"
+    POST_template = "gene_query.html"
 
-    # get method is fine
+    def get(self, request):
+        """Method used to process GET requests"""
+        # The dict's keys should be valid Python identifiers :
+        # a combination of numbers, letters, and underscores, starting with a letter
+        context = {"name": "value", "x": 5, "y": 17}
+        return render(request, self.GET_template, context) 
+
+    def post(self, request):
+        """Method used to process POST requests"""
+        if "ac" in request.POST:
+            accession_number = request.POST.get("ac", "")
+            hits = GeneProtein.objects
+            # hits = hits.filter(accession_number = accession_number)
+            hits = hits.filter(accession_number__icontains = accession_number)
+            # hits = get_list_or_404(GeneProtein, accession_number = accession_number)
+            # hits = hits.select_related('geneseq')
+            hits = hits.select_related('chromosome')
+            print("hits.several_attributes =", hits[1]._state.fields_cache['chromosome'].specie)
+            print("hits.several_attributes =", hits[1]._state.__dict__)
+            print("hits.values :", hits.values("accession_number", "dna_length", "chromosome")[1])
+            context = {"hits": hits} if hits.count() < 30 else {"hits": hits[:30]}
+        return render(request, self.POST_template, context)
+
+
+
+

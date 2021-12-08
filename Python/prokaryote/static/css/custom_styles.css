@@ -121,7 +121,44 @@ h3 {
     color: rgb(175, 87, 87);
 }
 
-/* Sortable table */
+/* Table */
+
+table {
+    width: 60%;
+    table-layout: fixed;
+}
+
+.sortable tbody tr:nth-child(odd) {
+    background-color: rgb(241, 247, 244);
+}
+
+
+.sortable tbody tr:nth-child(odd) {
+    background-color: rgb(241, 247, 244);
+}
+
+th {
+    text-align: center;
+    padding-left: 15px;
+}
+
+tr {
+    height: 40px;
+}
+
+td a {
+    color: rgb(68, 183, 139);
+    text-decoration: none;
+}
+
+td a:hover {
+    text-decoration: underline;
+    color: rgb(17, 83, 54);
+}
+
+td {
+    padding-left: 10px;
+}
 
 .sortable thead {
     height: 40px;
@@ -208,3 +245,13 @@ hr {
     margin-bottom: 15px;
     margin-right: 10px;
 }
+
+/* Query */
+
+.results-title {
+    margin-top: 10px;
+    margin-bottom: 0px;
+    width: 100%;
+    text-align: left;
+}
+

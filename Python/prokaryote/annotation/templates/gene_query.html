@@ -34,23 +34,23 @@
     <table class="sortable">
         <thead>
             <tr>
-                <th>Chromosome</th>
+                <th>AC</th>
                 <th>Specie</th>
-                <th>Strain</th>
                 <th>Length (bp)</th>
             </tr>
         </thead>
         <tbody>
             {% for hit in hits %}
             <tr>
-                <td><a href="#">{{ hit.chromosome }}</a></td>
-                <td>{{ hit.specie }}</td>
-                <td>{{ hit.strain }}</td>
-                <td>{{ hit.length }}</td>
+                <td><a href="#">{{ hit.accession_number }}</a></td>
+                <td>{{ hit.dna_length }}</td>
+
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+
 
 
 </body>
