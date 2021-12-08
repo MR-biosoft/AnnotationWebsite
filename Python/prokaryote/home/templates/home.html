@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <link rel="stylesheet" href="{% static 'css/custom_styles.css' %}"/>
+
+    </head>
+
+    <body>
+
+        <nav>
+            <a href="#" class="documentation">Documentation</a>
+            <a href="mailto:mrbiosoft@gmail.com" target="_blank">Support</a>
+            <a href="#" class=>Logout</a>
+            <a href="#">Home</a>
+        </nav>
+
+        <header>
+            <div class="header-1">
+                <h1 class="text-heading">Home</h1>
+                <h2 class="description-title">The browser for bacterial genome annotation</h2>
+                Expanding plateform that encompasses annotations and functional analysis of bacterial genomes
+            </div>
+            <div class="header-2">
+                <img src="{% static 'images/mr-biosoft-green.png' %}"/>
+            </div>
+        </header>
+
+        <h1 class="body-main-title">Sequence Search & Annotation</h1>
+        
+        <section class="database-annotation">
+
+            <section class="database-annotation-column">
+
+                <h2 class="column-main-title">Sequence Search</h2>
+
+                <hr style="margin-top:0"/>
+
+                <h3><a href="{% url 'browse:genome' %}">Genome</a></h3>
+                Browser for retrieving bacterial genomes
+                <hr/>
+
+                <h3><a href="{% url 'browse:gene' %}">Gene</a></h3>
+                Browser for gene sequences and functional annotations
+                <hr/>
+
+                <h3><a href="#">Protein</a></h3>
+                Browser for gene sequences and functional annotations
+                <hr/>
+
+            </section>
+
+            <section class="database-annotation-column">
+
+                <h2 class="column-main-title">Annotation</h2>
+
+                <hr style="margin-top:0"/>
+
+                <h3><a href="#">Basket</a></h3>
+                Set of allocated entries
+                <hr/>
+
+                <h3><a href="#">Request</a></h3>
+                Request sequences to annotate
+                <hr/>
+
+            </section>
+        
+        </section>
+
+    </body>
+
+</html>
+
+

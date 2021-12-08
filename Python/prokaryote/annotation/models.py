@@ -15,6 +15,27 @@
 
 from django.db import models
 
+class DataModel(models.Model):
+    """ Abstract base class to include utility methods """
+    class Meta:
+        managed = False
+        abstract = True
+
+    def __repr__(self):
+        """ Representation (for command line usage) """
+        return f"{self.__class__.__name__}({self.pk})"
+
+    def __str__(self):
+        """ String representation: printable """
+        return str(self.pk)
+
+    def __iter__(self):
+        """ Utility to iterate over the object's attributes 
+        or cast it to a dictionary."""
+        for key in self.__dict__:
+            if not key.startswith("_"):
+                yield key, getattr(self, key)
+
 
 class Member(models.Model):
     email = models.CharField(primary_key=True, max_length=50)
@@ -29,7 +50,7 @@ class Member(models.Model):
         db_table = "member"
 
 
-class Genome(models.Model):
+class Genome(DataModel):
     chromosome = models.CharField(primary_key=True, max_length=20)
     specie = models.CharField(max_length=20, blank=True, null=True)
     strain = models.CharField(max_length=10, blank=True, null=True)
@@ -41,7 +62,7 @@ class Genome(models.Model):
         db_table = "genome"
 
 
-class GeneProtein(models.Model):
+class GeneProtein(DataModel):
     accession_number = models.CharField(primary_key=True, max_length=8)
     dna_length = models.IntegerField(blank=True, null=True)
     start_position = models.IntegerField(blank=True, null=True)
@@ -58,7 +79,7 @@ class GeneProtein(models.Model):
         db_table = "gene_protein"
 
 
-class GeneSeq(models.Model):
+class GeneSeq(DataModel):
     accession_number = models.OneToOneField(
         GeneProtein, models.DO_NOTHING, db_column="accession_number", primary_key=True
     )
@@ -69,7 +90,7 @@ class GeneSeq(models.Model):
         db_table = "gene_seq"
 
 
-class ProteinSeq(models.Model):
+class ProteinSeq(DataModel):
     accession_number = models.OneToOneField(
         GeneProtein, models.DO_NOTHING, db_column="accession_number", primary_key=True
     )
@@ -80,7 +101,7 @@ class ProteinSeq(models.Model):
         db_table = "protein_seq"
 
 
-class Annotation(models.Model):
+class Annotation(DataModel):
     accession_number = models.OneToOneField(
         "GeneProtein", models.DO_NOTHING, db_column="accession_number", primary_key=True
     )
@@ -99,7 +120,7 @@ class Annotation(models.Model):
         db_table = "annotation"
 
 
-class Decision(models.Model):
+class Decision(DataModel):
     accession_number = models.OneToOneField(
         "GeneProtein", models.DO_NOTHING, db_column="accession_number", primary_key=True
     )

@@ -1,16 +1,15 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 
 <head>
 
-    <link rel="stylesheet" href="../css/custom_styles.css"/>
+    <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
 
     <style>
-        
         input {
             height: 25px;
         }
-
     </style>
 
 </head>
@@ -21,7 +20,7 @@
         <a href="#" class="documentation">Documentation</a>
         <a href="mailto:mrbiosoft@gmail.com" target="_blank">Support</a>
         <a href="#" class=>Logout</a>
-        <a href="home.html">Home</a>
+        <a href="{% url 'home:menu' %}">Home</a>
     </nav>
 
     <header>
@@ -31,31 +30,37 @@
             Expanding platform that encompasses annotations and functional analysis of bacterial genomes
         </div>
         <div class="header-2">
-            <img src="../images/mr-biosoft-green.png"/>
+            <img src="{% static 'images/mr-biosoft-green.png' %}" />
         </div>
     </header>
 
-    <form method="post" action="genome">
-
+    <form method="post" action="genome" class="genome-form-body">
+        <!--
+        <form method="post" action="annotation/genome" class="genome-form-body">
+    -->
+        {% csrf_token %}
         <fieldset>
 
             <legend>Specific genome search</legend>
 
             <div class="form-genome-field">
                 <label for="chromosome">Chromosome</label>
-                <input type="text" name="chromosome" id="chromosome" />
+                <input type="text" name="chromosome" id="chromosome" required />
             </div>
 
-            <input type="submit" value="Launch Request" />
+            <input type="submit" value="Launch Query" />
 
         </fieldset>
-    
+
     </form>
 
-    <br/>
-    
-    <form method="post" action="genome">
+    <br />
 
+    <form method="post" action="genome" class="genome-form-body">
+        <!--
+            <form method="post" action="annotation/genome" class="genome-form-body">
+        -->
+        {% csrf_token %}
         <fieldset>
 
             <legend>Genome set search</legend>
@@ -76,12 +81,12 @@
 
             <div class="form-genome-field">
                 <label for="minsize">Minimum (in bp)</label>
-                <input type="number" step="100" name="minsize" id="minsize" />
+                <input type="number" min="0" step="1000" name="minsize" id="minsize" />
             </div>
 
             <div class="form-genome-field">
                 <label for="maxsize">Maximum (in bp)</label>
-                <input type="number" step="100" name="maxsize" id="maxsize" />
+                <input type="number" min="0" step="1000" name="maxsize" id="maxsize" />
             </div>
 
             <h3 class="form-title">Other characteristics</h3>
@@ -91,7 +96,7 @@
                 <textarea rows="3" name="motif" id="motif"></textarea>
             </div>
 
-            <input type="submit" value="Launch Request" />
+            <input type="submit" value="Launch Query" />
 
         </fieldset>
 

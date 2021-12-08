@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
+    <script src="{% static 'js/sortable.js' %}"></script>
+
+</head>
+
+<body>
+
+    <nav>
+        <a href="#" class="documentation">Documentation</a>
+        <a href="mailto:mrbiosoft@gmail.com" target="_blank">Support</a>
+        <a href="#" class=>Logout</a>
+        <a href="{% url 'home:menu' %}">Home</a>
+    </nav>
+
+    <header>
+        <div class="header-1">
+            <h1 class="text-heading">Bacterial genome search</h1>
+            <h2 class="description-title">The browser for bacterial genome annotation</h2>
+            Expanding platform that encompasses annotations and functional analysis of bacterial genomes
+        </div>
+        <div class="header-2">
+            <img src="{% static 'images/mr-biosoft-green.png' %}" />
+        </div>
+    </header>
+
+    <h1 class="results-title">Results</h1>
+
+    <table class="sortable">
+        <thead>
+            <tr>
+                <th>Chromosome</th>
+                <th>Specie</th>
+                <th>Strain</th>
+                <th>Length (bp)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hit in hits %}
+            <tr>
+                <td><a href="{% url 'browse:genome' %}?chromosome={{hit.chromosome}}">{{ hit.chromosome }}</a></td>
+                <td>{{ hit.specie }}</td>
+                <td>{{ hit.strain }}</td>
+                <td>{{ hit.length }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+</body>
+
+</html>

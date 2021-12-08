@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <link rel="stylesheet" href="../css/custom_styles.css"/>
+
+        <style>
+
+            .specific-genome-form {
+                display: flex;
+                flex-direction: column;
+                flex-wrap: wrap;
+                width: 100%; 
+                max-width: 680px;
+                margin: 0 auto;
+                text-align: center;
+            }
+
+            input {
+                border: 2.5px solid #dddddd;
+                border-radius: 6px;
+                width: 100%;
+                margin: 10px 0;
+                height: 25px;
+            }
+
+            legend {
+                font-size: 0.5cm;
+                font-weight: bold;
+                color: rgb(175, 87, 87);
+                color: rgb(68, 183, 139);
+            }
+
+            fieldset {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                border: 2.5px solid #dddddd;
+                border-radius: 6px;
+                background-color: rgb(241, 247, 244);
+                padding: 15px 30px;
+            }
+
+            .form-title {
+                width: 100%;
+                margin-top: 10px;
+                margin-bottom: 15px;
+            }
+
+            .form-field1 {
+                width: 45%;
+                margin-bottom: 15px;
+                margin-right: 10px;
+            }
+
+            .form-field2 {
+                width: 45%;
+                margin-bottom: 15px;
+                margin-right: 10px;
+            }
+
+            textarea {
+                border: 2.5px solid #dddddd;
+                border-radius: 6px;
+                width: 100%;
+                margin: 10px 0;
+                height: 30px;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <nav>
+            <a href="#" class="documentation">Documentation</a>
+            <a href="mailto:support@biosoft.com" target="_blank">Support</a>
+            <a href="#" class=>Logout</a>
+            <a href="home.html">Home</a>
+        </nav>
+
+        <header>
+            <div class="header-1">
+                <h1 class="text-heading">Bacterial genome search</h1>
+                <h2 class="description-title">The browser for bacterial genome annotation</h2>
+                Expanding platform that encompasses annotations and functional analysis of bacterial genomes
+            </div>
+            <div class="header-2">
+                <img src="../images/mr-biosoft-green.png"/>
+            </div>
+        </header>
+
+        <form method="post" action="fictive-page.php" class="genome-form-body">
+
+            <fieldset>
+
+                <legend>Specific genome search</legend>
+
+                <div class="form-field1">
+                    <label for="chromosome">Chromosome</label>
+                    <input type="text" name="chromosome" id="chromosome"/>
+                </div>
+
+                <input type="submit" value="Launch Request"/>
+
+            </fieldset>
+
+            <br/>
+
+            <fieldset>
+
+                <legend>Set genome search</legend>
+
+                <h3 class="form-title">Taxonomy</h3>
+
+                <div class="form-field1">
+                    <label for="specie">Specie</label>
+                    <input type="text" name="specie" id="specie"/>
+                </div>
+
+                <div class="form-field2">
+                    <label for="strain">Strain</label>
+                    <input type="text" name="strain" id="strain"/>
+                </div>
+
+                <h3 class="form-title">Size Genome</h3>
+
+                <div class="form-field1">
+                    <label for="minsize">Minimum (in bp)</label>
+                    <input type="number" step="100" name="minsize" id="minsize"/>
+                </div>
+
+                <div class="form-field2">
+                    <label for="maxsize">Maximum (in bp)</label>
+                    <input type="number" step="100" name="maxsize" id="maxsize"/>
+                </div>
+
+                <h3 class="form-title">Other characteristics</h3>
+
+                <div class="form-field1">
+                    <label for="motif">Motif</label><br/>
+                    <textarea rows="3" name="motif" id="motif"></textarea>
+                </div>
+
+                <input type="submit" value="Launch Request"/>
+
+            </fieldset>
+
+         </form>
+        
+    </body>
+
+</html>
