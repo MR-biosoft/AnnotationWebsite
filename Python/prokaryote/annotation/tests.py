@@ -37,7 +37,7 @@ from Bio import SeqIO, Seq
 
 # Imports from our module
 # from annotation import models
-from annotation.parsing import MissingChromosomeField, FASTAParser, save_genome, save_gene
+from annotation.parsing import MissingChromosomeField, FASTAParser, save_genome, save_gene, save_protein
 from annotation.bioregex import DEFAULT_CDS, DEFAULT_PROTEIN, DEFAULT_GENOME
 from annotation.devutils import get_env_value
 from annotation.models import Genome, GeneProtein
@@ -289,7 +289,7 @@ class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
     """Class defined to verify that parsed data can be imported
     into the site's database"""
 
-    @tag("devel", "bulk", "genome", "db")
+    @tag("bulk", "genome", "db")
     def test_save_genomes_to_db(self):
         """Iterate over all genomes, annotated and novel.
         Test that they can be saved to the 'genome' table of the '
@@ -306,7 +306,7 @@ class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
                     strain=self.genome_data_dict[genome.name]["strain"],
                 )
 
-    @tag("devel", "bulk", "gene", "db", "ci-skip")
+    @tag("devel", "bulk", "gene", "db")
     def test_save_gene_to_db(self):
         """ """
         # Unfortunately, django properly isolates each test within a transaction
@@ -333,4 +333,33 @@ class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
                         is_plasmid = "plasmid" in gene.description
                         print(f"{_miss_chrom_ex}, is_plasmid = {is_plasmid}")
             print("Done")
+
+    @tag("devel", "bulk", "protein", "db", "ci-skip")
+    def test_save_protein_to_db(self):
+        """ """
+        # Unfortunately, django properly isolates each test within a transaction
+        # which means that the genomes that we created in the previous test do
+        # not exist anymore and we have to create them again.
+        for genome in self._genome_files:
+            management.call_command(
+                'importgenome', genome, 
+                specie=self.genome_data_dict[genome.name]["specie"],
+                strain=self.genome_data_dict[genome.name]["strain"],
+            )
+
+        # ibidem
+        for cds in self._cds_files:
+            management.call_command('importgenes', cds)
+
+        for protein in self._protein_files:
+            print(f"\nProcessing {protein.absolute().as_posix()}...", end="\t")
+            with open(protein, "r", encoding="utf-8") as _protein_handle:
+                for protein in SeqIO.parse(_protein_handle, "fasta"):
+                    try:
+                        save_protein(protein)
+                    except ObjectDoesNotExist as _nil_obj:
+                        is_plasmid = "plasmid" in protein.description
+                        print(f"{_nil_obj}, is_plasmid = {is_plasmid}")
+            print("Done")
+
 

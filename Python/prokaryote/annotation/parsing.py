@@ -98,10 +98,11 @@ def save_genome(
 
 def save_protein(record: Seq.Seq):
     """ """
-    gene_prot = GeneProtein.objects.get(accession_number=seq.id)
+    gene_prot = GeneProtein.objects.get(accession_number=record.id)
+    gene_prot.aa_length = len(record.seq)
+    gene_prot.save()
+    ProteinSeq.objects.create(accession_number=gene_prot, sequence=str(record.seq))
     
-
-
 
 
 # TODO :
