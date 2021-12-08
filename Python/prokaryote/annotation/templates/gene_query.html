@@ -7,6 +7,13 @@
     <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
     <script src="{% static 'js/sortable.js' %}"></script>
 
+    <style>
+        table {
+            width: 100%;
+            table-layout: fixed;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -35,7 +42,9 @@
         <thead>
             <tr>
                 <th>AC</th>
+                <th>Chromosome</th>
                 <th>Specie</th>
+                <th>Strain</th>
                 <th>Length (bp)</th>
             </tr>
         </thead>
@@ -43,6 +52,9 @@
             {% for hit in hits %}
             <tr>
                 <td><a href="#">{{ hit.accession_number }}</a></td>
+                <td><a href="#">{{ hit.chromosome.chromosome }}</a></td>
+                <td>{{ hit.chromosome.specie }}</td>
+                <td>{{ hit.chromosome.strain }}</td>
                 <td>{{ hit.dna_length }}</td>
 
             </tr>

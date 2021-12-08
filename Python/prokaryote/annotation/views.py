@@ -33,7 +33,7 @@ class GenomeView(View):
         # print(get_list_or_404(Genome, specie=request.POST.get("specie", "")))
         if "chromosome" in request.POST:
             chromosome = request.POST.get("chromosome", "")
-            hits = get_list_or_404(Genome, chromosome__iexact = chromosome)
+            hits = get_list_or_404(Genome, chromosome__istartswith = chromosome)
             context = {"hits": hits}
         elif "specie" in request.POST:
             specie = request.POST.get("specie", "")
@@ -78,13 +78,13 @@ class GeneView(View):
             accession_number = request.POST.get("ac", "")
             hits = GeneProtein.objects
             # hits = hits.filter(accession_number = accession_number)
-            hits = hits.filter(accession_number__icontains = accession_number)
+            hits = hits.filter(accession_number__istartswith = accession_number)
             # hits = get_list_or_404(GeneProtein, accession_number = accession_number)
             # hits = hits.select_related('geneseq')
             hits = hits.select_related('chromosome')
-            print("hits.several_attributes =", hits[1]._state.fields_cache['chromosome'].specie)
-            print("hits.several_attributes =", hits[1]._state.__dict__)
-            print("hits.values :", hits.values("accession_number", "dna_length", "chromosome")[1])
+            print("hits.several_attributes =", hits[0]._state.__dict__)
+            print("hits.several_attributes =", hits[0]._state.fields_cache['chromosome'].specie)
+            print("hits.values :", hits.values("accession_number", "dna_length", "chromosome")[0])
             context = {"hits": hits} if hits.count() < 30 else {"hits": hits[:30]}
         return render(request, self.POST_template, context)
 
