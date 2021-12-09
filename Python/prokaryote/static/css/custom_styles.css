@@ -274,28 +274,31 @@ hr {
     flex-direction: row;
     flex-wrap: wrap;
     width: 100%;
-    margin-bottom: 30px;
+}
+
+.entry-gene-information:nth-child(1){
+    margin-top: 20px;
 }
 
 .entry-gene-information {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     flex-wrap: wrap;
     width: 100%;
-    margin-top: 20px;
 }
+
+
 
 .entry-column-information {
     max-width: 620px;
-    width: 48.7%;
+    min-width: 260px;
+    width: 48.5%;
     height: 400px;
     background-color: rgb(241, 247, 244);
     border: 2.5px solid #dddddd;
     border-radius: 6px;
-}
-
-.entry-column-information:nth-child(1){
-    margin-right: 20px;
+    margin-bottom: 20px;
 }
 
 .entry-title {
