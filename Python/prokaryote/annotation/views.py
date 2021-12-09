@@ -100,8 +100,7 @@ class GeneView(View):
             hits = hits.filter(dna_length__lte = maxsize) if maxsize else hits
             hits = hits.filter(annotation__gene_name__iexact = gene_name) if gene_name else hits
             hits = hits.filter(annotation__gene_symbol__iexact = gene_symbol) if gene_symbol else hits
-            print(function)
-            hits = hits.filter(annotation__function__icontains = function) if len(function) >= 5 else hits
+            hits = hits.filter(annotation__function__icontains = function) if len(function) >= 3 else hits
             hits = hits.filter(geneseq__sequence__icontains = motif) if motif else hits
             if reading_frame == "direct":
                 hits = hits.filter(reading_frame = 1)
@@ -133,5 +132,36 @@ class ProteinView(View):
 
     def post(self, request):
         """Method used to process POST requests"""
-        ## Add real processing logic
-        return render(request, self.POST_template, {})
+        if "ac" in request.POST:
+            accession_number = request.POST.get("ac", "")
+            hits = GeneProtein.objects
+            hits = hits.filter(accession_number__istartswith = accession_number)
+            hits = hits.select_related("chromosome").select_related("annotation")
+            context = {"hits": hits} if hits.count() < 100 else {"hits": hits[:100]}
+        elif "chromosome" in request.POST:
+            chromosome = request.POST.get("chromosome", "")
+            specie = request.POST.get("specie", "")
+            strain = request.POST.get("strain", "")
+            minsize = request.POST.get("minsize", "")
+            maxsize = request.POST.get("maxsize", "")
+            minsize = int(minsize) if minsize else minsize
+            maxsize = int(maxsize) if maxsize else maxsize
+            gene_name = request.POST.get("gene_name", "")
+            gene_symbol = request.POST.get("gene_symbol", "")
+            function = request.POST.get("function", "")
+            motif = request.POST.get("motif", "")
+            hits = GeneProtein.objects
+            hits = hits.select_related("chromosome")
+            hits = hits.select_related("annotation")
+            hits = hits.select_related("proteinseq")
+            hits = hits.filter(chromosome__chromosome__istartswith = chromosome) if chromosome else hits
+            hits = hits.filter(chromosome__specie__icontains = specie) if specie else hits
+            hits = hits.filter(chromosome__strain__iexact = strain) if strain else hits
+            hits = hits.filter(dna_length__gte = minsize) if minsize else hits
+            hits = hits.filter(dna_length__lte = maxsize) if maxsize else hits
+            hits = hits.filter(annotation__gene_name__iexact = gene_name) if gene_name else hits
+            hits = hits.filter(annotation__gene_symbol__iexact = gene_symbol) if gene_symbol else hits
+            hits = hits.filter(annotation__function__icontains = function) if len(function) >= 3 else hits
+            hits = hits.filter(proteinseq__sequence__icontains = motif) if motif else hits
+            context = {"hits": hits} if hits.count() < 100 else {"hits": hits[:100]}
+        return render(request, self.POST_template, context)

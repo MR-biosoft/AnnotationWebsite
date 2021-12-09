@@ -1,19 +1,145 @@
 {% load static %}
+<!DOCTYPE html>
+<html>
 
-<h1> Protein form </h1>
+<head>
 
+    <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
 
-<form method="post" action="protein" >
-    <!--
-    <form method="post" action="annotation/genome" class="genome-form-body">
--->
-    {% csrf_token %}
-    <fieldset>
+    <style>
+        
+        input {
+            height: 25px;
+        }
 
-        <legend>Specific protein search</legend>
-        <input type="submit" value="Launch Query" />
+        textarea {
+            height: 60px;
+        }
 
-    </fieldset>
+        .form-gene-protein-field {
+            width: 30%;
+            margin-bottom: 15px;
+            margin-right: 10px;
+        }
+        
+    </style>
 
-</form>
+</head>
 
+<body>
+
+    <nav>
+        <a href="#" class="documentation">Documentation</a>
+        <a href="mailto:mrbiosoft@gmail.com" target="_blank">Support</a>
+        <a href="#" class=>Logout</a>
+        <a href="{% url 'home:menu' %}">Home</a>
+    </nav>
+
+    <header>
+        <div class="header-1">
+            <h1 class="text-heading">Bacterial protein search</h1>
+            <h2 class="description-title">The browser for bacterial genome annotation</h2>
+            Expanding platform that encompasses annotations and functional analysis of bacterial genomes
+        </div>
+        <div class="header-2">
+            <img src="{% static 'images/mr-biosoft-green.png' %}" />
+        </div>
+    </header>
+
+    <form method="post" action="protein">
+
+        {% csrf_token %}
+        <fieldset>
+
+            <legend>Specific protein search</legend>
+
+            <div class="form-gene-protein-field">
+                <label for="accession-number">Accession number</label>
+                <input type="text" name="ac" id="accession-number" />
+            </div>
+
+            <input type="submit" value="Launch Query" />
+
+        </fieldset>
+    
+    </form>
+
+    <br/>
+    
+    <form method="post" action="protein">
+
+        {% csrf_token %}
+        <fieldset>
+
+            <legend>Protein set search</legend>
+
+            <h3 class="form-title">Taxonomy</h3>
+
+            <div class="form-gene-protein-field">
+                <label for="chromosome">Chromosome</label>
+                <input type="text" name="chromosome" id="chromosome" />
+            </div>
+
+            <div class="form-gene-protein-field">
+                <label for="specie">Specie</label>
+                <input type="text" name="specie" id="specie" />
+            </div>
+
+            <div class="form-gene-protein-field">
+                <label for="strain">Strain</label>
+                <input type="text" name="strain" id="strain" />
+            </div>
+
+            <h3 class="form-title">Length Protein</h3>
+
+            <div class="form-gene-protein-field">
+                <label for="minsize">Minimum (in bp)</label>
+                <input type="number" min="0" step="10" name="minsize" id="minsize" />
+            </div>
+
+            <div class="form-gene-protein-field">
+                <label for="maxsize">Maximum (in bp)</label>
+                <input type="number" min="0" step="10" name="maxsize" id="maxsize" />
+            </div>
+
+            <div class="form-gene-protein-field"></div>
+
+            <h3 class="form-title">Annotation</h3>
+
+            <div class="form-gene-protein-field">
+                <label for="name">Name</label>
+                <input type="text" name="gene_name" id="name" />
+            </div>
+
+            <div class="form-gene-protein-field">
+                <label for="symbol">Symbol</label>
+                <input type="text" name="gene_symbol" id="symbol" />
+            </div>
+
+            <div class="form-gene-protein-field">
+                <label for="function">Function</label>
+                <input type="text" name="function" id="function" />
+            </div>
+
+            <h3 class="form-title">Other characteristics</h3>
+
+            <div class="form-gene-protein-field">
+                <label for="motif">Motif</label><br/>
+                <textarea rows="3" name="motif" id="motif"></textarea>
+            </div>
+
+            <div class="form-gene-protein-field"></div>
+
+            <div class="form-gene-protein-field"></div>
+
+            <input type="submit" value="Launch Query" />
+
+        </fieldset>
+
+    </form>
+
+    <br/>
+
+</body>
+
+</html>

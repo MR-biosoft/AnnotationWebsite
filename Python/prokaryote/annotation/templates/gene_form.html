@@ -16,7 +16,7 @@
             height: 60px;
         }
 
-        .form-gene-field {
+        .form-gene-protein-field {
             width: 30%;
             margin-bottom: 15px;
             margin-right: 10px;
@@ -53,7 +53,7 @@
 
             <legend>Specific gene search</legend>
 
-            <div class="form-gene-field">
+            <div class="form-gene-protein-field">
                 <label for="accession-number">Accession number</label>
                 <input type="text" name="ac" id="accession-number" />
             </div>
@@ -75,60 +75,60 @@
 
             <h3 class="form-title">Taxonomy</h3>
 
-            <div class="form-gene-field">
+            <div class="form-gene-protein-field">
                 <label for="chromosome">Chromosome</label>
                 <input type="text" name="chromosome" id="chromosome" />
             </div>
 
-            <div class="form-gene-field">
+            <div class="form-gene-protein-field">
                 <label for="specie">Specie</label>
                 <input type="text" name="specie" id="specie" />
             </div>
 
-            <div class="form-gene-field">
+            <div class="form-gene-protein-field">
                 <label for="strain">Strain</label>
                 <input type="text" name="strain" id="strain" />
             </div>
 
             <h3 class="form-title">Length Gene</h3>
 
-            <div class="form-gene-field">
+            <div class="form-gene-protein-field">
                 <label for="minsize">Minimum (in bp)</label>
                 <input type="number" min="0" step="10" name="minsize" id="minsize" />
             </div>
 
-            <div class="form-gene-field">
+            <div class="form-gene-protein-field">
                 <label for="maxsize">Maximum (in bp)</label>
                 <input type="number" min="0" step="10" name="maxsize" id="maxsize" />
             </div>
 
-            <div class="form-gene-field"></div>
+            <div class="form-gene-protein-field"></div>
 
             <h3 class="form-title">Annotation</h3>
 
-            <div class="form-gene-field">
+            <div class="form-gene-protein-field">
                 <label for="name">Name</label>
                 <input type="text" name="gene_name" id="name" />
             </div>
 
-            <div class="form-gene-field">
+            <div class="form-gene-protein-field">
                 <label for="symbol">Symbol</label>
                 <input type="text" name="gene_symbol" id="symbol" />
             </div>
 
-            <div class="form-gene-field">
+            <div class="form-gene-protein-field">
                 <label for="function">Function</label>
                 <input type="text" name="function" id="function" />
             </div>
 
             <h3 class="form-title">Other characteristics</h3>
 
-            <div class="form-gene-field">
+            <div class="form-gene-protein-field">
                 <label for="motif">Motif</label><br/>
                 <textarea rows="3" name="motif" id="motif"></textarea>
             </div>
 
-            <div class="form-gene-field">
+            <div class="form-gene-protein-field">
                 <label for="reading-frame">Reading Frame</label><br/>
                 <select name="read_direction" id="reading-frame">
                 <option value="direct-reverse">Direct & Reverse</option>
@@ -137,7 +137,7 @@
                 </select>
             </div>
 
-            <div class="form-gene-field"></div>
+            <div class="form-gene-protein-field"></div>
 
             <input type="submit" value="Launch Query" />
 
