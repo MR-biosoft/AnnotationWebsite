@@ -32,7 +32,6 @@ input {
 legend {
     font-size: 0.5cm;
     font-weight: bold;
-    color: rgb(175, 87, 87);
     color: rgb(68, 183, 139);
 }
 
@@ -199,18 +198,6 @@ td {
     content: ' \025B4';
 }
 
-/* List */
-
-li a {
-    color: rgb(68, 183, 139);
-    text-decoration: none;
-}
-
-li a:hover {
-    text-decoration: underline;
-    color: rgb(17, 83, 54);
-}
-
 /* Main Page */
 
 .body-main-title {
@@ -312,6 +299,7 @@ hr {
 
 .entry-title {
     text-align: center;
+    color: rgb(68, 183, 139);
 }
 
 .entry-information-table {
