@@ -96,13 +96,13 @@ def save_genome(
     )
     genome.save(force_insert=True)
 
+
 def save_protein(record: Seq.Seq):
     """ """
     gene_prot = GeneProtein.objects.get(accession_number=record.id)
     gene_prot.aa_length = len(record.seq)
     gene_prot.save()
     ProteinSeq.objects.create(accession_number=gene_prot, sequence=str(record.seq))
-    
 
 
 # TODO :
@@ -221,16 +221,16 @@ def save_gene(
             n_annotations = sum(
                 1 for annot in _annotations.values() if annot is not None
             )
-            if n_annotations > 1:
+            if n_annotations > 1 and _annotations["function"] is not None:
                 annotation_fields["status"] = "approved"
                 annotation_fields.update(_annotations)
-            with transaction.atomic():
-                annotation = Annotation(**annotation_fields)
-                annotation.save(**save_kw)
-                gene_protein.isannotated = True
-                gene_protein.save(force_update=True)
+                with transaction.atomic():
+                    annotation = Annotation(**annotation_fields)
+                    annotation.save(**save_kw)
+                    gene_protein.isannotated = True
+                    gene_protein.save(force_update=True)
 
-    # Probably shoudln't catch the IntegrityError, see:
+    # Probably shouldn't catch the IntegrityError, see:
     # https://docs.djangoproject.com/en/3.2/topics/db/transactions/
     except (ObjectDoesNotExist, IntegrityError, DataError) as _db_error:
         if verbose:
