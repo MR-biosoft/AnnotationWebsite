@@ -28,11 +28,11 @@
         </div>
     </header>
 
-    <h1 class="body-main-title">Entry {{ entry.accession_number }} ({{ entry.chromosome.specie }})</h1>
+    <h1 class="body-main-title">Entry {{ entry.accession_number }} {% if entry.chromosome.specie %} ({{ entry.chromosome.specie }}) {% endif %}</h1>
         
-    <section class="entry-gene">
+    <section class="entry">
 
-        <section class="entry-gene-information">
+        <section class="entry-information">
 
             <section class="entry-column-information">
 
@@ -110,7 +110,7 @@
 
         <br/>
 
-        <section class="entry-gene-information">
+        <section class="entry-information">
 
             <section class="entry-column-information">
 
@@ -126,16 +126,16 @@
 
             <section class="entry-column-information">
     
-                    <h3 class="entry-title">External link</h3>
+                <h3 class="entry-title">External link</h3>
 
-                    You can have complementary information with the following databanks:
-                    <ul>
-                        <li><a href="https://www.ncbi.nlm.nih.gov/gene/?term={{entry.accession_number}}" target="_blank">National Center for Biotechnology Information (NCBI)</a></li>
-                        <li><a href="https://www.ebi.ac.uk/ena/browser/view/{{entry.accession_number}}" target="_blank">European Nucleotide Archive (ENA)</a></li>
-                        <li><a href="https://www.uniprot.org/uniprot/?query={{entry.accession_number}}&sort=score" target="_blank">UniProtKB</a></li>
-                    </ul>
-    
-                </section>
+                You can have complementary information with the following databanks:
+                <ul>
+                    <li><a href="https://www.ncbi.nlm.nih.gov/gene/?term={{entry.accession_number}}" target="_blank">National Center for Biotechnology Information (NCBI)</a></li>
+                    <li><a href="https://www.ebi.ac.uk/ena/browser/view/{{entry.accession_number}}" target="_blank">European Nucleotide Archive (ENA)</a></li>
+                    <li><a href="https://www.uniprot.org/uniprot/?query={{entry.accession_number}}&sort=score" target="_blank">UniProtKB</a></li>
+                </ul>
+
+            </section>
 
         </section>
 

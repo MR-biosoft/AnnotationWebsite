@@ -269,18 +269,18 @@ hr {
 
 /* Entry Gene */
 
-.entry-gene {
+.entry {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     width: 100%;
 }
 
-.entry-gene-information:nth-child(1){
+.entry-information:nth-child(1){
     margin-top: 20px;
 }
 
-.entry-gene-information {
+.entry-information {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -288,12 +288,21 @@ hr {
     width: 100%;
 }
 
-
-
 .entry-column-information {
     max-width: 620px;
     min-width: 260px;
     width: 48.5%;
+    height: 400px;
+    background-color: rgb(241, 247, 244);
+    border: 2.5px solid #dddddd;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.entry-sequence-genome-information {
+    max-width: 1260px;
+    min-width: 260px;
+    width: 100%;
     height: 400px;
     background-color: rgb(241, 247, 244);
     border: 2.5px solid #dddddd;
@@ -327,4 +336,12 @@ hr {
     overflow: scroll;
     height: 350px;
     margin-left: 10px;
+}
+
+.entry-genome-sequence-information {
+    width: 100%;
+    background-color: rgb(241, 247, 244);
+    border: 2.5px solid #dddddd;
+    border-radius: 6px;
+    margin-bottom: 20px;
 }

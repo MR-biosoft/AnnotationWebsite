@@ -1,3 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
+
+</head>
+
+<body>
+
+    <nav>
+        <a href="#" class="documentation">Documentation</a>
+        <a href="mailto:mrbiosoft@gmail.com" target="_blank">Support</a>
+        <a href="#" class=>Logout</a>
+        <a href="{% url 'home:menu' %}">Home</a>
+    </nav>
+
+    <header>
+        <div class="header-1">
+            <h1 class="text-heading">Bacterial genome entry</h1>
+            <h2 class="description-title">The browser for bacterial genome annotation</h2>
+            Expanding platform that encompasses annotations and functional analysis of bacterial genomes
+        </div>
+        <div class="header-2">
+            <img src="{% static 'images/mr-biosoft-green.png' %}" />
+        </div>
+    </header>
+
+    <h1 class="body-main-title">Entry {{ entry.chromosome }} {% if entry.specie %} ({{ entry.specie }}) {% endif %}</h1>
+        
+    <section class="entry">
+
+        <section class="entry-information">
+
+            <section class="entry-column-information">
+
+                <h3 class="entry-title">General Information</h3>
+
+                <table class="entry-information-table">
+                    <tr>
+                        <td class=".test">Chromosome:</td>
+                        <td class=".test2">{{ entry.chromosome }}</td>
+                    </tr>
+                    <tr>
+                        <td>Specie:</td>
+                        <td>{{ entry.specie }}</td>
+                    </tr>
+                    <tr>
+                        <td>Strain:</td>
+                        <td>{{ entry.strain }}</td>
+                    </tr>
+                    <tr>
+                        <td>Length (bp):</td>
+                        <td>{{ entry.length }}</td>
+                    </tr>
+                </table>
+
+            </section>
+
+            <section class="entry-column-information">
+    
+                <h3 class="entry-title">External link</h3>
+
+                You can have complementary information with the following databanks:
+                <ul>
+                    <li><a href="https://www.ncbi.nlm.nih.gov/genome/?term={{entry.chromosome}}" target="_blank">National Center for Biotechnology Information (NCBI)</a></li>
+                    <li><a href="https://www.ebi.ac.uk/ebisearch/search.ebi?query={{entry.chromosome}}&db=allebi&requestFrom=ebi_index" target="_blank">European Bioinformatics Institute (EBI)</a></li>
+                </ul>
+
+            </section>
+
+        </section>
+
+        <br/>
+
+        <section class="entry-genome-sequence-information">
+
+                <h3 class="entry-title">Sequence</h3>
+
+                <div class="sequence">
+
+                    {{ entry.sequence }}
+
+                </div>
+
+        </section>
+
+    </section>
+
+
+</body>
+
+</html>
+
+
 
 <h1> {{ chromosome }} </h1>
 <h2> {{ specie }} </h2>

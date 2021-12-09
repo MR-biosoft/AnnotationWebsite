@@ -19,10 +19,8 @@ class GenomeView(View):
         """Method used to process GET requests"""
         if 'chromosome' in request.GET:
             chromosome = request.GET["chromosome"]
-            genome = get_object_or_404(Genome, chromosome=chromosome)
-            context = dict(genome)
-            # if we want to get rid of the sequence:
-            _ = context.pop("sequence")
+            entry = get_object_or_404(Genome, chromosome = chromosome)
+            context = {"entry" : entry}
             return render(request, self.ENTRY_template, context)
         else:
             return render(request, self.GET_template, {})
@@ -61,12 +59,8 @@ class GeneView(View):
         """Method used to process GET requests"""
         if 'gene' in request.GET:
             accession_number = request.GET["gene"]
-            entry = get_object_or_404(GeneProtein.objects.select_related("chromosome").select_related("annotation").select_related("geneseq"), accession_number = accession_number)
-            """entry = GeneProtein.objects
-            entry = entry.filter(accession_number = accession_number)
-            entry = entry.select_related("chromosome")
-            entry = entry.select_related("annotation")
-            entry = entry.select_related("geneseq")"""
+            entry = get_object_or_404(GeneProtein.objects.select_related("chromosome").select_related("annotation").select_related("geneseq"),
+                                      accession_number = accession_number)
             context = {"entry" : entry}
             print(context)
             return render(request, self.ENTRY_template, context)
