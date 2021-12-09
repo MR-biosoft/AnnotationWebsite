@@ -110,3 +110,28 @@ class GeneView(View):
             context = {"hits": hits} if hits.count() < 100 else {"hits": hits[:100]}
         return render(request, self.POST_template, context)
 
+class ProteinView(View):
+    """Manage Protein's view logic"""
+
+    GET_template = "protein_form.html"
+    POST_template = "protein_query.html"
+    ENTRY_template = "single_protein_entry.html"
+
+
+    def get(self, request):
+        """Method used to process GET requests"""
+        if 'protein' in request.GET:
+        ## Add real processing logic
+        #    accession_number = request.GET["gene"]
+        #    entry = get_object_or_404(GeneProtein.objects.select_related("chromosome").select_related("annotation").select_related("geneseq"),
+        #                              accession_number = accession_number)
+        #    context = {"entry" : entry}
+        #    print(context)
+            return render(request, self.ENTRY_template, {})
+        else:
+            return render(request, self.GET_template, {})
+
+    def post(self, request):
+        """Method used to process POST requests"""
+        ## Add real processing logic
+        return render(request, self.POST_template, {})

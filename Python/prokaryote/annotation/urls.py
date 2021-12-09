@@ -9,4 +9,5 @@ urlpatterns = [
     path("genome", views.GenomeView.as_view(), name="genome"),
     # re_path(r"^genome/(?P<chromosome>)\w*$", views.SingleGenomeView.as_view(), name="single_genome"),
     path("gene", views.GeneView.as_view(), name="gene"),
+    path("protein", views.ProteinView.as_view(), name="protein"),
 ]

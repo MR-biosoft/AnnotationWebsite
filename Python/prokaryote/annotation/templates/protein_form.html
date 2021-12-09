@@ -1,0 +1,19 @@
+{% load static %}
+
+<h1> Protein form </h1>
+
+
+<form method="post" action="protein" >
+    <!--
+    <form method="post" action="annotation/genome" class="genome-form-body">
+-->
+    {% csrf_token %}
+    <fieldset>
+
+        <legend>Specific protein search</legend>
+        <input type="submit" value="Launch Query" />
+
+    </fieldset>
+
+</form>
+
