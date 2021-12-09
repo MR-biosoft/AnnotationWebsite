@@ -287,9 +287,11 @@ hr {
 
 .entry-column-information {
     max-width: 620px;
-    width: 49%;
+    width: 48.7%;
     height: 400px;
     background-color: rgb(241, 247, 244);
+    border: 2.5px solid #dddddd;
+    border-radius: 6px;
 }
 
 .entry-column-information:nth-child(1){
