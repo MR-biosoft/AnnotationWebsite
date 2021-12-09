@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "dbsetup",
     "annotation",
+    "upload",
 ]
 
 MIDDLEWARE = [
@@ -71,9 +72,10 @@ ROOT_URLCONF = "prokaryote.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [ 
-            BASE_DIR / 'annotation' / 'templates',
-            BASE_DIR / 'home' / 'templates',
+        "DIRS": [
+            BASE_DIR / "annotation" / "templates",
+            BASE_DIR / "home" / "templates",
+            BASE_DIR / "upload" / "templates",
         ],
         "APP_DIRS": True,
         "OPTIONS": {

@@ -1,3 +1,9 @@
+# error logs
+/**/*.jsonl
+
+# stray files
+/**/stray
+
 # shell scripts
 /**/*.fish
 /**/*.bash

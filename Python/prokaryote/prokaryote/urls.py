@@ -24,7 +24,7 @@ urlpatterns = [
         include(("annotation.urls", "browse"), namespace="browse"),
     ),
     path(
-        "no/",
-        include(("annotation.urls", "no"), namespace="no"),
+        "upload/",
+        include(("upload.urls", "upload"), namespace="upload"),
     ),
 ]
