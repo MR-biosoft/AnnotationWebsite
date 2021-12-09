@@ -1,8 +1,211 @@
-<h1>{{ accession_number }}</h1>
-<h2>{{ dna_length       }}</h2>
-<h2>{{ start_position   }}</h2>
-<h2>{{ end_position     }}</h2>
-<h2>{{ reading_frame    }}</h2>
-<h2>{{ aa_length        }}</h2>
-<h2>{{ chromosome_id    }}</h2>
-<h2>{{ isannotated      }}</h2>
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
+
+    <style>
+
+        .entry-gene {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .entry-gene-information {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .entry-column-information {
+            max-width: 620px;
+            width: 49%;
+            height: 400px;
+            background-color: rgb(241, 247, 244);
+        }
+
+        .entry-column-information:nth-child(1){
+            margin-right: 20px;
+        }
+
+        .entry-title {
+            text-align: center;
+        }
+
+        .entry-information-table {
+            table-layout: auto;
+        }
+
+        .entry-information-table td:nth-child(1) {
+            width: 50%;
+        }
+
+        .entry-information-table td:nth-child(2) {
+            width: 50%;
+        }
+
+        .entry-information-table {
+            width: 100%;
+        }
+
+        .sequence {
+            width : 97%;
+            word-wrap: break-word;
+            overflow: scroll;
+            height: 350px;
+            margin-left: 10px;
+        }
+        
+    </style>
+
+</head>
+
+<body>
+
+    <nav>
+        <a href="#" class="documentation">Documentation</a>
+        <a href="mailto:mrbiosoft@gmail.com" target="_blank">Support</a>
+        <a href="#" class=>Logout</a>
+        <a href="{% url 'home:menu' %}">Home</a>
+    </nav>
+
+    <header>
+        <div class="header-1">
+            <h1 class="text-heading">Bacterial genome entry</h1>
+            <h2 class="description-title">The browser for bacterial genome annotation</h2>
+            Expanding platform that encompasses annotations and functional analysis of bacterial genomes
+        </div>
+        <div class="header-2">
+            <img src="{% static 'images/mr-biosoft-green.png' %}" />
+        </div>
+    </header>
+
+    <h1 class="body-main-title">Entry {{ entry.accession_number }} ({{ entry.chromosome.specie }})</h1>
+        
+    <section class="entry-gene">
+
+        <section class="entry-gene-information">
+
+            <section class="entry-column-information">
+
+                <h3 class="entry-title">General Information</h3>
+
+                <table class="entry-information-table">
+                    <tr>
+                        <td class=".test">Accession number:</td>
+                        <td class=".test2">{{ entry.accession_number }}</td>
+                    </tr>
+                    <tr>
+                        <td>Specie:</td>
+                        <td>{{ entry.chromosome.specie }}</td>
+                    </tr>
+                    <tr>
+                        <td>Strain:</td>
+                        <td>{{ entry.chromosome.strain }}</td>
+                    </tr>
+                    <tr>
+                        <td>Chromosome:</td>
+                        <td>{{ entry.chromosome.chromosome }}</td>
+                    </tr>
+                    <tr>
+                        <td>Length (bp):</td>
+                        <td>{{ entry.dna_length }}</td>
+                    </tr>
+                    <tr>
+                        <td>Start position:</td>
+                        <td>{{ entry.start_position }}</td>
+                    </tr>
+                    <tr>
+                        <td>End position:</td>
+                        <td>{{ entry.end_position }}</td>
+                    </tr>
+                    <tr>
+                        <td>Reading frame:</td>
+                        {% if entry.reading_frame == 1 %}
+                            <td>direct</td>
+                        {% elif entry.reading_frame == -1 %}
+                            <td>reverse</td>
+                        {% else %}
+                            <td>None</td>
+                        {% endif %}
+                    </tr>
+                </table>
+
+            </section>
+
+            <section class="entry-column-information">
+
+                <h3 class="entry-title">Annotation</h3>
+
+                <table class="entry-information-table">
+                    <tr>
+                        <td class=".test">Gene name:</td>
+                        <td class=".test2">{{ entry.annotation.gene_name }}</td>
+                    </tr>
+                    <tr>
+                        <td class=".test">Gene symbol:</td>
+                        <td class=".test2">{{ entry.annotation.gene_symbol }}</td>
+                    </tr>
+                    <tr>
+                        <td class=".test">Gene biotype:</td>
+                        <td class=".test2">{{ entry.annotation.gene_biotype }}</td>
+                    </tr>
+                    <tr>
+                        <td class=".test">Function:</td>
+                        <td class=".test2">{{ entry.annotation.function }}</td>
+                    </tr>
+                </table>
+
+            </section>
+
+        </section>
+
+        <br/>
+
+        <section class="entry-gene-information">
+
+            <section class="entry-column-information">
+
+                <h3 class="entry-title">Sequence</h3>
+
+                <div class="sequence">
+
+                    {{ entry.geneseq.sequence }}
+
+                </div>
+
+            </section>
+
+            <section class="entry-column-information">
+    
+                    <h3 class="entry-title">External link</h3>
+
+                    You can have complementary information with the following databanks:
+                    <ul>
+                        <li><a href="https://www.ebi.ac.uk/ena/browser/view/{{entry.accession_number}}" target="_blank">European Nucleotide Archive (ENA)</a></li>
+                        <li><a href="https://www.ncbi.nlm.nih.gov/gene/?term={{entry.accession_number}}" target="_blank">National Center for Biotechnology Information (NCBI)</a></li>
+                        <li><a href="https://www.uniprot.org/uniprot/?query={{entry.accession_number}}&sort=score" target="_blank">UniProtKB</a></li>
+                    </ul>
+
+
+                    
+                    
+    
+    
+                </section>
+
+        </section>
+
+    </section>
+
+
+</body>
+
+</html>

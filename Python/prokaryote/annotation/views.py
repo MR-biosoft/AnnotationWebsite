@@ -61,8 +61,14 @@ class GeneView(View):
         """Method used to process GET requests"""
         if 'gene' in request.GET:
             accession_number = request.GET["gene"]
-            gene = get_object_or_404(GeneProtein, accession_number=accession_number)
-            context = dict(gene)
+            entry = get_object_or_404(GeneProtein.objects.select_related("chromosome").select_related("annotation").select_related("geneseq"), accession_number = accession_number)
+            """entry = GeneProtein.objects
+            entry = entry.filter(accession_number = accession_number)
+            entry = entry.select_related("chromosome")
+            entry = entry.select_related("annotation")
+            entry = entry.select_related("geneseq")"""
+            context = {"entry" : entry}
+            print(context)
             return render(request, self.ENTRY_template, context)
         else:
             return render(request, self.GET_template, {})
