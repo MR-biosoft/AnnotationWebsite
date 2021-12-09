@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "dbsetup",
     "annotation",
+    "home",
 ]
 
 MIDDLEWARE = [
@@ -71,9 +72,9 @@ ROOT_URLCONF = "prokaryote.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [ 
-            BASE_DIR / 'annotation' / 'templates',
-            BASE_DIR / 'home' / 'templates',
+        "DIRS": [
+            BASE_DIR / "annotation" / "templates",
+            BASE_DIR / "home" / "templates",
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -147,3 +148,4 @@ STATICFILES_DIRS = (BASE_DIR.resolve() / "static",)
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+AUTH_USER_MODEL = "home.Member"
