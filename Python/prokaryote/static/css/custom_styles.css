@@ -299,11 +299,11 @@ hr {
     margin-bottom: 20px;
 }
 
-.entry-sequence-genome-information {
-    max-width: 1260px;
+.entry-small-column-information {
+    max-width: 620px;
     min-width: 260px;
-    width: 100%;
-    height: 400px;
+    width: 48.5%;
+    height: 250px;
     background-color: rgb(241, 247, 244);
     border: 2.5px solid #dddddd;
     border-radius: 6px;
@@ -330,11 +330,19 @@ hr {
     width: 100%;
 }
 
-.sequence {
+.gene-sequence {
     width : 97%;
     word-wrap: break-word;
     overflow: scroll;
-    height: 350px;
+    height: 338px;
+    margin-left: 10px;
+}
+
+.genome-sequence {
+    width : 97%;
+    word-wrap: break-word;
+    overflow: scroll;
+    height: 488px;
     margin-left: 10px;
 }
 
@@ -344,4 +352,5 @@ hr {
     border: 2.5px solid #dddddd;
     border-radius: 6px;
     margin-bottom: 20px;
+    height: 550px;
 }
