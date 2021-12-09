@@ -6,65 +6,6 @@
 
     <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
 
-    <style>
-
-        .entry-gene {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            width: 100%;
-            margin-bottom: 30px;
-        }
-
-        .entry-gene-information {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .entry-column-information {
-            max-width: 620px;
-            width: 49%;
-            height: 400px;
-            background-color: rgb(241, 247, 244);
-        }
-
-        .entry-column-information:nth-child(1){
-            margin-right: 20px;
-        }
-
-        .entry-title {
-            text-align: center;
-        }
-
-        .entry-information-table {
-            table-layout: auto;
-        }
-
-        .entry-information-table td:nth-child(1) {
-            width: 50%;
-        }
-
-        .entry-information-table td:nth-child(2) {
-            width: 50%;
-        }
-
-        .entry-information-table {
-            width: 100%;
-        }
-
-        .sequence {
-            width : 97%;
-            word-wrap: break-word;
-            overflow: scroll;
-            height: 350px;
-            margin-left: 10px;
-        }
-        
-    </style>
-
 </head>
 
 <body>
@@ -189,15 +130,10 @@
 
                     You can have complementary information with the following databanks:
                     <ul>
-                        <li><a href="https://www.ebi.ac.uk/ena/browser/view/{{entry.accession_number}}" target="_blank">European Nucleotide Archive (ENA)</a></li>
                         <li><a href="https://www.ncbi.nlm.nih.gov/gene/?term={{entry.accession_number}}" target="_blank">National Center for Biotechnology Information (NCBI)</a></li>
+                        <li><a href="https://www.ebi.ac.uk/ena/browser/view/{{entry.accession_number}}" target="_blank">European Nucleotide Archive (ENA)</a></li>
                         <li><a href="https://www.uniprot.org/uniprot/?query={{entry.accession_number}}&sort=score" target="_blank">UniProtKB</a></li>
                     </ul>
-
-
-                    
-                    
-    
     
                 </section>
 
