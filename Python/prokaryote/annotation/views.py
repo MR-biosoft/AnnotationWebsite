@@ -62,7 +62,6 @@ class GeneView(View):
             entry = get_object_or_404(GeneProtein.objects.select_related("chromosome").select_related("annotation").select_related("geneseq"),
                                       accession_number = accession_number)
             context = {"entry" : entry}
-            print(context)
             return render(request, self.ENTRY_template, context)
         else:
             return render(request, self.GET_template, {})
@@ -120,13 +119,12 @@ class ProteinView(View):
     def get(self, request):
         """Method used to process GET requests"""
         if 'protein' in request.GET:
-        ## Add real processing logic
-        #    accession_number = request.GET["gene"]
-        #    entry = get_object_or_404(GeneProtein.objects.select_related("chromosome").select_related("annotation").select_related("geneseq"),
-        #                              accession_number = accession_number)
-        #    context = {"entry" : entry}
-        #    print(context)
-            return render(request, self.ENTRY_template, {})
+            print(request.GET)
+            accession_number = request.GET["protein"]
+            entry = get_object_or_404(GeneProtein.objects.select_related("chromosome").select_related("annotation").select_related("proteinseq"),
+                                      accession_number = accession_number)
+            context = {"entry" : entry}
+            return render(request, self.ENTRY_template, context)
         else:
             return render(request, self.GET_template, {})
 

@@ -1,3 +1,137 @@
 {% load static %}
+<!DOCTYPE html>
+<html>
 
-<h1> Single protein entry </h1>
+<head>
+
+    <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
+
+</head>
+
+<body>
+
+    <nav>
+        <a href="#" class="documentation">Documentation</a>
+        <a href="mailto:mrbiosoft@gmail.com" target="_blank">Support</a>
+        <a href="#" class=>Logout</a>
+        <a href="{% url 'home:menu' %}">Home</a>
+    </nav>
+
+    <header>
+        <div class="header-1">
+            <h1 class="text-heading">Bacterial protein entry</h1>
+            <h2 class="description-title">The browser for bacterial genome annotation</h2>
+            Expanding platform that encompasses annotations and functional analysis of bacterial genomes
+        </div>
+        <div class="header-2">
+            <img src="{% static 'images/mr-biosoft-green.png' %}" />
+        </div>
+    </header>
+
+    <h1 class="body-main-title">Entry {{ entry.accession_number }} {% if entry.chromosome.specie %} ({{ entry.chromosome.specie }}) {% endif %}</h1>
+        
+    <section class="entry">
+
+        <section class="entry-information">
+
+            <section class="entry-column-information">
+
+                <h3 class="entry-title">General Information</h3>
+
+                <table class="entry-information-table">
+                    <tr>
+                        <td class=".test">Accession number:</td>
+                        <td class=".test2">{{ entry.accession_number }}</td>
+                    </tr>
+                    <tr>
+                        <td>Specie:</td>
+                        <td>{{ entry.chromosome.specie }}</td>
+                    </tr>
+                    <tr>
+                        <td>Strain:</td>
+                        <td>{{ entry.chromosome.strain }}</td>
+                    </tr>
+                    <tr>
+                        <td>Chromosome:</td>
+                        <td>{{ entry.chromosome.chromosome }}</td>
+                    </tr>
+                    <tr>
+                        <td>Length (bp):</td>
+                        <td>{{ entry.aa_length }}</td>
+                    </tr>
+                    <tr>
+                        <td>Start position:</td>
+                        <td>{{ entry.start_position }}</td>
+                    </tr>
+                    <tr>
+                        <td>End position:</td>
+                        <td>{{ entry.end_position }}</td>
+                    </tr>
+                </table>
+
+            </section>
+
+            <section class="entry-column-information">
+
+                <h3 class="entry-title">Annotation</h3>
+
+                <table class="entry-information-table">
+                    <tr>
+                        <td class=".test">Gene name:</td>
+                        <td class=".test2">{{ entry.annotation.gene_name }}</td>
+                    </tr>
+                    <tr>
+                        <td class=".test">Gene symbol:</td>
+                        <td class=".test2">{{ entry.annotation.gene_symbol }}</td>
+                    </tr>
+                    <tr>
+                        <td class=".test">Gene biotype:</td>
+                        <td class=".test2">{{ entry.annotation.gene_biotype }}</td>
+                    </tr>
+                    <tr>
+                        <td class=".test">Function:</td>
+                        <td class=".test2">{{ entry.annotation.function }}</td>
+                    </tr>
+                </table>
+
+            </section>
+
+        </section>
+
+        <br/>
+
+        <section class="entry-information">
+
+            <section class="entry-column-information">
+
+                <h3 class="entry-title">Sequence</h3>
+
+                <div class="gene-sequence">
+
+                    {{ entry.proteinseq.sequence }}
+
+                </div>
+
+            </section>
+
+            <section class="entry-column-information">
+    
+                <h3 class="entry-title">External link</h3>
+
+                You can have complementary information with the following databanks:
+                <ul>
+                    <li><a href="https://www.ncbi.nlm.nih.gov/gene/?term={{entry.accession_number}}" target="_blank">National Center for Biotechnology Information (NCBI)</a></li>
+                    <li><a href="https://www.ebi.ac.uk/ena/browser/view/{{entry.accession_number}}" target="_blank">European Nucleotide Archive (ENA)</a></li>
+                    <li><a href="https://www.uniprot.org/uniprot/?query={{entry.accession_number}}&sort=score" target="_blank">UniProtKB</a></li>
+                </ul>
+
+            </section>
+
+        </section>
+
+    </section>
+
+
+</body>
+
+</html>

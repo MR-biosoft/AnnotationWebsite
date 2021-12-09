@@ -67,11 +67,11 @@
         <tbody>
             {% for hit in hits %}
             <tr>
-                <td><a href="{% url 'browse:gene' %}?gene={{hit.accession_number}}">{{ hit.accession_number }}</a></td>
+                <td><a href="{% url 'browse:protein' %}?protein={{hit.accession_number}}">{{ hit.accession_number }}</a></td>
                 <td><a href="{% url 'browse:genome' %}?chromosome={{hit.chromosome.chromosome}}">{{ hit.chromosome.chromosome }}</a></td>
                 <td>{{ hit.chromosome.specie }}</td>
                 <td class="shrink">{{ hit.chromosome.strain }}</td>
-                <td>{{ hit.dna_length }}</td>
+                <td>{{ hit.aa_length }}</td>
                 <td class="shrink">{{ hit.annotation.gene_symbol }}</td>
                 <td class="expand">{{ hit.annotation.function}}</td>
             </tr>
