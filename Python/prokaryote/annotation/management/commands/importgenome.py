@@ -39,6 +39,7 @@ class Command(BaseCommand):
         with open(in_file, "r", encoding="utf-8") as _file_handle:
             _fasta_entries = list(SeqIO.parse(_file_handle, "fasta"))
         # integrity check
+        # TODO : Change SeqIO.parse to SeqIO.read
         if len(_fasta_entries) != 1:
             _err_lines = [
                 "Genome files must contain at most one FASTA entry",

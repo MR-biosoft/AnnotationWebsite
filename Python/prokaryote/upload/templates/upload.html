@@ -1,0 +1,18 @@
+{% load static %}
+<h1> File upload </h1>
+
+<h2> Genome </h2>
+<form method="POST" enctype="multipart/form-data">
+	{% csrf_token %}
+	<div class="form-gene-protein-field">
+		<!--
+		Gene {{ form.gene_file }}
+		Protein {{ form.protein_file }}
+	-->
+		File {{ form.file }}
+		Type {{ form.file_type }}
+		Specie {{ form.specie }}
+		Strain {{ form.strain }}
+	</div>
+	<input type="submit" value="Submit">
+</form>

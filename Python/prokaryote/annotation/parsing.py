@@ -7,11 +7,14 @@
     and sequences.
 """
 
+import multiprocessing as mp
 import json
+from functools import partial
 from datetime import datetime
 from typing import Dict, Optional, Tuple, Callable, NoReturn
 import regex
-from Bio import Seq
+from Bio import Seq, SeqIO
+from Bio.SeqIO.FastaIO import FastaIterator
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction, IntegrityError, DataError
@@ -21,10 +24,7 @@ from django.db import transaction, IntegrityError, DataError
 # Imports from our module
 from annotation.models import Genome, GeneProtein, GeneSeq, ProteinSeq, Annotation
 from annotation import bioregex
-
-
-class MissingChromosomeField(ValueError):
-    """Custom exception to represent a parsing error."""
+from annotation.exceptions import MissingChromosomeField, InvalidFASTA
 
 
 def _get_start_end_positions(start_end_match: str) -> Tuple[int, int]:
@@ -73,6 +73,43 @@ class FASTAParser:
         return hits
 
 
+class ParallelFASTAImporter:
+    """Class to construct a parallel importer
+    for genes or proteins.
+
+    Should be instantiated by passing one of the following
+    functions:
+
+        * annotation.parsing.save_gene
+        * annotation.parsing.save_protein
+    """
+
+    def __init__(self, save_function: Callable, **save_func_kwargs):
+        self._func = save_function
+        self._p_func = partial(save_function, **save_func_kwargs)
+
+    def __repr__(self):
+        return f"ParallelFASTAImporter({self._func.__name__})"
+
+    def _parallel_executor(self, entry):
+        """ """
+        try:
+            self._p_func(entry)
+        except (MissingChromosomeField, ObjectDoesNotExist) as _expected_exceptions:
+            return True
+
+        return False
+
+    def __call__(self, file_handle):
+        fasta_iter = SeqIO.parse(file_handle, "fasta")
+        if not fasta_iter:
+            raise InvalidFASTA(f"BioPython could not parse file : {file_handle.name}")
+        with mp.Pool(mp.cpu_count()) as pool:
+            _errs = pool.map(self._parallel_executor, fasta_iter)
+
+        return sum(_errs)
+
+
 # TODO :
 # Add transaction decorator ?
 # @transaction.atomic
@@ -113,7 +150,7 @@ def save_gene(
     record: Seq.Seq,
     update: bool = False,
     log_errors: bool = True,
-    catch_errors: bool = True,
+    catch_errors: bool = False,
     verbose: bool = True,
 ):
     """
@@ -233,7 +270,8 @@ def save_gene(
 
     # Probably shouldn't catch the IntegrityError, see:
     # https://docs.djangoproject.com/en/3.2/topics/db/transactions/
-    except (ObjectDoesNotExist, IntegrityError, DataError) as _db_error:
+    # except (ObjectDoesNotExist, IntegrityError, DataError) as _db_error:
+    except (ObjectDoesNotExist) as _db_error:
         if verbose:
             print(f"Error importing gene with accession {record.id}")
             print("Inspect `gene_importation_error_log.jsonl` for further details")
@@ -252,10 +290,3 @@ def save_gene(
                 err_log_file.write(f"{json.dumps(_err_dump)}\n")
         if not catch_errors:
             raise _db_error
-
-    # gene_protein.save()
-
-    # gene_protein_fields = {}
-    # if "start_end" in parsed_fields:
-    #    start_str, stop_str = parsed_fields["start_end"].split(":")
-    #    start, stop = int(start_str), int(stop_str)

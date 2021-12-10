@@ -20,9 +20,6 @@ def _parallel_executor(protein):
     try:
         save_protein(protein)
     except ObjectDoesNotExist as _nil_obj:
-        # print(
-        #    f"protein FASTA entry with accession {protein.id} has no corresponding entry in Gene table, skipping"
-        # )
         return True
     except IntegrityError as _i_e:
         _err_lines = ["Database Integrity Error:", f"{str(_i_e)}"]

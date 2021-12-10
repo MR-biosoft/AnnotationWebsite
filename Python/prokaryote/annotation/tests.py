@@ -37,7 +37,13 @@ from Bio import SeqIO, Seq
 
 # Imports from our module
 # from annotation import models
-from annotation.parsing import MissingChromosomeField, FASTAParser, save_genome, save_gene, save_protein
+from annotation.parsing import (
+    MissingChromosomeField,
+    FASTAParser,
+    save_genome,
+    save_gene,
+    save_protein,
+)
 from annotation.bioregex import DEFAULT_CDS, DEFAULT_PROTEIN, DEFAULT_GENOME
 from annotation.devutils import get_env_value
 from annotation.models import Genome, GeneProtein
@@ -314,14 +320,15 @@ class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
         # not exist anymore and we have to create them again.
         for genome in self._genome_files:
             management.call_command(
-                'importgenome', genome, 
+                "importgenome",
+                genome,
                 specie=self.genome_data_dict[genome.name]["specie"],
                 strain=self.genome_data_dict[genome.name]["strain"],
             )
 
-        #a = Genome.objects.all()
-        
-        #for genome in a:
+        # a = Genome.objects.all()
+
+        # for genome in a:
         #    print(genome)
         for cds in self._cds_files:
             print(f"\nProcessing {cds.absolute().as_posix()}...", end="\t")
@@ -342,18 +349,19 @@ class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
         # not exist anymore and we have to create them again.
         for genome in self._genome_files:
             management.call_command(
-                'importgenome', genome, 
+                "importgenome",
+                genome,
                 specie=self.genome_data_dict[genome.name]["specie"],
                 strain=self.genome_data_dict[genome.name]["strain"],
             )
 
         # ibidem
         for cds in self._cds_files:
-            management.call_command('importgenes', cds)
+            management.call_command("importgenes", cds)
 
-        for protein in self._protein_files:
-            print(f"\nProcessing {protein.absolute().as_posix()}...", end="\t")
-            with open(protein, "r", encoding="utf-8") as _protein_handle:
+        for _protein in self._protein_files:
+            print(f"\nProcessing {_protein.absolute().as_posix()}...", end="\t")
+            with open(_protein, "r", encoding="utf-8") as _protein_handle:
                 for protein in SeqIO.parse(_protein_handle, "fasta"):
                     try:
                         save_protein(protein)
@@ -361,5 +369,3 @@ class DatabaseIntegrationTest(AnnotationTest, TransactionTestCase):
                         is_plasmid = "plasmid" in protein.description
                         print(f"{_nil_obj}, is_plasmid = {is_plasmid}")
             print("Done")
-
-

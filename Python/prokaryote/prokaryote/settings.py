@@ -42,6 +42,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+FILE_UPLOAD_HANDLERS = ["django.core.files.uploadhandler.TemporaryFileUploadHandler"]
 
 # Application definition
 
@@ -54,6 +55,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "dbsetup",
     "annotation",
+    "upload",
 ]
 
 MIDDLEWARE = [
@@ -71,9 +73,10 @@ ROOT_URLCONF = "prokaryote.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [ 
-            BASE_DIR / 'annotation' / 'templates',
-            BASE_DIR / 'home' / 'templates',
+        "DIRS": [
+            BASE_DIR / "annotation" / "templates",
+            BASE_DIR / "home" / "templates",
+            BASE_DIR / "upload" / "templates",
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -95,7 +98,8 @@ WSGI_APPLICATION = "prokaryote.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        # "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": get_env_value("PG_DBNAME"),
         "USER": get_env_value("PG_USER"),
         "PASSWORD": get_env_value("PG_PASSWORD"),
