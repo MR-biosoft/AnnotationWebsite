@@ -196,3 +196,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# github-pages
+.Rproj.user/
+renv/
