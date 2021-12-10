@@ -6,6 +6,39 @@
 
     <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
 
+    <style>
+
+        h3 {
+            text-align: center;
+        }
+
+        select {
+            width: 250px;
+            border: 2.5px solid #dddddd;
+            border-radius: 6px;
+            background-color: white;
+            margin: 10px 0;
+            height: 30px;
+            text-align: center;
+        }
+
+        input, select {
+            width: 70%;
+            margin: 10px 0;
+        }
+
+        input {
+            width: 69%;
+            height: 25px;
+        }
+
+        .button-blast {
+            width: 100%;
+            text-align: center;
+        }
+
+    </style>
+
 </head>
 
 <body>
@@ -40,8 +73,8 @@
 
                 <table class="entry-information-table">
                     <tr>
-                        <td class=".test">Accession number:</td>
-                        <td class=".test2">{{ entry.accession_number }}</td>
+                        <td>Accession number:</td>
+                        <td>{{ entry.accession_number }}</td>
                     </tr>
                     <tr>
                         <td>Specie:</td>
@@ -87,20 +120,20 @@
 
                 <table class="entry-information-table">
                     <tr>
-                        <td class=".test">Gene name:</td>
-                        <td class=".test2">{{ entry.annotation.gene_name }}</td>
+                        <td>Gene name:</td>
+                        <td>{{ entry.annotation.gene_name }}</td>
                     </tr>
                     <tr>
-                        <td class=".test">Gene symbol:</td>
-                        <td class=".test2">{{ entry.annotation.gene_symbol }}</td>
+                        <td>Gene symbol:</td>
+                        <td>{{ entry.annotation.gene_symbol }}</td>
                     </tr>
                     <tr>
-                        <td class=".test">Gene biotype:</td>
-                        <td class=".test2">{{ entry.annotation.gene_biotype }}</td>
+                        <td>Gene biotype:</td>
+                        <td>{{ entry.annotation.gene_biotype }}</td>
                     </tr>
                     <tr>
-                        <td class=".test">Function:</td>
-                        <td class=".test2">{{ entry.annotation.function }}</td>
+                        <td>Function:</td>
+                        <td>{{ entry.annotation.function }}</td>
                     </tr>
                 </table>
 
@@ -139,8 +172,54 @@
 
         </section>
 
-    </section>
+        <section class="entry-information">
+        
+            <section class="entry-column-information">
+        
+                <h3 class="entry-title">Blast</h3>
 
+                <form method="post" action="gene">
+
+                    {% csrf_token %}
+                    
+                    <div class="blast-field">
+                        <label for="database">Database</label>
+                        <select name="database" id="database">
+                        <option value="nr">Nucleotide collection (nr)</option>
+                        <option value="refseq_rna">Reference RNA sequences (refseq_rna)</option>
+                        <option value="refseq_genomic">RefSeq Genome Database (refseq_genomes)</option>
+                        <option value="patnt">Patent sequences (patnt)</option>
+                        <option value="pdbnt">PDB nucleotide database (pdb)</option>
+                        <option value="wgs">Whole Genome Shotgun Contigs (WGS)</option>
+                        </select>
+                    </div>
+
+                    <div class="blast-field">
+                        <label for="optimization">Optimization</label>
+                        <select name="optimization" id="optimization">
+                        <option value="blastn">blastn</option>
+                        <option value="megablast">megablast</option>
+                        </select>
+                    </div>
+
+                    <div class="blast-field">
+                        <label for="word-size">Word Size</label>
+                        <input type="number" min="4" step="1" name="word-size" id="word-size" /></td>
+                    </div>
+
+                    <br/><br/>
+                    
+                    <div class="button-blast">
+                        <input type="submit" value="Launch Blast" />
+                    </div>
+            
+                </form>
+        
+            </section>
+
+        </section>
+
+    </section>
 
 </body>
 

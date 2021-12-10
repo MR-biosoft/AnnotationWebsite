@@ -342,3 +342,40 @@ hr {
     margin-bottom: 20px;
     height: 550px;
 }
+
+/* Blast entry */
+
+.entry-column-blast {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 620px;
+    min-width: 260px;
+    width: 48.5%;
+    height: 400px;
+    background-color: rgb(241, 247, 244);
+    border: 2.5px solid #dddddd;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.blast-field {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 80%;
+    margin: 0 10px 15px 10px;
+}
+
+.blast-field {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 80%;
+    margin: 0 10px 15px 10px;
+    align-items: center;
+}
+
