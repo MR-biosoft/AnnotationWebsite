@@ -49,18 +49,32 @@ from Bio import SeqIO
 #    return _skipped_entries
 
 
+file_command_dict = {
+    "genome": "importgenome",
+    "genes": "importgenes",
+    "proteins": "importproteins",
+}
+
+
 def upload_file(request):
     """ """
 
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            _genome = request.FILES["genome_file"]
-            _genes = request.FILES["gene_file"]
-            _proteins = request.FILES["protein_file"]
-            management.call_command("importgenome", _genome.temporary_file_path())
-            management.call_command("importgenes", _genes.temporary_file_path())
-            management.call_command("importproteins", _proteins.temporary_file_path())
+            _file = request.FILES["file"]
+            _type = request.POST["file_type"]
+            if _type == "genome":
+                management.call_command(
+                    file_command_dict[_type],
+                    _file.temporary_file_path(),
+                    specie=request.POST["specie"],
+                    strain=request.POST["strain"],
+                )
+            else:
+                management.call_command(
+                    file_command_dict[_type], _file.temporary_file_path()
+                )
 
             return HttpResponseRedirect("/upload")
     else:

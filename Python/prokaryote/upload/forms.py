@@ -11,10 +11,12 @@ class UploadFileForm(forms.Form):
         ("proteins", "proteins"),
     )
 
-    genome_file = forms.FileField(required=True)
-    gene_file = forms.FileField(required=True)
-    protein_file = forms.FileField(required=True)
-    # file_type = forms.ChoiceField(choices=FILE_TYPE_CHOICES)
+    file = forms.FileField(required=True)
+    specie = forms.CharField(max_length=20, required=False)
+    strain = forms.CharField(max_length=20, required=False)
+    # gene_file = forms.FileField(required=True)
+    # protein_file = forms.FileField(required=True)
+    file_type = forms.ChoiceField(choices=FILE_TYPE_CHOICES)
 
 
 class UploadGenomeForm(UploadFileForm):
