@@ -7,7 +7,6 @@
     <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
 
     <style>
-
         h3 {
             text-align: center;
         }
@@ -22,7 +21,8 @@
             text-align: center;
         }
 
-        input, select {
+        input,
+        select {
             width: 70%;
             margin: 10px 0;
         }
@@ -36,7 +36,6 @@
             width: 100%;
             text-align: center;
         }
-
     </style>
 
 </head>
@@ -61,8 +60,13 @@
         </div>
     </header>
 
-    <h1 class="body-main-title">Entry {{ entry.accession_number }} {% if entry.chromosome.specie %} ({{ entry.chromosome.specie }}) {% endif %}</h1>
-        
+    <h1 class="body-main-title">
+        Entry {{ entry.accession_number }}
+        {% if entry.chromosome.specie %}
+        ({{ entry.chromosome.specie }})
+        {% endif %}
+    </h1>
+
     <section class="entry">
 
         <section class="entry-information">
@@ -103,11 +107,11 @@
                     <tr>
                         <td>Reading frame:</td>
                         {% if entry.reading_frame == 1 %}
-                            <td>direct</td>
+                        <td>direct</td>
                         {% elif entry.reading_frame == -1 %}
-                            <td>reverse</td>
+                        <td>reverse</td>
                         {% else %}
-                            <td>None</td>
+                        <td>None</td>
                         {% endif %}
                     </tr>
                 </table>
@@ -141,7 +145,7 @@
 
         </section>
 
-        <br/>
+        <br />
 
         <section class="entry-information">
 
@@ -158,14 +162,17 @@
             </section>
 
             <section class="entry-column-information">
-    
+
                 <h3 class="entry-title">External link</h3>
 
                 You can have complementary information with the following databanks:
                 <ul>
-                    <li><a href="https://www.ncbi.nlm.nih.gov/gene/?term={{entry.accession_number}}" target="_blank">National Center for Biotechnology Information (NCBI)</a></li>
-                    <li><a href="https://www.ebi.ac.uk/ena/browser/view/{{entry.accession_number}}" target="_blank">European Nucleotide Archive (ENA)</a></li>
-                    <li><a href="https://www.uniprot.org/uniprot/?query={{entry.accession_number}}&sort=score" target="_blank">UniProtKB</a></li>
+                    <li><a href="https://www.ncbi.nlm.nih.gov/gene/?term={{entry.accession_number}}"
+                            target="_blank">National Center for Biotechnology Information (NCBI)</a></li>
+                    <li><a href="https://www.ebi.ac.uk/ena/browser/view/{{entry.accession_number}}"
+                            target="_blank">European Nucleotide Archive (ENA)</a></li>
+                    <li><a href="https://www.uniprot.org/uniprot/?query={{entry.accession_number}}&sort=score"
+                            target="_blank">UniProtKB</a></li>
                 </ul>
 
             </section>
@@ -173,32 +180,33 @@
         </section>
 
         <section class="entry-information">
-        
+
             <section class="entry-column-information">
-        
+
                 <h3 class="entry-title">Blast</h3>
 
-                <form method="post" action="gene">
+                <form method="post" action="gene" target="_blank">
 
                     {% csrf_token %}
-                    
+
+                    <input type="hidden" name="sequence" value={{ entry.geneseq.sequence }} />
                     <div class="blast-field">
                         <label for="database">Database</label>
                         <select name="database" id="database">
-                        <option value="nr">Nucleotide collection (nr)</option>
-                        <option value="refseq_rna">Reference RNA sequences (refseq_rna)</option>
-                        <option value="refseq_genomic">RefSeq Genome Database (refseq_genomes)</option>
-                        <option value="patnt">Patent sequences (patnt)</option>
-                        <option value="pdbnt">PDB nucleotide database (pdb)</option>
-                        <option value="wgs">Whole Genome Shotgun Contigs (WGS)</option>
+                            <option value="nr">Nucleotide collection (nr)</option>
+                            <option value="refseq_rna">Reference RNA sequences (refseq_rna)</option>
+                            <option value="refseq_genomic">RefSeq Genome Database (refseq_genomes)</option>
+                            <option value="patnt">Patent sequences (patnt)</option>
+                            <option value="pdbnt">PDB nucleotide database (pdb)</option>
+                            <option value="wgs">Whole Genome Shotgun Contigs (WGS)</option>
                         </select>
                     </div>
 
                     <div class="blast-field">
                         <label for="optimization">Optimization</label>
                         <select name="optimization" id="optimization">
-                        <option value="blastn">blastn</option>
-                        <option value="megablast">megablast</option>
+                            <option value="blastn">blastn</option>
+                            <option value="megablast">megablast</option>
                         </select>
                     </div>
 
@@ -207,14 +215,14 @@
                         <input type="number" min="4" step="1" name="word-size" id="word-size" /></td>
                     </div>
 
-                    <br/><br/>
-                    
+                    <br /><br />
+
                     <div class="button-blast">
                         <input type="submit" value="Launch Blast" />
                     </div>
-            
+
                 </form>
-        
+
             </section>
 
         </section>
