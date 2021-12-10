@@ -133,7 +133,6 @@ class GeneView(View):
             context = {"hits": hits} if hits.count() < 100 else {"hits": hits[:100]}
         # Launch a blast request
         elif "database" in request.POST:
-            print(request.POST)
             sequence = request.POST["sequence"]
             database = request.POST["database"]
             optimization = False if request.POST["optimization"] == "blastn" else True
@@ -160,7 +159,6 @@ class ProteinView(View):
     def get(self, request):
         """Method used to process GET requests"""
         if "protein" in request.GET:
-            print(request.GET)
             accession_number = request.GET["protein"]
             entry = get_object_or_404(
                 GeneProtein.objects.select_related("chromosome")
