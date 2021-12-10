@@ -46,7 +46,7 @@
                 <td><a href="{% url 'browse:genome' %}?chromosome={{hit.chromosome}}">{{ hit.chromosome }}</a></td>
                 <td>{{ hit.specie }}</td>
                 <td>{{ hit.strain }}</td>
-                <td>{{ hit.length }}</td>
+                <td class="number-query">{{ hit.length }}</td>
             </tr>
             {% endfor %}
         </tbody>

@@ -31,7 +31,7 @@ def launch_blast(
         entry_dict = {}
         title = entry.title.split("|")
         entry_dict["gi"] = title[1]
-        entry_dict["gb-emb"] = title[3]
+        entry_dict["gb_emb"] = title[3]
         hsps = entry.hsps[0]
         entry_dict["score"] = hsps.score
         entry_dict["bits"] = hsps.bits
@@ -41,3 +41,28 @@ def launch_blast(
         entry_dict["coverage"] = hsps.align_length
         blast_entry_list.append(entry_dict)
     return blast_entry_list
+
+blast_hits = [{'gi': '1845299776',
+            'gb_emb': 'CP053597.1',
+            'score': 2463.0,
+            'bits': 4549.42,
+            'e_value': 0.0,
+            'identities': 2463,
+            'gaps': 0,
+            'coverage': 2463},
+            {'gi': '1845295615',
+            'gb_emb': 'CP053603.1',
+            'score': 2463.0,
+            'bits': 4549.42,
+            'e_value': 0.0,
+            'identities': 2463,
+            'gaps': 0,
+            'coverage': 2463},
+            {'gi': '1845291569',
+            'gb_emb': 'CP053595.1',
+            'score': 2463.0,
+            'bits': 4549.42,
+            'e_value': 0.0,
+            'identities': 2463,
+            'gaps': 0,
+            'coverage': 2463}]

@@ -133,6 +133,7 @@ class GeneView(View):
             context = {"hits": hits} if hits.count() < 100 else {"hits": hits[:100]}
         # Launch a blast request
         elif "database" in request.POST:
+            print(request.POST)
             sequence = request.POST["sequence"]
             database = request.POST["database"]
             optimization = False if request.POST["optimization"] == "blastn" else True
@@ -143,7 +144,8 @@ class GeneView(View):
                 word_size=word_size,
                 megablast=optimization,
             )
-            return render(request, self.BLAST_template, {})
+            context = {"hits": blast_hits}
+            return render(request, self.BLAST_template, context)
 
         return render(request, self.POST_template, context)
 

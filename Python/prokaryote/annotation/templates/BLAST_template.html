@@ -1,1 +1,88 @@
-<h1> Blast template </h1>
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <link rel="stylesheet" , type="text/css" href="{% static 'css/custom_styles.css' %}" />
+    <script src="{% static 'js/sortable.js' %}"></script>
+
+    <style>
+
+        table {
+            width: 100%;
+            table-layout: auto;
+        }
+
+        td {
+            width: 12.5%;
+        }
+
+        .shrink {
+            width: 10%;
+        }
+
+        .expand {
+            width: 28%;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <nav>
+        <a href="#" class="documentation">Documentation</a>
+        <a href="mailto:mrbiosoft@gmail.com" target="_blank">Support</a>
+        <a href="#" class=>Logout</a>
+        <a href="{% url 'home:menu' %}">Home</a>
+    </nav>
+
+    <header>
+        <div class="header-1">
+            <h1 class="text-heading">Bacterial gene blast</h1>
+            <h2 class="description-title">The browser for bacterial genome annotation</h2>
+            Expanding platform that encompasses annotations and functional analysis of bacterial genomes
+        </div>
+        <div class="header-2">
+            <img src="{% static 'images/mr-biosoft-green.png' %}" />
+        </div>
+    </header>
+
+    <h1 class="results-title">Blast Hits</h1>
+
+    <table class="sortable">
+        <thead>
+            <tr>
+                <th>gi</th>
+                <th>gb/emb</th>
+                <th>Score</th>
+                <th>Bits</th>
+                <th>E value</th>
+                <th>Coverage</th>
+                <th>Identities</th>
+                <th>Gaps</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hit in hits %}
+            <tr>
+                <td><a href="https://www.ncbi.nlm.nih.gov/nuccore/{{ hit.gi }}" target="_blank">{{ hit.gi }}</a></td>
+                <td>{{ hit.gb_emb }}</td>
+                <td class="number">{{ hit.score }}</td>
+                <td class="number">{{ hit.bits }}</td>
+                <td class="number">{{ hit.e_value }}</td>
+                <td class="number">{{ hit.coverage }}</td>
+                <td class="number">{{ hit.identities }}</td>
+                <td class="number">{{ hit.gaps}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table-->
+
+    <br/>
+
+</body>
+
+</html>

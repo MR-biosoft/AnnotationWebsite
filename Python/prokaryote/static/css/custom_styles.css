@@ -159,6 +159,14 @@ td {
     padding-left: 10px;
 }
 
+.number {
+    text-align: right;
+}
+
+.number-query {
+    text-align: center;
+}
+
 .sortable thead {
     height: 40px;
     color: rgb(175, 87, 87);
@@ -378,4 +386,3 @@ hr {
     margin: 0 10px 15px 10px;
     align-items: center;
 }
-
