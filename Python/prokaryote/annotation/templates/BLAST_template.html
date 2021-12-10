@@ -41,7 +41,7 @@
 
     <header>
         <div class="header-1">
-            <h1 class="text-heading">Bacterial gene search</h1>
+            <h1 class="text-heading">Bacterial gene blast</h1>
             <h2 class="description-title">The browser for bacterial genome annotation</h2>
             Expanding platform that encompasses annotations and functional analysis of bacterial genomes
         </div>
@@ -50,34 +50,36 @@
         </div>
     </header>
 
-    <h1 class="results-title">Results</h1>
+    <h1 class="results-title">Blast Hits</h1>
 
     <table class="sortable">
         <thead>
             <tr>
-                <th>AC</th>
-                <th>Chromosome</th>
-                <th>Specie</th>
-                <th>Strain</th>
-                <th>Length (bp)</th>
-                <th>Symbol</th>
-                <th>Function</th>
+                <th>gi</th>
+                <th>gb/emb</th>
+                <th>Score</th>
+                <th>Bits</th>
+                <th>-log<sub>10</sub>(E value)</th>
+                <th>Coverage</th>
+                <th>Identities</th>
+                <th>Gaps</th>
             </tr>
         </thead>
         <tbody>
             {% for hit in hits %}
             <tr>
-                <td><a href="{% url 'browse:gene' %}?gene={{hit.accession_number}}">{{ hit.accession_number }}</a></td>
-                <td><a href="{% url 'browse:genome' %}?chromosome={{hit.chromosome.chromosome}}">{{ hit.chromosome.chromosome }}</a></td>
-                <td>{{ hit.chromosome.specie }}</td>
-                <td class="shrink">{{ hit.chromosome.strain }}</td>
-                <td class="number-query">{{ hit.dna_length }}</td>
-                <td class="shrink">{{ hit.annotation.gene_symbol }}</td>
-                <td class="expand">{{ hit.annotation.function}}</td>
+                <td><a href="https://www.ncbi.nlm.nih.gov/nuccore/{{ hit.gi }}" target="_blank">{{ hit.gi }}</a></td>
+                <td>{{ hit.gb_emb }}</td>
+                <td class="number">{{ hit.score }}</td>
+                <td class="number">{{ hit.bits }}</td>
+                <td class="number">{{ hit.e_value }}</td>
+                <td class="number">{{ hit.coverage }}</td>
+                <td class="number">{{ hit.identities }}</td>
+                <td class="number">{{ hit.gaps}}</td>
             </tr>
             {% endfor %}
         </tbody>
-    </table>
+    </table-->
 
     <br/>
 
