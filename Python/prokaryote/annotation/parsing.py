@@ -9,10 +9,11 @@
 
 import multiprocessing as mp
 import json
+from functools import partial
 from datetime import datetime
 from typing import Dict, Optional, Tuple, Callable, NoReturn
 import regex
-from Bio import Seq
+from Bio import Seq, SeqIO
 from Bio.SeqIO.FastaIO import FastaIterator
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -23,7 +24,7 @@ from django.db import transaction, IntegrityError, DataError
 # Imports from our module
 from annotation.models import Genome, GeneProtein, GeneSeq, ProteinSeq, Annotation
 from annotation import bioregex
-from annotation.exceptions import MissingChromosomeField
+from annotation.exceptions import MissingChromosomeField, InvalidFASTA
 
 
 def _get_start_end_positions(start_end_match: str) -> Tuple[int, int]:
@@ -72,22 +73,41 @@ class FASTAParser:
         return hits
 
 
-class ParallelImporter:
+class ParallelFASTAImporter:
     """Class to construct a parallel importer
     for genes or proteins.
+
+    Should be instantiated by passing one of the following
+    functions:
+
+        * annotation.parsing.save_gene
+        * annotation.parsing.save_protein
     """
 
-    def __init__(self, save_function: Callable):
+    def __init__(self, save_function: Callable, **save_func_kwargs):
         self._func = save_function
+        self._p_func = partial(save_function, **save_func_kwargs)
 
     def __repr__(self):
-        return f"ParallelImporter({self._func.__name__})"
+        return f"ParallelFASTAImporter({self._func.__name__})"
 
-    def __call__(self, fasta_iter: FastaIterator):
+    def _parallel_executor(self, entry):
+        """ """
+        try:
+            self._p_func(entry)
+        except (MissingChromosomeField, ObjectDoesNotExist) as _expected_exceptions:
+            return True
+
+        return False
+
+    def __call__(self, file_handle):
+        fasta_iter = SeqIO.parse(file_handle, "fasta")
         if not fasta_iter:
-            pass
+            raise InvalidFASTA(f"BioPython could not parse file : {file_handle.name}")
         with mp.Pool(mp.cpu_count()) as pool:
-            _errs = pool.map(_parallel_executor, fasta_iter)
+            _errs = pool.map(self._parallel_executor, fasta_iter)
+
+        return sum(_errs)
 
 
 # TODO :
