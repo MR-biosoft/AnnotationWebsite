@@ -1,5 +1,14 @@
+""" Custom forms for file handling """
 from django import forms
 
+
 class UploadFileForm(forms.Form):
-    title = forms.CharField(max_length=50)
-    file = forms.FileField()
+    """Basic file form"""
+
+    genome_file = forms.FileField(required=True)
+    gene_file = forms.FileField(required=True)
+    protein_file = forms.FileField(required=True)
+
+
+class UploadGenomeForm(UploadFileForm):
+    """Form to upload a genome"""

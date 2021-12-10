@@ -7,11 +7,13 @@
     and sequences.
 """
 
+import multiprocessing as mp
 import json
 from datetime import datetime
 from typing import Dict, Optional, Tuple, Callable, NoReturn
 import regex
 from Bio import Seq
+from Bio.SeqIO.FastaIO import FastaIterator
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction, IntegrityError, DataError
@@ -21,10 +23,7 @@ from django.db import transaction, IntegrityError, DataError
 # Imports from our module
 from annotation.models import Genome, GeneProtein, GeneSeq, ProteinSeq, Annotation
 from annotation import bioregex
-
-
-class MissingChromosomeField(ValueError):
-    """Custom exception to represent a parsing error."""
+from annotation.exceptions import MissingChromosomeField
 
 
 def _get_start_end_positions(start_end_match: str) -> Tuple[int, int]:
@@ -71,6 +70,24 @@ class FASTAParser:
             if _match:
                 hits.update(_match.groupdict())
         return hits
+
+
+class ParallelImporter:
+    """Class to construct a parallel importer
+    for genes or proteins.
+    """
+
+    def __init__(self, save_function: Callable):
+        self._func = save_function
+
+    def __repr__(self):
+        return f"ParallelImporter({self._func.__name__})"
+
+    def __call__(self, fasta_iter: FastaIterator):
+        if not fasta_iter:
+            pass
+        with mp.Pool(mp.cpu_count()) as pool:
+            _errs = pool.map(_parallel_executor, fasta_iter)
 
 
 # TODO :
