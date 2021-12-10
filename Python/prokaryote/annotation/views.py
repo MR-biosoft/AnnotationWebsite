@@ -5,7 +5,7 @@ from django.views import View
 from django.shortcuts import render, get_list_or_404, get_object_or_404
 
 from .models import Genome, GeneProtein
-
+from .biopython import launch_blast
 
 # Create your views here.
 class GenomeView(View):
@@ -55,6 +55,7 @@ class GeneView(View):
     GET_template = "gene_form.html"
     POST_template = "gene_query.html"
     ENTRY_template = "single_gene_entry.html"
+    BLAST_template = "BLAST_template.html"
 
     def get(self, request):
         """Method used to process GET requests"""
@@ -75,12 +76,14 @@ class GeneView(View):
         """Method used to process POST requests"""
         context = {"hits": []}
 
+        # Search by accession number
         if "ac" in request.POST:
             accession_number = request.POST.get("ac", "")
             hits = GeneProtein.objects
             hits = hits.filter(accession_number__istartswith=accession_number)
             hits = hits.select_related("chromosome").select_related("annotation")
             context = {"hits": hits} if hits.count() < 100 else {"hits": hits[:100]}
+        # Search using multiple filters
         elif "chromosome" in request.POST:
             chromosome = request.POST.get("chromosome", "")
             specie = request.POST.get("specie", "")
@@ -128,6 +131,19 @@ class GeneView(View):
             elif reading_frame == "reverse":
                 hits = hits.filter(reading_frame=-1)
             context = {"hits": hits} if hits.count() < 100 else {"hits": hits[:100]}
+        # Launch a blast request
+        elif "database" in request.POST:
+            sequence = request.POST["sequence"]
+            database = request.POST["database"]
+            optimization = False if request.POST["optimization"] == "blastn" else True
+            word_size = request.POST["word-size"] if request.POST["word-size"] else 10
+            blast_hits = launch_blast(
+                sequence=sequence,
+                database=database,
+                word_size=word_size,
+                megablast=optimization,
+            )
+            return render(request, self.BLAST_template, {})
 
         return render(request, self.POST_template, context)
 
