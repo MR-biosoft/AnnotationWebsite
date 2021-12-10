@@ -98,7 +98,8 @@ WSGI_APPLICATION = "prokaryote.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        # "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": get_env_value("PG_DBNAME"),
         "USER": get_env_value("PG_USER"),
         "PASSWORD": get_env_value("PG_PASSWORD"),

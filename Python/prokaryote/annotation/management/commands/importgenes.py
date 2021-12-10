@@ -4,6 +4,7 @@
 from pathlib import Path
 import multiprocessing as mp
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand, CommandError, no_translations
 from django.db.utils import IntegrityError
 
@@ -18,10 +19,7 @@ def _parallel_executor(gene):
     """helper function to import genes in parallel"""
     try:
         save_gene(gene, verbose=False)
-    except MissingChromosomeField as _missing_chromosome:
-        # print(
-        #    f"FASTA entry with accession {gene.id} has no 'chromosome' annotation, skipping."
-        # )
+    except (MissingChromosomeField, ObjectDoesNotExist) as _expected_exceptions:
         return True
     except IntegrityError as _i_e:
         _err_lines = ["Database Integrity Error:", f"{str(_i_e)}"]
@@ -60,8 +58,8 @@ class Command(BaseCommand):
             print(f"Processing file {in_file}")
             with mp.Pool(mp.cpu_count()) as pool:
                 _errs = pool.map(_parallel_executor, gene_iterator)
-
             print(f"There where {sum(_errs)} parsing errors.")
+
             # for gene in gene_iterator:
             #    try:
             #        save_gene(gene)

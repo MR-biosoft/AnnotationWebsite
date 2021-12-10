@@ -5,9 +5,16 @@ from django import forms
 class UploadFileForm(forms.Form):
     """Basic file form"""
 
-    # genome_file = forms.FileField(required=True)
-    # gene_file = forms.FileField(required=True)
+    FILE_TYPE_CHOICES = (
+        ("genome", "genome"),
+        ("genes", "genes"),
+        ("proteins", "proteins"),
+    )
+
+    genome_file = forms.FileField(required=True)
+    gene_file = forms.FileField(required=True)
     protein_file = forms.FileField(required=True)
+    # file_type = forms.ChoiceField(choices=FILE_TYPE_CHOICES)
 
 
 class UploadGenomeForm(UploadFileForm):

@@ -150,7 +150,7 @@ def save_gene(
     record: Seq.Seq,
     update: bool = False,
     log_errors: bool = True,
-    catch_errors: bool = True,
+    catch_errors: bool = False,
     verbose: bool = True,
 ):
     """
@@ -270,7 +270,8 @@ def save_gene(
 
     # Probably shouldn't catch the IntegrityError, see:
     # https://docs.djangoproject.com/en/3.2/topics/db/transactions/
-    except (ObjectDoesNotExist, IntegrityError, DataError) as _db_error:
+    # except (ObjectDoesNotExist, IntegrityError, DataError) as _db_error:
+    except (ObjectDoesNotExist) as _db_error:
         if verbose:
             print(f"Error importing gene with accession {record.id}")
             print("Inspect `gene_importation_error_log.jsonl` for further details")
@@ -289,10 +290,3 @@ def save_gene(
                 err_log_file.write(f"{json.dumps(_err_dump)}\n")
         if not catch_errors:
             raise _db_error
-
-    # gene_protein.save()
-
-    # gene_protein_fields = {}
-    # if "start_end" in parsed_fields:
-    #    start_str, stop_str = parsed_fields["start_end"].split(":")
-    #    start, stop = int(start_str), int(stop_str)
