@@ -1,0 +1,79 @@
+--- 
+title: "D I F F R N A : A RNA-Seq analysis pipeline"
+author: 
+  - Izem Mouhoubi
+  - Théo Roncalli
+  - Gustavo Magaña López
+  - Alex Westbrook
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: gmagannaDevelop/bookdown-exploration
+description: "Documentation for the NEXTFLOW pipeline 'DIFFRNA' v0.1.0"
+classoption: openany
+---
+
+# Prerequisites
+
+## Hardware and Operating System
+
+The pipeline was developed and tested on [Ubuntu 20.04.3 LTS](https://fridge.ubuntu.com/2021/08/27/ubuntu-20-04-3-lts-released/)
+on top of the `(GNU/Linux 5.4.0-88-generic x86_64)` kernel. The output of the commands `uname` and `neofetch` are provided to further detail our configuration.
+
+```{bash, eval=F}
+$ uname -a
+Linux machine329a7396-059f-41aa-94c7-4c41b4ec8290 5.4.0-88-generic #99-Ubuntu SMP Thu Sep 23 17:29:00 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+
+$ neofetch
+            .-/+oossssoo+/-.               ubuntu@machine3f9ae3dc-6a4d-46b7-8131-04f00a1be146 
+        `:+ssssssssssssssssss+:`           -------------------------------------------------- 
+      -+ssssssssssssssssssyyssss+-         OS: Ubuntu 20.04.3 LTS x86_64 
+    .ossssssssssssssssssdMMMNysssso.       Host: OpenStack Compute 18.2.1-1.el7 
+   /ssssssssssshdmmNNmmyNMMMMhssssss/      Kernel: 5.4.0-88-generic 
+  +ssssssssshmydMMMMMMMNddddyssssssss+     Uptime: 13 hours, 14 mins 
+ /sssssssshNMMMyhhyyyyhmNMMMNhssssssss/    Packages: 719 (dpkg), 4 (snap) 
+.ssssssssdMMMNhsssssssssshNMMMdssssssss.   Shell: bash 5.0.17 
++sssshhhyNMMNyssssssssssssyNMMMysssssss+   Theme: Adwaita [GTK3] 
+ossyNMMMNyMMhsssssssssssssshmmmhssssssso   Icons: Adwaita [GTK3] 
+ossyNMMMNyMMhsssssssssssssshmmmhssssssso   Terminal: /dev/pts/0 
++sssshhhyNMMNyssssssssssssyNMMMysssssss+   CPU: Intel (Haswell, no TSX, IBRS) (16) @ 2.294GHz 
+.ssssssssdMMMNhsssssssssshNMMMdssssssss.   GPU: 00:02.0 Cirrus Logic GD 5446 
+ /sssssssshNMMMyhhyyyyhdNMMMNhssssssss/    Memory: 635MiB / 64323MiB 
+  +sssssssssdmydMMMMMMMMddddyssssssss+
+   /ssssssssssshdmNNNNmyNMMMMhssssss/                              
+    .ossssssssssssssssssdMMMNysssso.                               
+      -+sssssssssssssssssyyyssss+-
+        `:+ssssssssssssssssss+:`
+            .-/+oossssoo+/-.
+```
+
+This configuration was actually a virtual machine hosted on [Biosphere's RAINBio](https://biosphere.france-bioinformatique.fr/catalogue/) a cloud service maintained by the French Institue of Bioinformatics ([_Institut Français de Bioinformatique_](https://www.france-bioinformatique.fr/en/home/)). 
+
+## BioPipes: a Biosphere-commons app
+
+The instance of the virtual machine we used is called [_BioPipes_](https://biosphere.france-bioinformatique.fr/catalogue/appliance/119/). It provides the most notable bioinformatics pipeline tools:
+
+* [nextflow](https://www.nextflow.io/)
+* [snakemake](https://snakemake.github.io/)
+* [cwltool](https://www.commonwl.org/)
+
+## Software
+
+Our pipeline is built on top of `nextflow`, which was installed via the [conda](https://www.anaconda.com/products/individual) package manager.
+```{bash, eval=F}
+$ conda --version
+conda 4.11.0
+$ nextflow -v
+nextflow version 21.10.0.5640
+```
+
+```{r include=FALSE}
+# automatically create a bib database for R packages
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+), 'packages.bib')
+```
