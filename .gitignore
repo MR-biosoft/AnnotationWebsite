@@ -33,7 +33,7 @@ Data
 
 # tinkering html widgets stored in top-level directory
 Site/*.html
-/**/*.Rmd
+#/**/*.Rmd
 
 # vscode configuration files
 .vscode
