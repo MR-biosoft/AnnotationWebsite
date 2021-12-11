@@ -1,18 +1,91 @@
 {% load static %}
-<h1> File upload </h1>
+<!DOCTYPE html>
+<html>
 
-<h2> Genome </h2>
-<form method="POST" enctype="multipart/form-data">
-	{% csrf_token %}
-	<div class="form-gene-protein-field">
-		<!--
-		Gene {{ form.gene_file }}
-		Protein {{ form.protein_file }}
-	-->
-		File {{ form.file }}
-		Type {{ form.file_type }}
-		Specie {{ form.specie }}
-		Strain {{ form.strain }}
-	</div>
-	<input type="submit" value="Submit">
-</form>
+    <head>
+
+        <link rel="stylesheet" href="{% static 'css/custom_styles.css' %}"/>
+
+		<style>
+
+			.upload {
+			    max-width: 620px;
+	    		min-width: 260px;
+    			width: 30%;
+    			border-radius: 6px;
+    			margin-bottom: 20px;
+			}
+
+			.upload-functionality {
+   				width: 100%;
+			    margin-bottom: 15px;
+    			margin-right: 10px;
+			}
+
+			input {
+				height: 30px;
+				width:98%;
+			}
+
+			input[type="submit"]{
+				width: 100%;
+			}
+
+			input[type="file"] {
+    			border: none;
+				height: 19x;
+			}
+
+		</style>
+
+    </head>
+
+    <body>
+
+	    <nav>
+    	    <a href="#" class="documentation">Documentation</a>
+        	<a href="mailto:mrbiosoft@gmail.com" target="_blank">Support</a>
+	        <a href="#" class=>Logout</a>
+    	    <a href="{% url 'home:menu' %}">Home</a>
+	    </nav>
+
+	    <header>
+    	    <div class="header-1">
+        	    <h1 class="text-heading">FASTA files importation</h1>
+            	<h2 class="description-title">The browser for bacterial genome annotation</h2>
+	            Expanding platform that encompasses annotations and functional analysis of bacterial genomes
+    	    </div>
+        	<div class="header-2">
+            	<img src="{% static 'images/mr-biosoft-green.png' %}" />
+	        </div>
+    	</header>
+
+		<h1 class="body-main-title">File upload</h1>
+
+		<section class="upload">
+
+			<br/>
+
+			<form method="POST" enctype="multipart/form-data">
+
+			{% csrf_token %}
+			<div class="upload-functionality">
+				File {{ form.file }}
+			</div>
+			<div class="upload-functionality">
+				Type {{ form.file_type }}
+			</div>
+			<div class="upload-functionality">
+				Specie {{ form.specie }}
+			</div>
+			<div class="upload-functionality">
+				Strain {{ form.strain }}
+			</div>
+			<input type="submit" value="Submit">
+		</form>
+
+		</section>
+
+</body>
+
+</html>
