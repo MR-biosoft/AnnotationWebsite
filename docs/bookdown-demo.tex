@@ -36,8 +36,8 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-  pdftitle={D I F F R N A : A RNA-Seq analysis pipeline},
-  pdfauthor={Izem Mouhoubi; Théo Roncalli; Gustavo Magaña López; Alex Westbrook},
+  pdftitle={Documentation Technique MR-biosoft Annotation Platform},
+  pdfauthor={Théo Roncalli; Gustavo Magaña López},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
@@ -116,15 +116,16 @@
   \thm@postskip=\thm@preskip
 }
 \makeatother
+
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
 \usepackage[]{natbib}
 \bibliographystyle{apalike}
 
-\title{D I F F R N A : A RNA-Seq analysis pipeline}
-\author{Izem Mouhoubi \and Théo Roncalli \and Gustavo Magaña López \and Alex Westbrook}
-\date{2021-12-10}
+\title{Documentation Technique MR-biosoft Annotation Platform}
+\author{Théo Roncalli \and Gustavo Magaña López}
+\date{}
 
 \begin{document}
 \maketitle
@@ -133,145 +134,153 @@
 \setcounter{tocdepth}{1}
 \tableofcontents
 }
-\hypertarget{prerequisites}{%
-\chapter{Prerequisites}\label{prerequisites}}
+\hypertarget{intro}{%
+\chapter*{Introduction}\label{intro}}
+\addcontentsline{toc}{chapter}{Introduction}
 
-\hypertarget{hardware-and-operating-system}{%
-\section{Hardware and Operating System}\label{hardware-and-operating-system}}
+Le projet repose sur deux installations principalement: PostgreSQL et Python.
+Le site a été conçu en utilisant \href{https://www.djangoproject.com/}{\emph{django}}, un
+\emph{framework} pour le développement web écrit en langage Python. Toute la partie
+\emph{front-end} du projet a été conçue dès zéro, en définissant les styles CSS
+sans s'appuyer sur des \emph{frameworks} tels que bootstrap. Le système de gestion
+de bases de données relationnelles choisi est \emph{PostgreSQL}.
 
-The pipeline was developed and tested on \href{https://fridge.ubuntu.com/2021/08/27/ubuntu-20-04-3-lts-released/}{Ubuntu 20.04.3 LTS}
-on top of the \texttt{(GNU/Linux\ 5.4.0-88-generic\ x86\_64)} kernel. The output of the commands \texttt{uname} and \texttt{neofetch} are provided to further detail our configuration.
+Toutes les explications et instructions trouvées dans ce document
+partent de l'hypothèse que \texttt{Python3.8+} et \texttt{psql\ (PostgreSQL)\ 12.7+} sont
+installés dans votre système. Si vous n'avez pas PostgreSQL, je vous
+recommande de suivre
+\href{https://www.lri.fr/~schevalier/doc/teaching/tutoriels/PostgreSQL_install.html}{cette guide}.
+Python est installé par défaut en la plupart
+de distributions GNU/Linux. Tout le développement de l'application a été fait
+en Ubuntu et Pop!\_OS, toutes les deux basées sur Debian. Aucune garantie n'est
+donnée pour d'autres distributions.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\ExtensionTok{$}\NormalTok{ uname }\AttributeTok{{-}a}
-\ExtensionTok{Linux}\NormalTok{ machine329a7396{-}059f{-}41aa{-}94c7{-}4c41b4ec8290 5.4.0{-}88{-}generic }\CommentTok{\#99{-}Ubuntu SMP Thu Sep 23 17:29:00 UTC 2021 x86\_64 x86\_64 x86\_64 GNU/Linux}
-
-\ExtensionTok{$}\NormalTok{ neofetch}
-            \ExtensionTok{.{-}/+oossssoo+/{-}.}\NormalTok{               ubuntu@machine3f9ae3dc{-}6a4d{-}46b7{-}8131{-}04f00a1be146 }
-        \KeywordTok{\textasciigrave{}}\BuiltInTok{:}\NormalTok{+ssssssssssssssssss+:}\KeywordTok{\textasciigrave{}}           \AttributeTok{{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}} 
-      \ExtensionTok{{-}+ssssssssssssssssssyyssss+{-}}\NormalTok{         OS: Ubuntu 20.04.3 LTS x86\_64 }
-    \ExtensionTok{.ossssssssssssssssssdMMMNysssso.}\NormalTok{       Host: OpenStack Compute 18.2.1{-}1.el7 }
-   \ExtensionTok{/ssssssssssshdmmNNmmyNMMMMhssssss/}\NormalTok{      Kernel: 5.4.0{-}88{-}generic }
-  \ExtensionTok{+ssssssssshmydMMMMMMMNddddyssssssss+}\NormalTok{     Uptime: 13 hours, 14 mins }
- \ExtensionTok{/sssssssshNMMMyhhyyyyhmNMMMNhssssssss/}\NormalTok{    Packages: 719 }\ErrorTok{(}\ExtensionTok{dpkg}\KeywordTok{)}\ExtensionTok{,}\NormalTok{ 4 }\ErrorTok{(}\ExtensionTok{snap}\KeywordTok{)} 
-\ExtensionTok{.ssssssssdMMMNhsssssssssshNMMMdssssssss.}\NormalTok{   Shell: bash 5.0.17 }
-\ExtensionTok{+sssshhhyNMMNyssssssssssssyNMMMysssssss+}\NormalTok{   Theme: Adwaita [GTK3] }
-\ExtensionTok{ossyNMMMNyMMhsssssssssssssshmmmhssssssso}\NormalTok{   Icons: Adwaita [GTK3] }
-\ExtensionTok{ossyNMMMNyMMhsssssssssssssshmmmhssssssso}\NormalTok{   Terminal: /dev/pts/0 }
-\ExtensionTok{+sssshhhyNMMNyssssssssssssyNMMMysssssss+}\NormalTok{   CPU: Intel }\ErrorTok{(}\ExtensionTok{Haswell,}\NormalTok{ no TSX, IBRS}\KeywordTok{)} \KeywordTok{(}\ExtensionTok{16}\KeywordTok{)} \ExtensionTok{@}\NormalTok{ 2.294GHz }
-\ExtensionTok{.ssssssssdMMMNhsssssssssshNMMMdssssssss.}\NormalTok{   GPU: 00:02.0 Cirrus Logic GD 5446 }
- \ExtensionTok{/sssssssshNMMMyhhyyyyhdNMMMNhssssssss/}\NormalTok{    Memory: 635MiB / 64323MiB }
-  \ExtensionTok{+sssssssssdmydMMMMMMMMddddyssssssss+}
-   \ExtensionTok{/ssssssssssshdmNNNNmyNMMMMhssssss/}                              
-    \ExtensionTok{.ossssssssssssssssssdMMMNysssso.}                               
-      \ExtensionTok{{-}+sssssssssssssssssyyyssss+{-}}
-        \KeywordTok{\textasciigrave{}}\BuiltInTok{:}\NormalTok{+ssssssssssssssssss+:}\KeywordTok{\textasciigrave{}}
-            \ExtensionTok{.{-}/+oossssoo+/{-}.}
-\end{Highlighting}
-\end{Shaded}
-
-This configuration was actually a virtual machine hosted on \href{https://biosphere.france-bioinformatique.fr/catalogue/}{Biosphere's RAINBio} a cloud service maintained by the French Institue of Bioinformatics (\href{https://www.france-bioinformatique.fr/en/home/}{\emph{Institut Français de Bioinformatique}}).
-
-\hypertarget{biopipes-a-biosphere-commons-app}{%
-\section{BioPipes: a Biosphere-commons app}\label{biopipes-a-biosphere-commons-app}}
-
-The instance of the virtual machine we used is called \href{https://biosphere.france-bioinformatique.fr/catalogue/appliance/119/}{\emph{BioPipes}}. It provides the most notable bioinformatics pipeline tools:
+\hypertarget{deps}{%
+\section*{Gestion des Dépendances}\label{deps}}
+\addcontentsline{toc}{section}{Gestion des Dépendances}
 
 \begin{itemize}
 \tightlist
 \item
-  \href{https://www.nextflow.io/}{nextflow}
+  \href{https://python-poetry.org/}{Poetry} for Python dependencies management.
 \item
-  \href{https://snakemake.github.io/}{snakemake}
-\item
-  \href{https://www.commonwl.org/}{cwltool}
+  \href{https://www.postgresql.org/}{PostgreSQL} for database management.
 \end{itemize}
 
-\hypertarget{software}{%
-\section{Software}\label{software}}
+La gestion des dépendances du projet a été faite grâce à \emph{Poetry}, un gestionnaire
+de paquets pour Python qui offre l'avantage d'être \(100\%\) reproductible,
+contrairement à d'autres plateformes de gestion d'environnements très populaires
+telles que \emph{conda}. Le manque de reproductibilité de conda vient du fait que son
+\emph{channel} principal n'est pas un miroir de l'index de paquets python (\href{https://pypi.org/}{PyPI}).
+Pour installer différents paquets, plusieurs \emph{channels} doivent être ajoutés.
+Parfois on ne trouve pas le paquet et on finit par l'installer directement via \texttt{pip}.
+Or, les paquets installés via \texttt{pip} ne seront pas suivis par conda. Si l'on essaie
+de partager un fichier \texttt{env.yml} produit par conda, on n'a aucune garantie que tous
+les paquets seront inclus dans le fichier.
 
-Our pipeline is built on top of \texttt{nextflow}, which was installed via the \href{https://www.anaconda.com/products/individual}{conda} package manager.
+Par contre, poetry a un \emph{dependency-solver} très robuste qui permet de trouver
+des possibles conflits de dépendances lors de l'ajout via la commande \texttt{poetry\ add\ \textless{}dependency\textgreater{}}.
+En étant stricte et informant l'utilisateur des conflits lors de l'ajout, en suggérant
+comment les résoudre (si possible), poetry garantit la
+Par défaut, poetry installe les paquets depuis le PyPI, ce qui veut dire qu'il peut
+trouver tout paquet de l'index officiel de python.
+
+Pour installer poetry et configurer les variables d'environnement nécessaires
+afin de lancer le serveur, il est recommandé de suivre le guide
+\href{https://github.com/MR-biosoft/AnnotationWebsite}{README du projet}.
+
+Un script pour faciliter la configuration se trouve dans le livrable (pas dans
+le repo car l'inclure dans un répertoire publique représenterait une grande
+vulnerabilité).
+
+Une fois que script \texttt{bootstrap\_installation.bash} exécuté, une nouvelle
+session \texttt{bash} doit être démarrée afin d'avoir accès à la commande poetry.
+
+À l'intérieur du répertoire où se trouvent \texttt{pyproject.toml} et \texttt{poetry.lock},
+exécuter \texttt{poetry\ install} pour installer toutes les dépendances du projet.
+Puis, exécuter \texttt{poetry\ shell} pour activer l'environnement virtuel et lancer
+l'application.
+
+\hypertarget{organisation}{%
+\section*{Organisation du code serveur}\label{organisation}}
+\addcontentsline{toc}{section}{Organisation du code serveur}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ExtensionTok{$}\NormalTok{ conda }\AttributeTok{{-}{-}version}
-\ExtensionTok{conda}\NormalTok{ 4.11.0}
-\ExtensionTok{$}\NormalTok{ nextflow }\AttributeTok{{-}v}
-\ExtensionTok{nextflow}\NormalTok{ version 21.10.0.5640}
+\ExtensionTok{─}\NormalTok{ poetry.lock}
+\ExtensionTok{─}\NormalTok{ pyproject.toml}
+\ExtensionTok{─}\NormalTok{ prokaryote}
+ \ExtensionTok{─}\NormalTok{ annotation }\CommentTok{\# Application principale}
+ \ExtensionTok{─}\NormalTok{ bootstrap\_installation.bash }\CommentTok{\# script d\textquotesingle{}aide à l\textquotesingle{}installation}
+ \ExtensionTok{─}\NormalTok{ createdb.bash }\CommentTok{\# idem mais pour la création des tables de la base de données}
+ \ExtensionTok{─}\NormalTok{ dbsetup }\CommentTok{\# Application django pour gestion de la base de données}
+ \ExtensionTok{─}\NormalTok{ debug.py }\CommentTok{\# Script pour analyser la sortie des error{-}logs }
+ \ExtensionTok{─}\NormalTok{ gene\_importation\_error\_log.jsonl }\CommentTok{\# logs d\textquotesingle{}erreur liés à problèmes de parsing}
+ \ExtensionTok{─}\NormalTok{ home }\CommentTok{\# Application qui gère la page d\textquotesingle{}accueil}
+ \ExtensionTok{─}\NormalTok{ manage.py }\CommentTok{\# Couteau Suisse de django. }
+ \ExtensionTok{─}\NormalTok{ prokaryote }\CommentTok{\# app. de base qui fait le lien entre toutes les autres}
+ \ExtensionTok{─}\NormalTok{ runall.bash }\CommentTok{\# Script qui permet d\textquotesingle{}effacer et recréer la base et importer}
+               \CommentTok{\# toutes les données}
+ \ExtensionTok{─}\NormalTok{ static }\CommentTok{\# répertoire contenant le css de tout le site}
+ \ExtensionTok{─}\NormalTok{ upload }\CommentTok{\# Application pour importer des nouvelles séquences}
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{intro}{%
-\chapter{Introduction}\label{intro}}
+\hypertarget{django}{%
+\chapter*{Introduction à django}\label{django}}
+\addcontentsline{toc}{chapter}{Introduction à django}
 
-You can label chapter and section titles using \texttt{\{\#label\}} after them, e.g., we can reference Chapter \ref{intro}. If you do not manually label them, there will be automatic labels anyway, e.g., Chapter \ref{methods}.
+django permet de construire des sites web modulaires, composés de plusieurs
+applications indépendantes. Toute commande liée à un projet django passe par
+le script \texttt{manage.py}. Celui-ci permet de lancer le serveur, se connecter à la
+base de données de l'application, lancer une session Python interactive qui permet
+de tester le code développé.
 
-Figures and tables with captions will be placed in \texttt{figure} and \texttt{table} environments, respectively.
+\hypertarget{commands}{%
+\section*{Guide de commandes de base}\label{commands}}
+\addcontentsline{toc}{section}{Guide de commandes de base}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, .}\DecValTok{1}\NormalTok{, .}\DecValTok{1}\NormalTok{))}
-\FunctionTok{plot}\NormalTok{(pressure, }\AttributeTok{type =} \StringTok{\textquotesingle{}b\textquotesingle{}}\NormalTok{, }\AttributeTok{pch =} \DecValTok{19}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\begin{itemize}
+\tightlist
+\item
+  Créer un nouveau site : \texttt{django-admin\ startproject\ \textless{}project-name\textgreater{}}
+\end{itemize}
 
-\begin{figure}
+À l'intérieur du dossier du projet, les commandes suivantes sont disponibles :
 
-{\centering \includegraphics[width=0.8\linewidth]{bookdown-demo_files/figure-latex/nice-fig-1} 
+\begin{itemize}
+\tightlist
+\item
+  Créer une nouvelle application : \texttt{./manage.py\ startapp\ \textless{}app-name\textgreater{}}
+\item
+  Se connecter à la base de données : \texttt{./manage.py\ dbshell}
+\item
+  Pour lancer une session python interactive : \texttt{./manage.py\ shell}
+\end{itemize}
 
-}
+\hypertarget{commandes-duxe9veloppuxe9es-par-luxe9quipe}{%
+\section{Commandes développées par l'équipe}\label{commandes-duxe9veloppuxe9es-par-luxe9quipe}}
 
-\caption{Here is a nice figure!}\label{fig:nice-fig}
-\end{figure}
+\begin{itemize}
+\tightlist
+\item
+  Exécuter un script sql à l'intérieur de la base de données du site :
+  \texttt{./manage.py\ dbexec\ script.sql}
+\item
+  Importer des données (en format FASTA) :
 
-Reference a figure by its code chunk label with the \texttt{fig:} prefix, e.g., see Figure \ref{fig:nice-fig}. Similarly, you can reference tables generated from \texttt{knitr::kable()}, e.g., see Table \ref{tab:nice-tab}.
+  \begin{itemize}
+  \tightlist
+  \item
+    Des génomes \texttt{./manage.py\ importgenome\ fichier\_genome.fa}
+  \item
+    Des gènes \texttt{./manage.py\ importgenes\ fichier\_genes.fa}
+  \item
+    Des protéines \texttt{./manage.py\ importproteins\ fichier\_proteines.fa}
+  \end{itemize}
+\end{itemize}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(}
-  \FunctionTok{head}\NormalTok{(iris, }\DecValTok{20}\NormalTok{), }\AttributeTok{caption =} \StringTok{\textquotesingle{}Here is a nice table!\textquotesingle{}}\NormalTok{,}
-  \AttributeTok{booktabs =} \ConstantTok{TRUE}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{table}
-
-\caption{\label{tab:nice-tab}Here is a nice table!}
-\centering
-\begin{tabular}[t]{rrrrl}
-\toprule
-Sepal.Length & Sepal.Width & Petal.Length & Petal.Width & Species\\
-\midrule
-5.1 & 3.5 & 1.4 & 0.2 & setosa\\
-4.9 & 3.0 & 1.4 & 0.2 & setosa\\
-4.7 & 3.2 & 1.3 & 0.2 & setosa\\
-4.6 & 3.1 & 1.5 & 0.2 & setosa\\
-5.0 & 3.6 & 1.4 & 0.2 & setosa\\
-\addlinespace
-5.4 & 3.9 & 1.7 & 0.4 & setosa\\
-4.6 & 3.4 & 1.4 & 0.3 & setosa\\
-5.0 & 3.4 & 1.5 & 0.2 & setosa\\
-4.4 & 2.9 & 1.4 & 0.2 & setosa\\
-4.9 & 3.1 & 1.5 & 0.1 & setosa\\
-\addlinespace
-5.4 & 3.7 & 1.5 & 0.2 & setosa\\
-4.8 & 3.4 & 1.6 & 0.2 & setosa\\
-4.8 & 3.0 & 1.4 & 0.1 & setosa\\
-4.3 & 3.0 & 1.1 & 0.1 & setosa\\
-5.8 & 4.0 & 1.2 & 0.2 & setosa\\
-\addlinespace
-5.7 & 4.4 & 1.5 & 0.4 & setosa\\
-5.4 & 3.9 & 1.3 & 0.4 & setosa\\
-5.1 & 3.5 & 1.4 & 0.3 & setosa\\
-5.7 & 3.8 & 1.7 & 0.3 & setosa\\
-5.1 & 3.8 & 1.5 & 0.3 & setosa\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-You can write citations, too. For example, we are using the \textbf{bookdown} package \citep{R-bookdown} in this sample book, which was built on top of R Markdown and \textbf{knitr} \citep{xie2015}.
+Le fichier \texttt{runall.bash} permet de tout
 
 \hypertarget{literature}{%
 \chapter{Literature}\label{literature}}
@@ -312,11 +321,6 @@ Some \emph{significant} applications are demonstrated in this chapter.
 
 \hypertarget{example-two}{%
 \section{Example two}\label{example-two}}
-
-\hypertarget{final-words}{%
-\chapter{Final Words}\label{final-words}}
-
-We have finished a nice book.
 
   \bibliography{book.bib,packages.bib}
 

@@ -1,79 +1,95 @@
 --- 
-title: "D I F F R N A : A RNA-Seq analysis pipeline"
+title: "Documentation Technique MR-biosoft Annotation Platform"
 author: 
-  - Izem Mouhoubi
   - Théo Roncalli
   - Gustavo Magaña López
-  - Alex Westbrook
-date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
-github-repo: gmagannaDevelop/bookdown-exploration
-description: "Documentation for the NEXTFLOW pipeline 'DIFFRNA' v0.1.0"
+github-repo: MR-biosoft/AnnotationWebsite
+description: "Documentation pour le site d'Annotation de Génomes de Prokaryotes"
 classoption: openany
 ---
 
-# Prerequisites
+# Introduction {-#intro}
 
-## Hardware and Operating System
+Le projet repose sur deux installations principalement: PostgreSQL et Python.
+Le site a été conçu en utilisant [_django_](https://www.djangoproject.com/), un 
+_framework_ pour le développement web écrit en langage Python. Toute la partie
+_front-end_ du projet a été conçue dès zéro, en définissant les styles CSS
+sans s'appuyer sur des _frameworks_ tels que bootstrap. Le système de gestion
+de bases de données relationnelles choisi est _PostgreSQL_.
 
-The pipeline was developed and tested on [Ubuntu 20.04.3 LTS](https://fridge.ubuntu.com/2021/08/27/ubuntu-20-04-3-lts-released/)
-on top of the `(GNU/Linux 5.4.0-88-generic x86_64)` kernel. The output of the commands `uname` and `neofetch` are provided to further detail our configuration.
+Toutes les explications et instructions trouvées dans ce document 
+partent de l'hypothèse que `Python3.8+` et `psql (PostgreSQL) 12.7+` sont
+installés dans votre système. Si vous n'avez pas PostgreSQL, je vous 
+recommande de suivre 
+[cette guide](https://www.lri.fr/~schevalier/doc/teaching/tutoriels/PostgreSQL_install.html). 
+Python est installé par défaut en la plupart
+de distributions GNU/Linux. Tout le développement de l'application a été fait 
+en Ubuntu et Pop!_OS, toutes les deux basées sur Debian. Aucune garantie n'est 
+donnée pour d'autres distributions.
 
+## Gestion des Dépendances {-#deps}
+
+* [Poetry](https://python-poetry.org/) for Python dependencies management.
+* [PostgreSQL](https://www.postgresql.org/) for database management.
+
+La gestion des dépendances du projet a été faite grâce à _Poetry_, un gestionnaire
+de paquets pour Python qui offre l'avantage d'être $100\%$ reproductible, 
+contrairement à d'autres plateformes de gestion d'environnements très populaires
+telles que _conda_. Le manque de reproductibilité de conda vient du fait que son 
+_channel_ principal n'est pas un miroir de l'index de paquets python ([PyPI](https://pypi.org/)).
+Pour installer différents paquets, plusieurs _channels_ doivent être ajoutés. 
+Parfois on ne trouve pas le paquet et on finit par l'installer directement via `pip`.
+Or, les paquets installés via `pip` ne seront pas suivis par conda. Si l'on essaie 
+de partager un fichier `env.yml` produit par conda, on n'a aucune garantie que tous
+les paquets seront inclus dans le fichier. 
+
+Par contre, poetry a un _dependency-solver_ très robuste qui permet de trouver
+des possibles conflits de dépendances lors de l'ajout via la commande `poetry add <dependency>`.
+En étant stricte et informant l'utilisateur des conflits lors de l'ajout, en suggérant 
+comment les résoudre (si possible), poetry garantit la
+Par défaut, poetry installe les paquets depuis le PyPI, ce qui veut dire qu'il peut 
+trouver tout paquet de l'index officiel de python.
+
+Pour installer poetry et configurer les variables d'environnement nécessaires
+afin de lancer le serveur, il est recommandé de suivre le guide 
+[README du projet](https://github.com/MR-biosoft/AnnotationWebsite).
+
+Un script pour faciliter la configuration se trouve dans le livrable (pas dans
+le repo car l'inclure dans un répertoire publique représenterait une grande
+vulnerabilité).
+
+Une fois que script `bootstrap_installation.bash` exécuté, une nouvelle
+session `bash` doit être démarrée afin d'avoir accès à la commande poetry.
+
+À l'intérieur du répertoire où se trouvent `pyproject.toml` et `poetry.lock`, 
+exécuter `poetry install` pour installer toutes les dépendances du projet.
+Puis, exécuter `poetry shell` pour activer l'environnement virtuel et lancer 
+l'application.
+
+## Organisation du code serveur {-#organisation}
 ```{bash, eval=F}
-$ uname -a
-Linux machine329a7396-059f-41aa-94c7-4c41b4ec8290 5.4.0-88-generic #99-Ubuntu SMP Thu Sep 23 17:29:00 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
-
-$ neofetch
-            .-/+oossssoo+/-.               ubuntu@machine3f9ae3dc-6a4d-46b7-8131-04f00a1be146 
-        `:+ssssssssssssssssss+:`           -------------------------------------------------- 
-      -+ssssssssssssssssssyyssss+-         OS: Ubuntu 20.04.3 LTS x86_64 
-    .ossssssssssssssssssdMMMNysssso.       Host: OpenStack Compute 18.2.1-1.el7 
-   /ssssssssssshdmmNNmmyNMMMMhssssss/      Kernel: 5.4.0-88-generic 
-  +ssssssssshmydMMMMMMMNddddyssssssss+     Uptime: 13 hours, 14 mins 
- /sssssssshNMMMyhhyyyyhmNMMMNhssssssss/    Packages: 719 (dpkg), 4 (snap) 
-.ssssssssdMMMNhsssssssssshNMMMdssssssss.   Shell: bash 5.0.17 
-+sssshhhyNMMNyssssssssssssyNMMMysssssss+   Theme: Adwaita [GTK3] 
-ossyNMMMNyMMhsssssssssssssshmmmhssssssso   Icons: Adwaita [GTK3] 
-ossyNMMMNyMMhsssssssssssssshmmmhssssssso   Terminal: /dev/pts/0 
-+sssshhhyNMMNyssssssssssssyNMMMysssssss+   CPU: Intel (Haswell, no TSX, IBRS) (16) @ 2.294GHz 
-.ssssssssdMMMNhsssssssssshNMMMdssssssss.   GPU: 00:02.0 Cirrus Logic GD 5446 
- /sssssssshNMMMyhhyyyyhdNMMMNhssssssss/    Memory: 635MiB / 64323MiB 
-  +sssssssssdmydMMMMMMMMddddyssssssss+
-   /ssssssssssshdmNNNNmyNMMMMhssssss/                              
-    .ossssssssssssssssssdMMMNysssso.                               
-      -+sssssssssssssssssyyyssss+-
-        `:+ssssssssssssssssss+:`
-            .-/+oossssoo+/-.
+─ poetry.lock
+─ pyproject.toml
+─ prokaryote
+ ─ annotation # Application principale
+ ─ bootstrap_installation.bash # script d'aide à l'installation
+ ─ createdb.bash # idem mais pour la création des tables de la base de données
+ ─ dbsetup # Application django pour gestion de la base de données
+ ─ debug.py # Script pour analyser la sortie des error-logs 
+ ─ gene_importation_error_log.jsonl # logs d'erreur liés à problèmes de parsing
+ ─ home # Application qui gère la page d'accueil
+ ─ manage.py # Couteau Suisse de django. 
+ ─ prokaryote # app. de base qui fait le lien entre toutes les autres
+ ─ runall.bash # Script qui permet d'effacer et recréer la base et importer
+               # toutes les données
+ ─ static # répertoire contenant le css de tout le site
+ ─ upload # Application pour importer des nouvelles séquences
 ```
 
-This configuration was actually a virtual machine hosted on [Biosphere's RAINBio](https://biosphere.france-bioinformatique.fr/catalogue/) a cloud service maintained by the French Institue of Bioinformatics ([_Institut Français de Bioinformatique_](https://www.france-bioinformatique.fr/en/home/)). 
 
-## BioPipes: a Biosphere-commons app
-
-The instance of the virtual machine we used is called [_BioPipes_](https://biosphere.france-bioinformatique.fr/catalogue/appliance/119/). It provides the most notable bioinformatics pipeline tools:
-
-* [nextflow](https://www.nextflow.io/)
-* [snakemake](https://snakemake.github.io/)
-* [cwltool](https://www.commonwl.org/)
-
-## Software
-
-Our pipeline is built on top of `nextflow`, which was installed via the [conda](https://www.anaconda.com/products/individual) package manager.
-```{bash, eval=F}
-$ conda --version
-conda 4.11.0
-$ nextflow -v
-nextflow version 21.10.0.5640
-```
-
-```{r include=FALSE}
-# automatically create a bib database for R packages
-knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown'
-), 'packages.bib')
-```
