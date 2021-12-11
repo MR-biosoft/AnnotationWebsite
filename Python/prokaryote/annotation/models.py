@@ -15,8 +15,10 @@
 
 from django.db import models
 
+
 class DataModel(models.Model):
     """ Abstract base class to include utility methods """
+
     class Meta:
         managed = False
         abstract = True
@@ -30,7 +32,7 @@ class DataModel(models.Model):
         return str(self.pk)
 
     def __iter__(self):
-        """ Utility to iterate over the object's attributes 
+        """Utility to iterate over the object's attributes
         or cast it to a dictionary."""
         for key in self.__dict__:
             if not key.startswith("_"):
